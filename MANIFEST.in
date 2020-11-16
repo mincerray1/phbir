@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include phbir *.css
+recursive-include phbir *.csv
+recursive-include phbir *.html
+recursive-include phbir *.ico
+recursive-include phbir *.js
+recursive-include phbir *.json
+recursive-include phbir *.md
+recursive-include phbir *.png
+recursive-include phbir *.py
+recursive-include phbir *.svg
+recursive-include phbir *.txt
+recursive-exclude phbir *.pyc
