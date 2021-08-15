@@ -1,5 +1,5 @@
 {
- "add_total_row": 0,
+ "add_total_row": 1,
  "columns": [],
  "creation": "2021-08-15 17:02:20.366749",
  "disable_prepared_report": 0,
@@ -11,7 +11,7 @@
  "is_standard": "Yes",
  "json": "{}",
  "letter_head": "BOA Letterhead",
- "modified": "2021-08-15 17:19:09.624826",
+ "modified": "2021-08-15 18:42:48.861883",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "BOA Sales Journal",

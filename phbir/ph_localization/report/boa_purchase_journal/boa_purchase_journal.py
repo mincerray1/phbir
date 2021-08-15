@@ -15,7 +15,7 @@ def get_data(filters):
     result = frappe.db.sql("""
     SELECT 
         pi.posting_date, 
-        pi.tax_id,
+        (CASE WHEN IFNULL(pi.tax_id, '') = '' THEN s.tax_id ELSE pi.tax_id END) AS tax_id,
         pi.supplier,
         s.supplier_name,
         /* pi.supplier_address, */
@@ -72,6 +72,12 @@ def get_columns():
             "options": "Purchase Invoice",
             "width": 150
         },
+        {
+            "fieldname": "tax_id",
+            "label": _("TIN"),
+            "fieldtype": "Data",
+            "width": 120
+        },
         # {
         #     "fieldname": "is_return",
         #     "label": _("Return"),
@@ -110,7 +116,7 @@ def get_columns():
         },
         {
             "fieldname": "grand_total",
-            "label": _("NET Purchases"),
+            "label": _("Net Purchases"),
             "fieldtype": "Currency",
             "width": 150
         }

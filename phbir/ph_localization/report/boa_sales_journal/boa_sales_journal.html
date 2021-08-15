@@ -1,4 +1,4 @@
-<h2 class="text-center">{%= __("Purchase Journal") %}</h2>
+<h2 class="text-center">{%= __("Sales Journal") %}</h2>
 <!-- erpnext.get_currency(frappe.defaults.get_default("company")) -->
 <h6 class="text-left">
     <div>
@@ -27,16 +27,16 @@
 		<tr>
 			<th style="width: 8%">{%= __("Date") %}</th>
 			<!-- <th style="width: 12%">{%= __("Supplier Code") %}</th> -->
-			<th style="width: 10%">{%= __("Supplier Name") %}</th>
+			<th style="width: 10%">{%= __("Customer Name") %}</th>
 			<th style="width: 10%">{%= __("TIN") %}</th>
 			<th style="width: 12%">{%= __("Document No") %}</th>
-            <th style="width: 10%">{%= __("Supplier Invoice No") %}</th>
+            <th style="width: 10%">{%= __("Customer PO No") %}</th>
             
 			<th style="width: 10%">{%= __("Amount") %}</th>
 			<th style="width: 10%">{%= __("Discount") %}</th>
 			<th style="width: 10%">{%= __("VAT") %}</th>
 			<th style="width: 10%">{%= __("Withholding Tax") %}</th>
-			<th style="width: 10%">{%= __("Net Purchases") %}</th>
+			<th style="width: 10%">{%= __("Net Sales") %}</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -44,10 +44,10 @@
 		{% for(var i=0, l=data.length; i<l; i++) { %}
 			<tr>
 				<td>{%= frappe.datetime.str_to_user(data[i].posting_date) %}</td>
-				<td>{%= data[i].supplier_name %}</td>
+				<td>{%= data[i].customer_name %}</td>
 				<td>{%= data[i].tax_id %}</td>
 				<td>{%= data[i].name %}</td>
-                <td>{%= data[i].bill_no %}</td>
+                <td>{%= data[i].po_no %}</td>
 
                 <td style="text-align: right">{%= format_currency(data[i].total, data[i].currency) %}</td>
                 <td style="text-align: right">{%= format_currency(data[i].net_discount, data[i].currency) %}</td>
