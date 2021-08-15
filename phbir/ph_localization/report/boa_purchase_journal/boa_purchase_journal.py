@@ -23,8 +23,8 @@ def get_data(filters):
         pi.currency,
         pi.is_return,
         pi.bill_no,
-        pi.total,
-        (pi.total - pi.net_total) as net_discount,
+        (pi.net_total + pi.discount_amount) as total,
+        (pi.discount_amount) as net_discount,
         pi.taxes_and_charges_added as tax_amount,
         pi.taxes_and_charges_deducted as withholding_tax_amount,
         pi.grand_total

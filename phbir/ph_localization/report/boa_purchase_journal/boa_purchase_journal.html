@@ -1,23 +1,56 @@
 <h2 class="text-center">{%= __("Purchase Journal") %}</h2>
 <!-- erpnext.get_currency(frappe.defaults.get_default("company")) -->
+{% let company_information = get_company_information(filters.company) %}
 <h6 class="text-left">
     <div>
         <span>Company:</span>
-        <span class="ml-4">{%= filters.company %}</span>
+        <span class="">{%= filters.company %}</span>
+        <span></span>
     </div>
-    <!-- <div>
-        <span>Address</span>
-        <span class="ml-4"></span>
-    </div> -->
-    <!-- <div>
-        <span>TIN:</span>
-        <span class="ml-4">{%= frappe.db.get_value("Company", frappe.defaults.get_default("company"), "tax_id") %}</span>
-    </div> -->
     <div>
-        {%= __("Period Covered: ")%}
-        {%= frappe.datetime.str_to_user(filters.from_date) %}
-        {%= __("to") %}
-        {%= frappe.datetime.str_to_user(filters.to_date) %}
+        <span>Address: </span>
+        <span class="">{%= company_information.address %}</span>
+    </div>
+    <div>
+        <span>TIN: </span>
+        <span class="">{%= company_information.tin %}</span>
+    </div>
+    <div>
+        <span>Permit No: </span>
+        <span class="">{%= company_information.permit_no %}</span>
+    </div>
+    <div>
+        <span>Date of Permit: </span>
+        <span class="">{%= (company_information.permit_date_issued != '' ? frappe.datetime.str_to_user(company_information.permit_date_issued) : '') %}</span>
+    </div>
+    <div>
+        <span>Taxable Year: </span>
+        <span class="">{%= (new Date(filters.from_date)).getFullYear() %}</span>
+    </div>
+    <div>
+        <span>Report: </span>
+        <span class="">{%= __("Purchase Journal") %}</span>
+    </div>
+
+    <div>
+        <span>No of Records: </span>
+        <span class="">{%= (data.length - (report.add_total_row == 1 ? 1 : 0)) %}</span>
+    </div>
+    <div>
+        <span>{%= __("Period Covered: ") %}</span>        
+        <span>
+            {%= frappe.datetime.str_to_user(filters.from_date) %}
+            {%= __("to") %}
+            {%= frappe.datetime.str_to_user(filters.to_date) %}
+        </span>
+    </div>
+    <div>
+        <span>Printed On: </span>
+        <span class="">{%= frappe.datetime.str_to_user(frappe.datetime.get_datetime_as_string()) %}</span>
+    </div>
+    <div>
+        <span>Printed By: </span>
+        <span class="">{%= frappe.session.user %}</span>
     </div>
 </h6>
 

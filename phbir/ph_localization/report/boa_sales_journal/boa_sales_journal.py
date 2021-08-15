@@ -23,8 +23,8 @@ def get_data(filters):
         si.currency,
         si.is_return,
         si.po_no,
-        si.total,
-        (si.total - si.net_total) as net_discount,
+        (si.net_total + si.discount_amount) as total,
+        (si.discount_amount) as net_discount,
         IFNULL(stac_add.tax_amount, 0) as tax_amount,
         ABS(IFNULL(stac_deduct.tax_amount, 0)) as withholding_tax_amount,
         si.grand_total
