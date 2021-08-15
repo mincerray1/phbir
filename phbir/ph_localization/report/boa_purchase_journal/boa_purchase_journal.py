@@ -40,6 +40,8 @@ def get_data(filters):
         and pi.posting_date >= %s
         and pi.posting_date <= %s
         and pi.company = %s
+    ORDER BY
+        pi.posting_date ASC
     """, (getdate(filters.from_date), getdate(filters.to_date), filters.company), as_dict=1)
 
     return result

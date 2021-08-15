@@ -42,24 +42,27 @@
 	<tbody>
         {% let sum_total = 0, sum_net_discount = 0, sum_tax_amount = 0, sum_withholding_tax_amount = 0, sum_grand_total = 0 %}
 		{% for(var i=0, l=data.length; i<l; i++) { %}
-			<tr>
-				<td>{%= frappe.datetime.str_to_user(data[i].posting_date) %}</td>
-				<td>{%= data[i].supplier_name %}</td>
-				<td>{%= data[i].tax_id %}</td>
-				<td>{%= data[i].name %}</td>
-                <td>{%= data[i].bill_no %}</td>
+            {% if(!data[i].is_total_row) { %}
+                <tr>
+                    <td>{%= frappe.datetime.str_to_user(data[i].posting_date) %}</td>
+                    <td>{%= data[i].supplier_name %}</td>
+                    <td>{%= data[i].tax_id %}</td>
+                    <td>{%= data[i].name %}</td>
+                    <td>{%= data[i].bill_no %}</td>
 
-                <td style="text-align: right">{%= format_currency(data[i].total, data[i].currency) %}</td>
-                <td style="text-align: right">{%= format_currency(data[i].net_discount, data[i].currency) %}</td>
-                <td style="text-align: right">{%= format_currency(data[i].tax_amount, data[i].currency) %}</td>
-                <td style="text-align: right">{%= format_currency(data[i].withholding_tax_amount, data[i].currency) %}</td>
-                <td style="text-align: right">{%= format_currency(data[i].grand_total, data[i].currency) %}</td>
+                    <td style="text-align: right">{%= format_currency(data[i].total, data[i].currency) %}</td>
+                    <td style="text-align: right">{%= format_currency(data[i].net_discount, data[i].currency) %}</td>
+                    <td style="text-align: right">{%= format_currency(data[i].tax_amount, data[i].currency) %}</td>
+                    <td style="text-align: right">{%= format_currency(data[i].withholding_tax_amount, data[i].currency) %}</td>
+                    <td style="text-align: right">{%= format_currency(data[i].grand_total, data[i].currency) %}</td>
 
-                {% sum_total = sum_total + data[i].total %}
-                {% sum_net_discount = sum_net_discount + data[i].net_discount %}
-                {% sum_tax_amount = sum_tax_amount + data[i].tax_amount %}
-                {% sum_withholding_tax_amount = sum_withholding_tax_amount + data[i].withholding_tax_amount %}
-                {% sum_grand_total = sum_grand_total + data[i].grand_total %}
+                    {% sum_total = sum_total + data[i].total %}
+                    {% sum_net_discount = sum_net_discount + data[i].net_discount %}
+                    {% sum_tax_amount = sum_tax_amount + data[i].tax_amount %}
+                    {% sum_withholding_tax_amount = sum_withholding_tax_amount + data[i].withholding_tax_amount %}
+                    {% sum_grand_total = sum_grand_total + data[i].grand_total %}
+                </tr>
+            {% } %}
 		{% } %}
     </tbody>
     <tfoot>
