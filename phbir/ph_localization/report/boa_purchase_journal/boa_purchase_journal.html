@@ -1,0 +1,156 @@
+<h2 class="text-center">{%= __("Purchase Journal") %}</h2>
+<div class="">
+    <div class="col-4">{%= __("Name of Tax Payer") %}</div>
+    <div class="col-8">{%= frappe.defaults.get_default("company") %}</div>
+</div>
+<!-- <table class="table table-borderless text-left">
+    <tbody>
+        <tr class="border-0">
+            <td>{%= __("Name of Tax Payer") %}</td>
+            <td>{%= frappe.defaults.get_default("company") %}</td>
+        </tr>
+        <tr class="border-0">
+            <td>{%= __("Address")%}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>{%= __("") %}</td>
+            <td>{%= frappe.defaults.get_default("tax_id") %}</td>
+        </tr>
+        <tr>
+            <td>{%= __("") %}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>{%= __("") %}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>{%= __("") %}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>{%= __("") %}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>{%= __("") %}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>{%= __("")%}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>{%= __("")%}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>{%= __("")%}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>{%= __("")%}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>
+                {%= __("Period Covered")%}
+            </td>
+            <td>
+                {%= __("Period Covered")%}
+                {%= frappe.datetime.str_to_user(filters.from_date) %}
+                {%= __("to") %}
+                {%= frappe.datetime.str_to_user(filters.to_date) %}
+            </td>
+        </tr>
+    </tbody>
+</table> -->
+
+<h6 class="text-left">
+    <div>
+        <span>Name of Tax Payer:</span>
+        <span class="ml-4">{%= frappe.defaults.get_default("company") %}</span>
+    </div>
+    <!-- <div>
+        <span>Address</span>
+        <span class="ml-4">{%=  %}</span>
+    </div> -->
+    <!-- <div>
+        <span>TIN</span>
+        <span class="ml-4">{%= frappe.defaults.get_default("tax_id") %}</span>
+    </div> -->
+    <!-- <div>
+        <span></span>
+        <span class="ml-4">{%=  %}</span>
+    </div>
+    <div>
+        <span></span>
+        <span class="ml-4">{%=  %}</span>
+    </div>
+    <div>
+        <span></span>
+        <span class="ml-4">{%=  %}</span>
+    </div>
+    <div>
+        <span></span>
+        <span class="ml-4">{%=  %}</span>
+    </div>
+    <div>
+        <span></span>
+        <span class="ml-4">{%=  %}</span>
+    </div>
+    <div>
+        <span></span>
+        <span class="ml-4">{%=  %}</span>
+    </div>
+    <div>
+        <span></span>
+        <span class="ml-4">{%=  %}</span>
+    </div>
+    <div>
+        <span></span>
+        <span class="ml-4">{%=  %}</span>
+    </div> -->
+    <div>
+        {%= __("Period Covered: ")%}
+        {%= frappe.datetime.str_to_user(filters.from_date) %}
+        {%= __("to") %}
+        {%= frappe.datetime.str_to_user(filters.to_date) %}
+    </div>
+</h6>
+
+<hr>
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<th style="width: 8%">{%= __("Date") %}</th>
+			<!-- <th style="width: 12%">{%= __("Supplier Code") %}</th> -->
+			<th style="width: 12%">{%= __("Supplier Name") %}</th>
+			<th style="width: 15%">{%= __("Document No") %}</th>
+            <th style="width: 15%">{%= __("Supplier Invoice No") %}</th>
+            
+			<th style="width: 10%">{%= __("Amount") %}</th>
+			<th style="width: 10%">{%= __("Discount") %}</th>
+			<th style="width: 10%">{%= __("VAT") %}</th>
+			<th style="width: 10%">{%= __("Withholding Tax") %}</th>
+			<th style="width: 10%">{%= __("Net Purchases") %}</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for(var i=0, l=data.length; i<l; i++) { %}
+			<tr>
+				<td>{%= frappe.datetime.str_to_user(data[i].posting_date) %}</td>
+				<td>{%= data[i].supplier_name %}</td>
+				<td>{%= data[i].name %}</td>
+                <td>{%= data[i].bill_no %}</td>
+                
+                <td style="text-align: right">{%= format_currency(data[i].total, data[i].currency) %}</td>
+                <td style="text-align: right">{%= format_currency(data[i].net_discount, data[i].currency) %}</td>
+                <td style="text-align: right">{%= format_currency(data[i].tax_amount, data[i].currency) %}</td>
+                <td style="text-align: right">{%= format_currency(data[i].withholding_tax_amount, data[i].currency) %}</td>
+                <td style="text-align: right">{%= format_currency(data[i].grand_total, data[i].currency) %}</td>
+		{% } %}
+	</tbody>
+</table>
+<p class="text-right text-muted">Printed On {%= frappe.datetime.str_to_user(frappe.datetime.get_datetime_as_string()) %}</p>
