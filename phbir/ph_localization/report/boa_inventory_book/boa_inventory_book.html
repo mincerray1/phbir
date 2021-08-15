@@ -1,0 +1,68 @@
+<h2 class="text-center">{%= __("Inventory Book") %}</h2>
+<!-- erpnext.get_currency(frappe.defaults.get_default("company")) -->
+{% let currency = erpnext.get_currency(filters.company) %}
+<h6 class="text-left">
+    <div>
+        <span>Company:</span>
+        <span class="ml-4">{%= filters.company %}</span>
+        <span class="ml-4">{%= currency %}</span>
+    </div>
+    <!-- <div>
+        <span>Address</span>
+        <span class="ml-4"></span>
+    </div> -->
+    <!-- <div>
+        <span>TIN:</span>
+        <span class="ml-4">{%= frappe.db.get_value("Company", frappe.defaults.get_default("company"), "tax_id") %}</span>
+    </div> -->
+    <div>
+        {%= __("As at Date: ")%}
+        {%= frappe.datetime.str_to_user(filters.as_at_date) %}
+    </div>
+</h6>
+
+<hr>
+<table class="table table-bordered" style="font-size: 0.8em">
+	<thead>
+		<tr>
+			<th style="width: 8%">{%= __("Date") %}</th>
+			<th style="width: 12%">{%= __("Item Code") %}</th>
+            <th style="width: 15%">{%= __("Item Name") %}</th>
+            
+            <th style="width: 15%">{%= __("Unit") %}</th>
+			<th style="width: 10%">{%= __("Price per Unit") %}</th>
+			<th style="width: 10%">{%= __("Amount") %}</th>
+		</tr>
+	</thead>
+	<tbody>
+        {% let total_amount = 0 %}
+        {% console.log(JSON.stringify(data)) %}
+		{% for(var i=0, l=data.length; i<l; i++) { %}
+            {% if(!data[i].is_total_row) { %}
+			    <tr>
+                    <td>{%= frappe.datetime.str_to_user(data[i].max_posting_date) %}</td>
+                    <td>{%= data[i].name %}</td>
+                    <td>{%= data[i].item_name %}</td>
+
+                    <td style="text-align: right">{%= data[i].actual_qty.toFixed(2) %}</td>
+                    <td style="text-align: right">{%= format_currency(data[i].price_per_unit, currency) %}</td>
+                    <td style="text-align: right">{%= format_currency(data[i].amount, currency) %}</td>
+
+                    {% total_amount = total_amount + data[i].amount %}
+                </tr>
+            {% } %}
+		{% } %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td style="text-align: right"><strong>Grand Total</strong></td>
+            <td style="text-align: right"><strong>{%= format_currency(total_amount, currency) %}</strong></td>
+        </tr>
+    </tfoot>
+</table>
+
+<p class="text-right text-muted">Printed On {%= frappe.datetime.str_to_user(frappe.datetime.get_datetime_as_string()) %}</p>
