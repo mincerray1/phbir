@@ -24,11 +24,11 @@ def get_data(filters):
         i.name,
         i.item_name,
         ROUND(sle.actual_qty, {precision}) AS actual_qty,
-        (CASE WHEN sle.actual_qty = 0 THEN 0 ELSE ROUND((sle.amount / sle.actual_qty), {precision}) END)AS price_per_unit,
+        (CASE WHEN sle.actual_qty = 0 THEN 0 ELSE ROUND((sle.amount / sle.actual_qty), {precision}) END) AS price_per_unit,
         ROUND(sle.amount, {precision}) AS amount
     FROM 
         `tabItem` i
-    LEFT JOIN
+    INNER JOIN
         ( 
             SELECT 
                 item_code,
@@ -48,6 +48,7 @@ def get_data(filters):
         sle.item_code = i.name
     WHERE
         i.disabled = 0
+        and i.is_stock_item = 1
     ORDER BY
         i.name ASC
     """.format(precision=precision), (getdate(filters.as_at_date), filters.company), as_dict=1)
