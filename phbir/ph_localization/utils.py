@@ -30,7 +30,10 @@ def get_custom_formatted_address(address):
 @frappe.whitelist()
 def get_company_information(company):
     company_doc = frappe.get_doc('Company', company)
-    company_address = frappe.get_last_doc('Dynamic Link', filters={'link_doctype': 'Company', 'link_name': company, 'parenttype': 'Address'})
+    company_address = None
+
+    if frappe.db.exists("Dynamic Link", {'link_doctype': 'Company', 'link_name': company, 'parenttype': 'Address'}):
+        company_address = frappe.get_last_doc('Dynamic Link', filters={'link_doctype': 'Company', 'link_name': company, 'parenttype': 'Address'})
 
     company_address = company_address.parent if company_address and company_address.parent else ''
     print("company {} company_address {}".format(company, company_address))
