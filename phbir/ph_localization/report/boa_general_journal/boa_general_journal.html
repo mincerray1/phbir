@@ -72,7 +72,7 @@
 	</thead>
 	<tbody>
         {% let sum_debit = 0, sum_credit = 0 %}
-        {% console.log(JSON.stringify(data)) %}
+        
 		{% for(var i=0, l=data.length; i<l; i++) { %}
             {% if(!data[i].is_total_row) { %}
 			    <tr>
