@@ -1,11 +1,33 @@
+{%  let print_format = document.getElementsByClassName("print-format").width = '8.5in'; %}
+{%  print_format.width = '8.5in'; %}
+{%  print_format.minHeight  = '13in'; %}
+{%  print_format.marginTop  = '0in'; %}
+{%  print_format.marginRight  = '0in'; %}
+{%  print_format.marginBottom  = '0in'; %}
+{%  print_format.marginLeft  = '0in'; %}
+
+{%  print_format.paddingTop  = '0in'; %}
+{%  print_format.paddingRight  = '0in'; %}
+{%  print_format.paddingBottom  = '0in'; %}
+{%  print_format.paddingLeft  = '0in'; %}
+
 {% let company_information = get_company_information(filters.company) %}
 {% let payor_tin_padded = company_information.tin.padEnd(14, '0').substring(0, 14) %}
 {% let payor_tin_seg1 = payor_tin_padded.substring(0, 3) %}
 {% let payor_tin_seg2 = payor_tin_padded.substring(3, 3) %}
 {% let payor_tin_seg3 = payor_tin_padded.substring(6, 3) %}
 {% let payor_tin_seg4 = payor_tin_padded.substring(9, 5) %}
-<div style="position: relative;">
-    <span style="top: 3.5in; left: 3.92in; position: absolute;">{%= payor_tin_seg1 %}</span>
+
+<span style="top: 3.5in; left: 3.92in; position: absolute;">{%= payor_tin_seg1 %}</span>
+<!-- <div>
+    <img src="/assets/phbir/img/forms/2307.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;">
+</div> -->
+
+<div>
+    <img src="/assets/phbir/img/forms/2307-1.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;">
 </div>
-<img src="/assets/phbir/img/forms/2307-1.png" height="100%" width="100%" style="z-index: -1;">
+
+<div style="page-break-before: always;">
+    <img src="/assets/phbir/img/forms/2307-2.png" height="100%" width="100%" style="position: absolute; top: 13in; left: 0; z-index: -1;">
+</div>
 <!-- <img src="/assets/phbir/img/forms/2307-2.png" height="100%" width="100%" style="z-index: -1;"> -->
