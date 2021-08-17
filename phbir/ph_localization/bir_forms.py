@@ -24,7 +24,7 @@ def bir_2307(filters, response_type="pdf"):
     
     context["build_version"] = frappe.utils.get_build_version()
     html = frappe.render_template("templates/bir_forms/bir_2307_template.html", context)
-    options["page-size"] = "Folio"
+    options["page-size"] = "Legal"
 
     return_document(html, filename, options, response_type)
 
