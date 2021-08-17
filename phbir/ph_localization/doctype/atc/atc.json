@@ -1,0 +1,80 @@
+{
+ "actions": [],
+ "autoname": "field:atc",
+ "creation": "2021-08-17 10:25:42.769359",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "atc",
+  "description",
+  "rate",
+  "column_break_4",
+  "atc_class",
+  "tax_type_code"
+ ],
+ "fields": [
+  {
+   "fieldname": "atc",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "ATC",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "in_list_view": 1,
+   "label": "Description"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Percent",
+   "label": "Rate",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "atc_class",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "ATC Class",
+   "options": "Individual\nCorporate"
+  },
+  {
+   "fieldname": "tax_type_code",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Tax Type Code",
+   "options": "PH Tax Type Code"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2021-08-17 11:00:53.438614",
+ "modified_by": "Administrator",
+ "module": "PH Localization",
+ "name": "ATC",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

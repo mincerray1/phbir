@@ -57,7 +57,7 @@ def get_columns():
             "fieldname": "voucher_no",
             "label": _("Reference"),
             "fieldtype": "Data",
-            "width": 150
+            "width": 180
         },
         {
             "fieldname": "remarks",

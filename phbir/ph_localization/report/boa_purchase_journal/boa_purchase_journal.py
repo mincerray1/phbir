@@ -23,11 +23,11 @@ def get_data(filters):
         pi.currency,
         pi.is_return,
         pi.bill_no,
-        (pi.net_total + pi.discount_amount) as total,
-        (pi.discount_amount) as net_discount,
-        pi.taxes_and_charges_added as tax_amount,
-        pi.taxes_and_charges_deducted as withholding_tax_amount,
-        pi.grand_total
+        (pi.base_net_total + pi.base_discount_amount) as total,
+        (pi.base_discount_amount) as net_discount,
+        pi.base_taxes_and_charges_added as tax_amount,
+        pi.base_taxes_and_charges_deducted as withholding_tax_amount,
+        pi.base_grand_total as grand_total
     FROM
         `tabPurchase Invoice` pi
     LEFT JOIN

@@ -23,11 +23,11 @@ def get_data(filters):
         si.currency,
         si.is_return,
         si.po_no,
-        (si.net_total + si.discount_amount) as total,
-        (si.discount_amount) as net_discount,
-        IFNULL(stac_add.tax_amount, 0) as tax_amount,
-        ABS(IFNULL(stac_deduct.tax_amount, 0)) as withholding_tax_amount,
-        si.grand_total
+        (si.base_net_total + si.base_discount_amount) as total,
+        (si.base_discount_amount) as net_discount,
+        IFNULL(stac_add.base_tax_amount, 0) as tax_amount,
+        ABS(IFNULL(stac_deduct.base_tax_amount, 0)) as withholding_tax_amount,
+        si.base_grand_total as grand_total
     FROM
         `tabSales Invoice` si
     LEFT JOIN
@@ -39,7 +39,7 @@ def get_data(filters):
             SELECT stac.parent, SUM(stac.tax_amount) AS tax_amount, SUM(stac.base_tax_amount) AS base_tax_amount, 
                 SUM(stac.tax_amount_after_discount_amount) AS tax_amount_after_discount_amount, SUM(stac.base_tax_amount_after_discount_amount) AS base_tax_amount_after_discount_amount
             FROM `tabSales Taxes and Charges` stac
-            WHERE stac.tax_amount >= 0
+            WHERE stac.base_tax_amount >= 0
             GROUP BY stac.parent
         ) stac_add
     ON
@@ -49,7 +49,7 @@ def get_data(filters):
             SELECT stac.parent, SUM(stac.tax_amount) AS tax_amount, SUM(stac.base_tax_amount) AS base_tax_amount, 
                 SUM(stac.tax_amount_after_discount_amount) AS tax_amount_after_discount_amount, SUM(stac.base_tax_amount_after_discount_amount) AS base_tax_amount_after_discount_amount
             FROM `tabSales Taxes and Charges` stac
-            WHERE stac.tax_amount < 0
+            WHERE stac.base_tax_amount < 0
             GROUP BY stac.parent
         ) stac_deduct
     ON
