@@ -7,14 +7,20 @@ from frappe import _
 
 def execute(filters=None):
     columns, data = [], []
-    data = get_data(filters)
+    data = get_data(filters, 0)
     columns = get_columns()
     return columns, data
 
 # works on net total only
 # TODO: custom tax base
-def get_data(filters):
+def get_data(filters, is_filters_dict=0):
     
+    supplier = filters['supplier'] if is_filters_dict else filters.supplier
+    company = filters['company'] if is_filters_dict else filters.company
+    purchase_invoice = filters['purchase_invoice'] if is_filters_dict else filters.purchase_invoice
+    from_date = filters['from_date'] if is_filters_dict else filters.from_date
+    to_date = filters['to_date'] if is_filters_dict else filters.to_date
+
     result = frappe.db.sql("""
     SELECT 
         (CASE 
@@ -48,7 +54,7 @@ def get_data(filters):
         and pi.posting_date >= %s
         and pi.posting_date <= %s
         and pi.company = %s
-    """, (filters.supplier, getdate(filters.from_date), getdate(filters.to_date), filters.company), as_dict=1)
+    """, (supplier, getdate(from_date), getdate(to_date), company), as_dict=1)
 
     return result
 

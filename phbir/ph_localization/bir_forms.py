@@ -4,6 +4,7 @@ from frappe.utils.pdf import get_pdf
 from datetime import datetime
 from phbir.ph_localization.utils import get_company_information, get_supplier_information
 import pytz
+import json
 
 options = {
     "margin-left": "0mm",
@@ -14,18 +15,26 @@ options = {
 
 
 @frappe.whitelist()
-def bir_2307(filters, response_type="pdf"):
+def bir_2307(company, supplier, purchase_invoice, from_date, to_date, response_type="pdf"):
     # check 2307 perms instead
     if frappe.session.user=='Guest':
         frappe.throw(_("You need to be logged in to access this page"), frappe.PermissionError)
 
+    filters = {
+        'company' : company, 
+        'supplier': supplier, 
+        'purchase_invoice': purchase_invoice, 
+        'from_date': from_date, 
+        'to_date': to_date
+    }
+
     from phbir.ph_localization.report.bir_2307.bir_2307 import get_data as get_data_bir_2307
-    data = get_data_bir_2307(filters)
+    data = get_data_bir_2307(filters, 1)
 
     context = {
         'data': data,
-        'payor': get_company_information(filters.company),
-        'payee': get_supplier_information(filters.supplier)
+        'payor': get_company_information(company),
+        'payee': get_supplier_information(supplier)
     }
 
     filename = "BIR 2307"

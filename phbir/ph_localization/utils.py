@@ -32,15 +32,16 @@ def get_company_information(company):
     company_doc = frappe.get_doc('Company', company)
     company_address = ''
     zipcode = ''
-    company_address_doc = None
+    company_address_dynamic_link_doc = None
 
     if frappe.db.exists("Dynamic Link", {'link_doctype': 'Company', 'link_name': company, 'parenttype': 'Address'}):
-        company_address_doc = frappe.get_last_doc('Dynamic Link', filters={'link_doctype': 'Company', 'link_name': company, 'parenttype': 'Address'})
+        company_address_dynamic_link_doc = frappe.get_last_doc('Dynamic Link', filters={'link_doctype': 'Company', 'link_name': company, 'parenttype': 'Address'})
     
 
-    if company_address_doc:
-        zipcode = company_address_doc.pincode if company_address_doc.pincode else ''
-        company_address = company_address_doc.parent if company_address_doc.parent else ''
+    if company_address_dynamic_link_doc:
+        zipcode = frappe.db.get_value('Address', company_address_dynamic_link_doc.parent, 'pincode')
+        zipcode = zipcode if zipcode else ''
+        company_address = company_address_dynamic_link_doc.parent if company_address_dynamic_link_doc.parent else ''
     
     if company_address:
         company_address = get_custom_formatted_address(company_address)
@@ -64,15 +65,16 @@ def get_supplier_information(supplier):
     supplier_doc = frappe.get_doc('Supplier', supplier)
     supplier_address = ''
     zipcode = ''
-    supplier_address_doc = None
+    supplier_address_dynamic_link_doc = None
 
     if frappe.db.exists("Dynamic Link", {'link_doctype': 'Supplier', 'link_name': supplier, 'parenttype': 'Address'}):
-        supplier_address_doc = frappe.get_last_doc('Dynamic Link', filters={'link_doctype': 'Supplier', 'link_name': v, 'parenttype': 'Address'})
+        supplier_address_dynamic_link_doc = frappe.get_last_doc('Dynamic Link', filters={'link_doctype': 'Supplier', 'link_name': supplier, 'parenttype': 'Address'})
     
 
-    if supplier_address_doc:
-        zipcode = supplier_address_doc.pincode if supplier_address_doc.pincode else ''
-        supplier_address = supplier_address_doc.parent if supplier_address_doc.parent else ''
+    if supplier_address_dynamic_link_doc:
+        zipcode = frappe.db.get_value('Address', supplier_address_dynamic_link_doc.parent, 'pincode')
+        zipcode = zipcode if zipcode else ''
+        supplier_address = supplier_address_dynamic_link_doc.parent if supplier_address_dynamic_link_doc.parent else ''
     
     if supplier_address:
         supplier_address = get_custom_formatted_address(supplier_address)

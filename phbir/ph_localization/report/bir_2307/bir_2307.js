@@ -30,7 +30,7 @@ frappe.query_reports["BIR 2307"] = {
             fieldname:"from_date",
             label: __("From Date"),
             fieldtype: "Date",
-            default: frappe.datetime.get_today(),
+            default: moment(frappe.datetime.get_today()).startOf('quarter'),
             reqd: 1, 
 			on_change: function() {
 				frappe.query_report.set_filter_value("to_date", frappe.datetime.add_months(moment(frappe.query_report.get_filter_value('from_date')).endOf('month'), 2));
@@ -61,8 +61,16 @@ frappe.query_reports["BIR 2307"] = {
             //         }
             //     }
             // });
-            let u = new URLSearchParams(frappe.query_report.filters).toString();
-            let bir_form_url = `/api/method/phbir.ph_localization.bir_forms.bir_2307?${u}&response_type=pdf`;
+            let filter_values = {
+                    'company': frappe.query_report.get_filter_value('company'),
+                    'supplier': frappe.query_report.get_filter_value('supplier'),
+                    'purchase_invoice': frappe.query_report.get_filter_value('purchase_invoice'),
+                    'from_date': frappe.query_report.get_filter_value('from_date'),
+                    'to_date': frappe.query_report.get_filter_value('to_date'),
+                };
+            let u = new URLSearchParams(filter_values).toString();
+            console.log("u: " + u);
+            let bir_form_url = '/api/method/phbir.ph_localization.bir_forms.bir_2307?' + u + '&response_type=pdf';
             let bir_form = window.open(bir_form_url);
 		});
 	}
