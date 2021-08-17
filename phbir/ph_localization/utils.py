@@ -30,13 +30,18 @@ def get_custom_formatted_address(address):
 @frappe.whitelist()
 def get_company_information(company):
     company_doc = frappe.get_doc('Company', company)
-    company_address = None
+    company_address = ''
+    zipcode = ''
+    company_address_doc = None
 
     if frappe.db.exists("Dynamic Link", {'link_doctype': 'Company', 'link_name': company, 'parenttype': 'Address'}):
-        company_address = frappe.get_last_doc('Dynamic Link', filters={'link_doctype': 'Company', 'link_name': company, 'parenttype': 'Address'})
+        company_address_doc = frappe.get_last_doc('Dynamic Link', filters={'link_doctype': 'Company', 'link_name': company, 'parenttype': 'Address'})
+    
 
-    company_address = company_address.parent if company_address and company_address.parent else ''
-    print("company {} company_address {}".format(company, company_address))
+    if company_address_doc:
+        zipcode = company_address_doc.pincode if company_address_doc.pincode else ''
+        company_address = company_address_doc.parent if company_address_doc.parent else ''
+    
     if company_address:
         company_address = get_custom_formatted_address(company_address)
     
@@ -44,11 +49,44 @@ def get_company_information(company):
     permit_date_issued = frappe.db.get_single_value('PH Localization Setup', 'permit_date_issued')
 
     result = {
-        'address': company_address,
-        'tin': company_doc.tax_id,
+        'address': company_address if company_address else '',
+        'tin': preformat_tin(company_doc.tax_id if company_doc.tax_id else ''),
+        'zipcode': zipcode,
         'erpnext_version': __version__,
         'permit_no': permit_no if permit_no else '',
         'permit_date_issued': permit_date_issued if permit_date_issued else ''
     }
 
     return result
+
+@frappe.whitelist()
+def get_supplier_information(supplier):
+    supplier_doc = frappe.get_doc('Supplier', supplier)
+    supplier_address = ''
+    zipcode = ''
+    supplier_address_doc = None
+
+    if frappe.db.exists("Dynamic Link", {'link_doctype': 'Supplier', 'link_name': supplier, 'parenttype': 'Address'}):
+        supplier_address_doc = frappe.get_last_doc('Dynamic Link', filters={'link_doctype': 'Supplier', 'link_name': v, 'parenttype': 'Address'})
+    
+
+    if supplier_address_doc:
+        zipcode = supplier_address_doc.pincode if supplier_address_doc.pincode else ''
+        supplier_address = supplier_address_doc.parent if supplier_address_doc.parent else ''
+    
+    if supplier_address:
+        supplier_address = get_custom_formatted_address(supplier_address)
+
+    result = {
+        'address': supplier_address if supplier_address else '',
+        'tin': preformat_tin(supplier_doc.tax_id if supplier_doc.tax_id else ''),
+        'zipcode': zipcode
+    }
+
+    return result
+
+@frappe.whitelist()
+def preformat_tin(tin):
+    result = "{0}00000000000000".format(tin)
+    # tin is 14 digits
+    return result[:14]

@@ -2,6 +2,7 @@ import frappe
 from frappe import _
 from frappe.utils.pdf import get_pdf
 from datetime import datetime
+from phbir.ph_localization.utils import get_company_information, get_supplier_information
 import pytz
 
 options = {
@@ -18,7 +19,14 @@ def bir_2307(filters, response_type="pdf"):
     if frappe.session.user=='Guest':
         frappe.throw(_("You need to be logged in to access this page"), frappe.PermissionError)
 
-    context = {}
+    from phbir.ph_localization.report.bir_2307.bir_2307 import get_data as get_data_bir_2307
+    data = get_data_bir_2307(filters)
+
+    context = {
+        'data': data,
+        'payor': get_company_information(filters.company),
+        'payee': get_supplier_information(filters.supplier)
+    }
 
     filename = "BIR 2307"
     

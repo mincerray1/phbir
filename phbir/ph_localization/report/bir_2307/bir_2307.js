@@ -61,8 +61,9 @@ frappe.query_reports["BIR 2307"] = {
             //         }
             //     }
             // });
-
-            let bir_form = window.open("/api/method/phbir.ph_localization.bir_forms.bir_2307?filters=asda&response_type=pdf");
+            let u = new URLSearchParams(frappe.query_report.filters).toString();
+            let bir_form_url = `/api/method/phbir.ph_localization.bir_forms.bir_2307?${u}&response_type=pdf`;
+            let bir_form = window.open(bir_form_url);
 		});
 	}
 };
