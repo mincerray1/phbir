@@ -1,0 +1,11 @@
+{% let company_information = get_company_information(filters.company) %}
+{% let payor_tin_padded = company_information.tin.padEnd(14, '0').substring(0, 14) %}
+{% let payor_tin_seg1 = payor_tin_padded.substring(0, 3) %}
+{% let payor_tin_seg2 = payor_tin_padded.substring(3, 3) %}
+{% let payor_tin_seg3 = payor_tin_padded.substring(6, 3) %}
+{% let payor_tin_seg4 = payor_tin_padded.substring(9, 5) %}
+<div style="position: relative;">
+    <span style="top: 3.5in; left: 3.92in; position: absolute;">{%= payor_tin_seg1 %}</span>
+</div>
+<img src="/assets/phbir/img/forms/2307-1.png" height="100%" width="100%" style="z-index: -1;">
+<!-- <img src="/assets/phbir/img/forms/2307-2.png" height="100%" width="100%" style="z-index: -1;"> -->
