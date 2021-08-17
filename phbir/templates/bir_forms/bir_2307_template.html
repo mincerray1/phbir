@@ -20,7 +20,16 @@
     width: 100%;
     position: absolute;
 }
+.bir-form-amount {
+    text-align: right;
+    font-size: 0.70em;
+}
 </style>
+<div style="left: 2.14in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">12</div>
+<div style="left: 2.53in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">27</div>
+<div style="left: 2.89in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">1989</div>
+
+
 <div style="left: 2.93in; top: 2.08in; letter-spacing: 0.1in;" class="bir-form-text">{{ payee.tin[:3] }}</div>
 <div style="left: 3.63in; top: 2.08in; letter-spacing: 0.1in;" class="bir-form-text">{{ payee.tin[3:6] }}</div>
 <div style="left: 4.35in; top: 2.08in; letter-spacing: 0.1in;" class="bir-form-text">{{ payee.tin[6:9] }}</div>
@@ -30,6 +39,10 @@
 <div style="left: 0.53in; top: 2.50in;" class="bir-form-text">{{ payee.supplier_name }}</div>
 <div style="left: 0.53in; top: 2.92in;" class="bir-form-text">{{ payee.address }}</div>
 <div style="left: 7.58in; top: 2.92in; letter-spacing: 0.1in;" class="bir-form-text">{{ payee.zipcode }}</div>
+
+<div style="left: 5.59in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">12</div>
+<div style="left: 5.98in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">27</div>
+<div style="left: 6.34in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">1989</div>
 
 <div style="left: 2.93in; top: 3.80in; letter-spacing: 0.1in;" class="bir-form-text">{{ payor.tin[:3] }}</div>
 <div style="left: 3.63in; top: 3.80in; letter-spacing: 0.1in;" class="bir-form-text">{{ payor.tin[3:6] }}</div>
@@ -41,15 +54,24 @@
 <div style="left: 0.53in; top: 4.64in;" class="bir-form-text">{{ payor.address }}</div>
 <div style="left: 7.58in; top: 4.64in; letter-spacing: 0.1in;" class="bir-form-text">{{ payor.zipcode }}</div>
 
-payor
-{{ payor }}
-payee
-{{ payee }}
+{% if data|length >=1 %}
+<div style="left: 0.53in; top: 5.47in;" class="bir-form-text">{{ data[0].document_no }}</div>
+<div style="left: 2.53in; top: 5.47in;" class="bir-form-text">{{ data[0].atc }}</div>
+<div style="left: 3.05in; top: 5.52in;" class="bir-form-text">
+	<div style="width: 0.95in;" class="bir-form-amount">{{ "{:,.2f}".format(9999999999) }}</div>
+</div>
+<div style="left: 3.05in; top: 5.72in;" class="bir-form-text">
+	<div style="width: 0.95in;" class="bir-form-amount">{{ "{:,.2f}".format(123125) }}</div>
+</div>
+<div style="left: 0.53in; top: 5.47in;" class="bir-form-text">{{ data[0].document_no }}</div>
+<div style="left: 0.53in; top: 5.47in;" class="bir-form-text">{{ data[0].document_no }}</div>
+<div style="left: 0.53in; top: 5.47in;" class="bir-form-text">{{ data[0].document_no }}</div>
+<div style="left: 0.53in; top: 5.47in;" class="bir-form-text">{{ data[0].document_no }}</div>
+{% endif %}
 
 data
 {{ data }}
 
-zzzzzzzzzzzzzz
 <div>
     <img src="/assets/phbir/img/forms/2307-1.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;">
 </div>
