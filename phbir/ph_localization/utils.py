@@ -50,6 +50,7 @@ def get_company_information(company):
     permit_date_issued = frappe.db.get_single_value('PH Localization Setup', 'permit_date_issued')
 
     result = {
+        'company_name': company_doc.name,
         'address': company_address if company_address else '',
         'tin': preformat_tin(company_doc.tax_id if company_doc.tax_id else ''),
         'zipcode': zipcode,
@@ -80,6 +81,7 @@ def get_supplier_information(supplier):
         supplier_address = get_custom_formatted_address(supplier_address)
 
     result = {
+        'supplier_name': supplier_doc.supplier_name,
         'address': supplier_address if supplier_address else '',
         'tin': preformat_tin(supplier_doc.tax_id if supplier_doc.tax_id else ''),
         'zipcode': zipcode
