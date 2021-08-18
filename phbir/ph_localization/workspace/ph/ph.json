@@ -125,9 +125,18 @@
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "BIR 2550M",
+   "link_to": "BIR 2550M",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2021-08-18 23:36:36.543892",
+ "modified": "2021-08-19 01:30:18.462872",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "PH",
