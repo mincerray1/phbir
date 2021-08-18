@@ -94,3 +94,162 @@ def preformat_tin(tin):
     result = "{0}000000000000".format(tin)
     # tin is 12 digits
     return result[:12]
+
+@frappe.whitelist()
+def get_years():
+    result = []
+    q = frappe.db.sql("""
+        SELECT 
+            year(min(year_start_date)) as min_year, 
+            year(max(year_end_date)) as max_year 
+        FROM 
+            `tabFiscal Year`;
+        """, (), as_dict=1)
+
+    if q[0]:
+        start = q[0].min_year
+        end = q[0].max_year + 1
+
+        for x in range(start, end):
+            result.append(x)
+    
+    return result
+
+#### migrate methods, move out as needed
+@frappe.whitelist()
+def generate_tax_templates():
+    n = 0
+
+    sales_tax_templates = {
+        'VAT Sales':'',
+        'Sales to Government':'',
+        'Zero Rated Sales':'',
+        'Exempt Sales':''
+    }
+
+    item_sales_tax_templates = {
+        'VAT Sales':'',
+        'Sales to Government':'',
+        'Zero Rated Sales':'',
+        'Exempt Sales':''
+    }
+
+    purchase_tax_templates = {
+        'Capital Goods':'',
+        'Capital Goods Exceeding 1M':'',
+        'Domestic Purchases of Goods':'',
+        'Importation of Goods':'',
+        'Domestic Purchase of Services':'',
+        'Services Rendered by Non-residents':'',
+        'Purchases Not Qualified for Input Tax':'',
+        'Others':'',
+        'Allocable to Exempt Sales':''
+    }
+
+    item_purchase_tax_templates = {
+        'Capital Goods':'',
+        'Capital Goods Exceeding 1M':'',
+        'Domestic Purchases of Goods':'',
+        'Importation of Goods':'',
+        'Domestic Purchase of Services':'',
+        'Services Rendered by Non-residents':'',
+        'Purchases Not Qualified for Input Tax':'',
+        'Others':'',
+        'Allocable to Exempt Sales':''
+    }
+
+    company = frappe.db.get_default("Company")
+
+    for t in sales_tax_templates:
+        if not frappe.db.exists('Sales Taxes and Charges Template', {'company': company, 'title': t}):
+            stac = frappe.get_doc({
+                'doctype': 'Sales Taxes and Charges Template',
+                'title': t,
+                'company': company
+            })
+            stac.insert()
+            sales_tax_templates[t] = stac.name
+            n += 1
+        else:
+            sales_tax_templates[t] = frappe.get_value('Sales Taxes and Charges Template', {'company': company, 'title': t}, 'name')
+
+    for t in item_sales_tax_templates:
+        if not frappe.db.exists('Item Tax Template', {'company': company, 'title': t}):
+            itt = frappe.get_doc({
+                'doctype': 'Item Tax Template',
+                'title': t,
+                'company': company
+            })
+
+            itt.flags.ignore_mandatory = True
+            itt.insert()
+            item_sales_tax_templates[t] = itt.name
+            n += 1
+        else:
+            item_sales_tax_templates[t] = frappe.get_value('Item Tax Template', {'company': company, 'title': t}, 'name')
+
+    for t in purchase_tax_templates:
+        if not frappe.db.exists('Purchase Taxes and Charges Template', {'company': company, 'title': t}):
+            ptac = frappe.get_doc({
+                'doctype': 'Purchase Taxes and Charges Template',
+                'title': t,
+                'company': company
+            })
+            ptac.insert()
+            purchase_tax_templates[t] = ptac.name
+            n += 1
+        else:
+            purchase_tax_templates[t] = frappe.get_value('Purchase Taxes and Charges Template', {'company': company, 'title': t}, 'name')
+
+    for t in item_purchase_tax_templates:
+        if not frappe.db.exists('Item Tax Template', {'company': company, 'title': t}):
+            itt = frappe.get_doc({
+                'doctype': 'Item Tax Template',
+                'title': t,
+                'company': company
+            })
+
+            itt.flags.ignore_mandatory = True
+            itt.insert()
+            item_purchase_tax_templates[t] = itt.name
+            n += 1
+        else:
+            item_purchase_tax_templates[t] = frappe.get_value('Item Tax Template', {'company': company, 'title': t}, 'name')
+    
+    tax_declaration_setup = frappe.get_doc('Tax Declaration Setup', 'Tax Declaration Setup')
+    
+    tax_declaration_setup.vat_sales = sales_tax_templates['VAT Sales']
+    tax_declaration_setup.sales_to_government = tax_declaration_setup.sales_to_government or sales_tax_templates['Sales to Government']
+    tax_declaration_setup.zero_rated_sales = tax_declaration_setup.zero_rated_sales or sales_tax_templates['Zero Rated Sales']
+    tax_declaration_setup.exempt_sales = tax_declaration_setup.exempt_sales or sales_tax_templates['Exempt Sales']
+
+    tax_declaration_setup.item_vat_sales = tax_declaration_setup.item_vat_sales or item_sales_tax_templates['VAT Sales']
+    tax_declaration_setup.item_sales_to_government = tax_declaration_setup.item_sales_to_government or item_sales_tax_templates['Sales to Government']
+    tax_declaration_setup.item_zero_rated_sales = tax_declaration_setup.item_zero_rated_sales or item_sales_tax_templates['Zero Rated Sales']
+    tax_declaration_setup.item_exempt_sales = tax_declaration_setup.item_exempt_sales or item_sales_tax_templates['Exempt Sales']
+
+    tax_declaration_setup.capital_goods = tax_declaration_setup.capital_goods or purchase_tax_templates['Capital Goods']
+    tax_declaration_setup.capital_goods_exceeding_1m = tax_declaration_setup.capital_goods_exceeding_1m or purchase_tax_templates['Capital Goods Exceeding 1M']
+    tax_declaration_setup.domestic_purchases_of_goods = tax_declaration_setup.domestic_purchases_of_goods or purchase_tax_templates['Domestic Purchases of Goods']
+    tax_declaration_setup.importation_of_goods = tax_declaration_setup.importation_of_goods or purchase_tax_templates['Importation of Goods']
+    tax_declaration_setup.domestic_purchase_of_services = tax_declaration_setup.domestic_purchase_of_services or purchase_tax_templates['Domestic Purchase of Services']
+    tax_declaration_setup.services_rendered_by_non_residents = tax_declaration_setup.services_rendered_by_non_residents or purchase_tax_templates['Services Rendered by Non-residents']
+    tax_declaration_setup.purchases_not_qualified_for_input_tax = tax_declaration_setup.purchases_not_qualified_for_input_tax or purchase_tax_templates['Purchases Not Qualified for Input Tax']
+    tax_declaration_setup.others = tax_declaration_setup.others or purchase_tax_templates['Others']
+    tax_declaration_setup.allocable_to_exempt_sales = tax_declaration_setup.allocable_to_exempt_sales or purchase_tax_templates['Allocable to Exempt Sales']
+    
+    tax_declaration_setup.item_capital_goods = tax_declaration_setup.item_capital_goods or item_purchase_tax_templates['Capital Goods']
+    tax_declaration_setup.item_capital_goods_exceeding_1m = tax_declaration_setup.item_capital_goods_exceeding_1m or item_purchase_tax_templates['Capital Goods Exceeding 1M']
+    tax_declaration_setup.item_domestic_purchases_of_goods = tax_declaration_setup.item_domestic_purchases_of_goods or item_purchase_tax_templates['Domestic Purchases of Goods']
+    tax_declaration_setup.item_importation_of_goods = tax_declaration_setup.item_importation_of_goods or item_purchase_tax_templates['Importation of Goods']
+    tax_declaration_setup.item_domestic_purchase_of_services = tax_declaration_setup.item_domestic_purchase_of_services or item_purchase_tax_templates['Domestic Purchase of Services']
+    tax_declaration_setup.item_services_rendered_by_non_residents = tax_declaration_setup.item_services_rendered_by_non_residents or item_purchase_tax_templates['Services Rendered by Non-residents']
+    tax_declaration_setup.item_purchases_not_qualified_for_input_tax = tax_declaration_setup.item_purchases_not_qualified_for_input_tax or item_purchase_tax_templates['Purchases Not Qualified for Input Tax']
+    tax_declaration_setup.item_others = tax_declaration_setup.item_others or item_purchase_tax_templates['Others']
+    tax_declaration_setup.item_allocable_to_exempt_sales = tax_declaration_setup.item_allocable_to_exempt_sales or item_purchase_tax_templates['Allocable to Exempt Sales']
+
+    tax_declaration_setup.save()
+    
+    frappe.msgprint(_('Tax template(s) successfully created: <strong>{0}</strong>'.format(n)))
+
+    return n

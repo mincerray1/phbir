@@ -43,7 +43,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "ATC Class",
-   "options": "Individual\nCorporate"
+   "options": "\nIndividual\nCorporate"
   },
   {
    "fieldname": "tax_type_code",
@@ -55,7 +55,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-08-17 11:00:53.438614",
+ "modified": "2021-08-18 22:55:06.076735",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "ATC",

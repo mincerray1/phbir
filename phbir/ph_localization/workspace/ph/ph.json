@@ -34,6 +34,15 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "Tax Declaration Setup",
+   "link_to": "Tax Declaration Setup",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "Books of Accounts",
    "link_type": "DocType",
    "onboard": 0,
@@ -118,7 +127,7 @@
    "type": "Link"
   }
  ],
- "modified": "2021-08-18 11:46:03.119690",
+ "modified": "2021-08-18 23:36:36.543892",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "PH",
