@@ -91,6 +91,6 @@ def get_supplier_information(supplier):
 
 @frappe.whitelist()
 def preformat_tin(tin):
-    result = "{0}00000000000000".format(tin)
-    # tin is 14 digits
-    return result[:14]
+    result = "{0}000000000000".format(tin)
+    # tin is 12 digits
+    return result[:12]
