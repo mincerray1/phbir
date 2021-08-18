@@ -144,11 +144,16 @@ app_license = "MIT"
 # auto_cancel_exempted_doctypes = ["Auto Repeat"]
 
 fixtures = [
-    {"dt": "Letter Head", "filters": [
-        [
-            "name", "in", [
-                "BOA Letterhead"
+    {
+        "dt": "Letter Head", "filters": [
+            [
+                "name", "in", [
+                    "BOA Letterhead"
+                ]
             ]
         ]
-    ]}
+    },
+    {
+        "dt": "ATC"
+    }
 ]

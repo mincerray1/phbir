@@ -26,10 +26,29 @@
 .bir-form-data {
     font-size: 0.70em;
 }
+table.table-income-payments {
+    left: 0.28in; 
+    top: 5.44in; 
+    width: 8in;
+}
+table.table-income-payments tr td {
+    height: 18px;
+    text-align: right;
+}
+
+table.table-money-payments {
+    left: 0.28in; 
+    top: 7.98in; 
+    width: 8in;
+}
+table.table-money-payments tr td {
+    height: 18px;
+    text-align: right;
+}
 </style>
-<div style="left: 2.14in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">12</div>
-<div style="left: 2.53in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">27</div>
-<div style="left: 2.89in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">1989</div>
+<div style="left: 2.14in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">{{ from_date.strftime('%m') }}</div>
+<div style="left: 2.53in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">{{ from_date.strftime('%d') }}</div>
+<div style="left: 2.89in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">{{ from_date.strftime('%Y') }}</div>
 
 
 <div style="left: 2.93in; top: 2.08in; letter-spacing: 0.1in;" class="bir-form-text">{{ payee.tin[:3] }}</div>
@@ -42,9 +61,9 @@
 <div style="left: 0.53in; top: 2.92in;" class="bir-form-text">{{ payee.address }}</div>
 <div style="left: 7.58in; top: 2.92in; letter-spacing: 0.1in;" class="bir-form-text">{{ payee.zipcode[:4] }}</div>
 
-<div style="left: 5.59in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">12</div>
-<div style="left: 5.98in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">27</div>
-<div style="left: 6.34in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">1989</div>
+<div style="left: 5.59in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">{{ to_date.strftime('%m') }}</div>
+<div style="left: 5.98in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">{{ to_date.strftime('%d') }}</div>
+<div style="left: 6.34in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">{{ to_date.strftime('%Y') }}</div>
 
 <div style="left: 2.93in; top: 3.80in; letter-spacing: 0.1in;" class="bir-form-text">{{ payor.tin[:3] }}</div>
 <div style="left: 3.63in; top: 3.80in; letter-spacing: 0.1in;" class="bir-form-text">{{ payor.tin[3:6] }}</div>
@@ -57,72 +76,64 @@
 <div style="left: 7.58in; top: 4.64in; letter-spacing: 0.1in;" class="bir-form-text">{{ payor.zipcode[:4] }}</div>
 
 <div class="bir-form-data">
-    {% set top = 5.52 %}
-    <table style="left: 0.53in; top: 5.50in; border: 1px solid red;" width="200px" class="bir-form-text">
+    <table class="bir-form-text table-income-payments">
         <tbody>
-            <tr height="28px">
-                <td width="120px">test</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr height="28px">
-                <td width="120px">test2</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-            <tr height="28px">
-                <td width="120px">test3</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
+            {% for entry in data_ip %}
+                <tr>
+                    <td width="27%" style="text-align: center;">{{ entry.document_no }}</td>
+                    <td width="7%" style="text-align: center;">{{ entry.atc }}</td>
+                    <td width="12%" style="text-align: right;">{{ "{:,.2f}".format(entry.month_1) }}</td>
+                    <td width="13%" style="text-align: right;">{{ "{:,.2f}".format(entry.month_2) }}</td>
+                    <td width="12.5%" style="text-align: right;">{{ "{:,.2f}".format(entry.month_3) }}</td>
+                    <td width="12.5%" style="text-align: right;">{{ "{:,.2f}".format(entry.total) }}</td>
+                    <td width="15%" style="text-align: right;">{{ "{:,.2f}".format(entry.tax_withheld_for_the_quarter) }}</td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
-    {% for entry in data %}
-        {% if entry.payment_type == 'Income Payment' %}
-            <div style="left: 0.53in; top: {{ top }}in;" class="bir-form-text">{{ entry.document_no }} - {{ top }}</div>
-            <div style="left: 2.53in; top: {{ top }}in;" class="bir-form-text">{{ entry.atc }}</div>
-            <div style="left: 3.05in; top: {{ top }}in;" class="bir-form-text">
-                <div style="width: 0.95in;" class="bir-form-amount">{{ "{:,.2f}".format(entry.month_1) }}</div>
-            </div>
-            <div style="left: 3.05in; top: 5.72in;" class="bir-form-text">
-                <div style="width: 0.95in;" class="bir-form-amount">{{ "{:,.2f}".format(123125) }}</div>
-            </div>
-            <div style="left: 4.08in; top: {{ top }}in;" class="bir-form-text">
-                <div style="width: 0.95in;" class="bir-form-amount">{{ "{:,.2f}".format(entry.month_2) }}</div>
-            </div>
-            <div style="left: 5.10in; top: {{ top }}in;" class="bir-form-text">
-                <div style="width: 0.95in;" class="bir-form-amount">{{ "{:,.2f}".format(entry.month_3) }}</div>
-            </div>
-            <div style="left: 6.11in; top: {{ top }}in;" class="bir-form-text">
-                <div style="width: 0.95in;" class="bir-form-amount">{{ "{:,.2f}".format(entry.total) }}</div>
-            </div>
-            <div style="left: 7.10in; top: {{ top }}in;" class="bir-form-text">
-                <div style="width: 1.12in;" class="bir-form-amount">{{ "{:,.2f}".format(entry.tax_withheld_for_the_quarter) }}</div>
-            </div>
-            <div style="left: 0.53in; top: {{ top }}in;" class="bir-form-text">{{ entry.document_no }}</div>
-            <div style="left: 0.53in; top: {{ top }}in;" class="bir-form-text">{{ entry.document_no }}</div>
-            <!-- <div style="left: 0.53in; top: {{ top }}in;" class="bir-form-text">{{ entry.document_no }}</div> -->
-            <div style="left: 5.53in; top: {{ top }}in;" class="bir-form-text">{{ top }}</div>
-            {% set top = top + 0.3 %}
-            {{ top }}
-        {% endif %}
-    {% endfor %}
+    <table class="bir-form-text table-income-payments" style="top: 7.50in; ">
+        <tfoot>
+            <tr>
+                <td width="27%" style="text-align: center;"></td>
+                <td width="7%" style="text-align: center;"></td>
+                <td width="12%" style="text-align: right;">{{ "{:,.2f}".format(ip_month_1_total) }}</td>
+                <td width="13%" style="text-align: right;">{{ "{:,.2f}".format(ip_month_2_total) }}</td>
+                <td width="12.5%" style="text-align: right;">{{ "{:,.2f}".format(ip_month_3_total) }}</td>
+                <td width="12.5%" style="text-align: right;">{{ "{:,.2f}".format(ip_grand_total) }}</td>
+                <td width="15%" style="text-align: right;">{{ "{:,.2f}".format(ip_tax_withheld_for_the_quarter_total) }}</td>
+            </tr>
+        </tfoot>
+    </table>
+    
+    <table class="bir-form-text table-money-payments">
+        <tbody>
+            {% for entry in data_mp %}
+                <tr>
+                    <td width="27%" style="text-align: center;">{{ entry.document_no }}</td>
+                    <td width="7%" style="text-align: center;">{{ entry.atc }}</td>
+                    <td width="12%" style="text-align: right;">{{ "{:,.2f}".format(entry.month_1) }}</td>
+                    <td width="13%" style="text-align: right;">{{ "{:,.2f}".format(entry.month_2) }}</td>
+                    <td width="12.5%" style="text-align: right;">{{ "{:,.2f}".format(entry.month_3) }}</td>
+                    <td width="12.5%" style="text-align: right;">{{ "{:,.2f}".format(entry.total) }}</td>
+                    <td width="15%" style="text-align: right;">{{ "{:,.2f}".format(entry.tax_withheld_for_the_quarter) }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <table class="bir-form-text table-income-payments" style="top: 10.04in; ">
+        <tfoot>
+            <tr>
+                <td width="27%" style="text-align: center;"></td>
+                <td width="7%" style="text-align: center;"></td>
+                <td width="12%" style="text-align: right;">{{ "{:,.2f}".format(mp_month_1_total) }}</td>
+                <td width="13%" style="text-align: right;">{{ "{:,.2f}".format(mp_month_2_total) }}</td>
+                <td width="12.5%" style="text-align: right;">{{ "{:,.2f}".format(mp_month_3_total) }}</td>
+                <td width="12.5%" style="text-align: right;">{{ "{:,.2f}".format(mp_grand_total) }}</td>
+                <td width="15%" style="text-align: right;">{{ "{:,.2f}".format(mp_tax_withheld_for_the_quarter_total) }}</td>
+            </tr>
+        </tfoot>
+    </table>
 </div>
-data
-{{ data }}
-
 <div>
     <!-- <img src="/assets/phbir/img/forms/2307-1.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;"> -->
     <img src="https://erpnextsandbox.serviotech.com/assets/phbir/img/forms/2307-1.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;">

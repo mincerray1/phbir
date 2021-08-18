@@ -17,13 +17,21 @@ frappe.query_reports["BIR 2307"] = {
             label: __("Supplier"),
             fieldtype: "Link",
             options: "Supplier",
-            // reqd: 1
+            reqd: 1
         },
         {
             fieldname:"purchase_invoice",
             label: __("Purchase Invoice"),
             fieldtype: "Link",
             options: "Purchase Invoice",
+			get_query: () => {
+				var supplier = frappe.query_report.get_filter_value('supplier');
+				return {
+					filters: {
+						'supplier': supplier
+					}
+				}
+			},
             reqd: 0
         },
         {

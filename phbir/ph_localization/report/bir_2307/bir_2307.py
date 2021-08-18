@@ -7,19 +7,17 @@ from frappe import _
 
 def execute(filters=None):
     columns, data = [], []
-    data = get_data(filters, 0)
+    data = get_data(filters.company, filters.supplier, filters.purchase_invoice, filters.from_date, filters.to_date)
     columns = get_columns()
     return columns, data
 
 # works on net total only
 # TODO: custom tax base
-def get_data(filters, is_filters_dict=0):
-    
-    supplier = filters['supplier'] if is_filters_dict else filters.supplier
-    company = filters['company'] if is_filters_dict else filters.company
-    purchase_invoice = filters['purchase_invoice'] if is_filters_dict else filters.purchase_invoice
-    from_date = filters['from_date'] if is_filters_dict else filters.from_date
-    to_date = filters['to_date'] if is_filters_dict else filters.to_date
+def get_data(company, supplier, purchase_invoice, from_date, to_date):
+    pi_condition = ''
+
+    if purchase_invoice:
+        pi_condition += ' AND pi.name = %s' % frappe.db.escape(purchase_invoice)
 
     result = frappe.db.sql("""
     SELECT 
@@ -53,8 +51,8 @@ def get_data(filters, is_filters_dict=0):
         and pi.supplier = %s
         and pi.posting_date >= %s
         and pi.posting_date <= %s
-        and pi.company = %s
-    """, (supplier, getdate(from_date), getdate(to_date), company), as_dict=1)
+        and pi.company = %s {0}
+    """.format(pi_condition), (supplier, getdate(from_date), getdate(to_date), company), as_dict=1)
 
     return result
 
@@ -87,19 +85,19 @@ def get_columns():
         },
         {
             "fieldname": "month_2",
-            "label": _("Amount"),
+            "label": _("2nd Month"),
             "fieldtype": "Currency",
             "width": 150
         },
         {
             "fieldname": "month_3",
-            "label": _("Amount"),
+            "label": _("3rd Month"),
             "fieldtype": "Currency",
             "width": 150
         },
         {
             "fieldname": "total",
-            "label": _("Amount"),
+            "label": _("Total"),
             "fieldtype": "Currency",
             "width": 150
         },
