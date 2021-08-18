@@ -82,7 +82,7 @@ def bir_2307(company, supplier, purchase_invoice, from_date, to_date, response_t
 
     return_document(html, filename, options, response_type)
 
-def bir_2307(company, year, month, response_type="pdf"):
+def bir_2550m(company, year, month, response_type="pdf"):
     frappe.has_permission('BIR 2550M', throw=True)
 
     from phbir.ph_localization.report.bir_2307.bir_2307 import get_data as get_data_bir_2307
