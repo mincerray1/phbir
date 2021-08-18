@@ -99,9 +99,26 @@
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "BIR Forms",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "BIR 2307",
+   "link_to": "BIR 2307",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2021-08-15 21:02:08.710159",
+ "modified": "2021-08-18 11:46:03.119690",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "PH",
