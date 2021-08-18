@@ -10,7 +10,7 @@
  "idx": 0,
  "is_standard": "Yes",
  "letter_head": "BOA Letterhead",
- "modified": "2021-08-17 17:07:12.234227",
+ "modified": "2021-08-19 01:52:20.155959",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "BIR 2307",
@@ -31,6 +31,9 @@
   },
   {
    "role": "Auditor"
+  },
+  {
+   "role": "System Manager"
   }
  ]
 }
