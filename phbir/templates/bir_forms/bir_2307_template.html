@@ -22,6 +22,8 @@
 }
 .bir-form-amount {
     text-align: right;
+}
+.bir-form-data {
     font-size: 0.70em;
 }
 </style>
@@ -38,7 +40,7 @@
 
 <div style="left: 0.53in; top: 2.50in;" class="bir-form-text">{{ payee.supplier_name }}</div>
 <div style="left: 0.53in; top: 2.92in;" class="bir-form-text">{{ payee.address }}</div>
-<div style="left: 7.58in; top: 2.92in; letter-spacing: 0.1in;" class="bir-form-text">{{ payee.zipcode }}</div>
+<div style="left: 7.58in; top: 2.92in; letter-spacing: 0.1in;" class="bir-form-text">{{ payee.zipcode[:4] }}</div>
 
 <div style="left: 5.59in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">12</div>
 <div style="left: 5.98in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">27</div>
@@ -52,28 +54,78 @@
 
 <div style="left: 0.53in; top: 4.22in;" class="bir-form-text">{{ payor.company_name }}</div>
 <div style="left: 0.53in; top: 4.64in;" class="bir-form-text">{{ payor.address }}</div>
-<div style="left: 7.58in; top: 4.64in; letter-spacing: 0.1in;" class="bir-form-text">{{ payor.zipcode }}</div>
+<div style="left: 7.58in; top: 4.64in; letter-spacing: 0.1in;" class="bir-form-text">{{ payor.zipcode[:4] }}</div>
 
-{% if data|length >=1 %}
-<div style="left: 0.53in; top: 5.47in;" class="bir-form-text">{{ data[0].document_no }}</div>
-<div style="left: 2.53in; top: 5.47in;" class="bir-form-text">{{ data[0].atc }}</div>
-<div style="left: 3.05in; top: 5.52in;" class="bir-form-text">
-	<div style="width: 0.95in;" class="bir-form-amount">{{ "{:,.2f}".format(9999999999) }}</div>
+<div class="bir-form-data">
+    {% set top = 5.52 %}
+    <table style="left: 0.53in; top: 5.50in; border: 1px solid red;" width="200px" class="bir-form-text">
+        <tbody>
+            <tr height="28px">
+                <td width="120px">test</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr height="28px">
+                <td width="120px">test2</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr height="28px">
+                <td width="120px">test3</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    {% for entry in data %}
+        {% if entry.payment_type == 'Income Payment' %}
+            <div style="left: 0.53in; top: {{ top }}in;" class="bir-form-text">{{ entry.document_no }} - {{ top }}</div>
+            <div style="left: 2.53in; top: {{ top }}in;" class="bir-form-text">{{ entry.atc }}</div>
+            <div style="left: 3.05in; top: {{ top }}in;" class="bir-form-text">
+                <div style="width: 0.95in;" class="bir-form-amount">{{ "{:,.2f}".format(entry.month_1) }}</div>
+            </div>
+            <div style="left: 3.05in; top: 5.72in;" class="bir-form-text">
+                <div style="width: 0.95in;" class="bir-form-amount">{{ "{:,.2f}".format(123125) }}</div>
+            </div>
+            <div style="left: 4.08in; top: {{ top }}in;" class="bir-form-text">
+                <div style="width: 0.95in;" class="bir-form-amount">{{ "{:,.2f}".format(entry.month_2) }}</div>
+            </div>
+            <div style="left: 5.10in; top: {{ top }}in;" class="bir-form-text">
+                <div style="width: 0.95in;" class="bir-form-amount">{{ "{:,.2f}".format(entry.month_3) }}</div>
+            </div>
+            <div style="left: 6.11in; top: {{ top }}in;" class="bir-form-text">
+                <div style="width: 0.95in;" class="bir-form-amount">{{ "{:,.2f}".format(entry.total) }}</div>
+            </div>
+            <div style="left: 7.10in; top: {{ top }}in;" class="bir-form-text">
+                <div style="width: 1.12in;" class="bir-form-amount">{{ "{:,.2f}".format(entry.tax_withheld_for_the_quarter) }}</div>
+            </div>
+            <div style="left: 0.53in; top: {{ top }}in;" class="bir-form-text">{{ entry.document_no }}</div>
+            <div style="left: 0.53in; top: {{ top }}in;" class="bir-form-text">{{ entry.document_no }}</div>
+            <!-- <div style="left: 0.53in; top: {{ top }}in;" class="bir-form-text">{{ entry.document_no }}</div> -->
+            <div style="left: 5.53in; top: {{ top }}in;" class="bir-form-text">{{ top }}</div>
+            {% set top = top + 0.3 %}
+            {{ top }}
+        {% endif %}
+    {% endfor %}
 </div>
-<div style="left: 3.05in; top: 5.72in;" class="bir-form-text">
-	<div style="width: 0.95in;" class="bir-form-amount">{{ "{:,.2f}".format(123125) }}</div>
-</div>
-<div style="left: 0.53in; top: 5.47in;" class="bir-form-text">{{ data[0].document_no }}</div>
-<div style="left: 0.53in; top: 5.47in;" class="bir-form-text">{{ data[0].document_no }}</div>
-<div style="left: 0.53in; top: 5.47in;" class="bir-form-text">{{ data[0].document_no }}</div>
-<div style="left: 0.53in; top: 5.47in;" class="bir-form-text">{{ data[0].document_no }}</div>
-{% endif %}
-
 data
 {{ data }}
 
 <div>
-    <img src="/assets/phbir/img/forms/2307-1.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;">
+    <!-- <img src="/assets/phbir/img/forms/2307-1.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;"> -->
+    <img src="https://erpnextsandbox.serviotech.com/assets/phbir/img/forms/2307-1.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;">
 </div>
 
 <!-- <div style="page-break-before: always;">
