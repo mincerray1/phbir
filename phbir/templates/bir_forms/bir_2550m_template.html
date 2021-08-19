@@ -23,7 +23,7 @@
     .bir-form-amount {
         text-align: right;
         width: 1.65in;
-        border: solid red 1px;
+        /*border: solid red 1px;*/
     }
     .bir-form-data {
         font-size: 0.70em;
@@ -69,6 +69,7 @@
     
     
     <div style="left: 0.92in; top: 2.04in;" class="bir-form-text">{{ company.company_name }}</div>
+    <div style="left: 6.76in; top: 2.04in; letter-spacing: 0.06in;" class="bir-form-text">{{ company.phone }}</div>
     <div style="left: 0.92in; top: 2.39in;" class="bir-form-text">{{ company.address }}</div>
     <div style="left: 7.35in; top: 2.40in; letter-spacing: 0.08in;" class="bir-form-text">{{ company.zipcode[:4] }}</div>
     
@@ -145,22 +146,24 @@
         <div style="left: 6.31in; top: 6.22in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_available_input_tax) }}</div>
 
         <!-- 20C -->
-        <div style="left: 6.31in; top: 6.92in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.allocable_to_exempt_sales.total_base_tax_amount) }}</div>
+        <div style="left: 6.31in; top: 6.92in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(0) }}</div>
+        <!-- <div style="left: 6.31in; top: 6.92in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.directly_attributable_to_exempt_sales.total_base_tax_amount) }}</div> -->
 
         <!-- total deductions from input tax -->
-        {% set total_deductions_from_input_tax = 0 + totals.allocable_to_exempt_sales.total_base_tax_amount %}
+        {% set total_deductions_from_input_tax = 0 %}
+        <!-- {% set total_deductions_from_input_tax = 0 + totals.directly_attributable_to_exempt_sales.total_base_tax_amount %} -->
         <!-- 20F -->
         <div style="left: 6.31in; top: 7.34in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_deductions_from_input_tax) }}</div>
 
         <!-- total allowable input tax -->
         {% set total_allowable_input_tax = total_available_input_tax - total_deductions_from_input_tax %}
         <!-- 21 -->
-        <div style="left: 6.31in; top: 7.48in;" class="bir-form-text bir-form-amount">{{ "({:,.2f})".format(total_allowable_input_tax) }}</div>
+        <div style="left: 6.31in; top: 7.48in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_allowable_input_tax) }}</div>
 
         <!-- net vat payable -->
-        {% set net_vat_payable = total_available_input_tax - total_deductions_from_input_tax %}
+        {% set net_vat_payable = total_output_tax_due - total_allowable_input_tax %}
         <!-- 22 -->
-        <div style="left: 6.31in; top: 7.62in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(net_vat_payable) }}</div>
+        <div style="left: 6.31in; top: 7.62in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(net_vat_payable) if net_vat_payable >= 0 else "({:,.2f})".format(-net_vat_payable) }}</div>
         
         <!-- total tax credit payments -->
         {% set total_tax_credit_payments = 0 %}
@@ -170,7 +173,7 @@
         <!-- tax still payable -->
         {% set tax_still_payable = net_vat_payable - total_tax_credit_payments %}
         <!-- 24 -->
-        <div style="left: 6.31in; top: 8.88in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(tax_still_payable) if tax_still_payable >= 0 else "({:,.2f})".format(tax_still_payable) }}</div>
+        <div style="left: 6.31in; top: 8.88in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(tax_still_payable) if tax_still_payable >= 0 else "({:,.2f})".format(-tax_still_payable) }}</div>
 
         <!-- penalties -->
         {% set penalties = 0 %}
@@ -180,7 +183,7 @@
         <!-- total amount payable -->
         {% set total_amount_payable = tax_still_payable + penalties %}
         <!-- 26 -->
-        <div style="left: 6.31in; top: 9.30in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_amount_payable) if total_amount_payable >= 0 else "({:,.2f})".format(total_amount_payable) }}</div>
+        <div style="left: 6.31in; top: 9.32in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_amount_payable) if total_amount_payable >= 0 else "({:,.2f})".format(-total_amount_payable) }}</div>
 
     </div>
     <div>

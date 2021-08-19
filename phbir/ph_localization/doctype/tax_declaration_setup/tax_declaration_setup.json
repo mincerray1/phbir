@@ -24,7 +24,8 @@
   "services_rendered_by_non_residents",
   "purchases_not_qualified_for_input_tax",
   "others",
-  "allocable_to_exempt_sales",
+  "directly_attributable_to_exempt_sales",
+  "directly_attributable_to_sale_to_government",
   "column_break_7",
   "item_capital_goods",
   "item_capital_goods_exceeding_1m",
@@ -34,7 +35,8 @@
   "item_services_rendered_by_non_residents",
   "item_purchases_not_qualified_for_input_tax",
   "item_others",
-  "item_allocable_to_exempt_sales"
+  "item_directly_attributable_to_exempt_sales",
+  "item_directly_attributable_to_sale_to_government"
  ],
  "fields": [
   {
@@ -200,22 +202,34 @@
    "options": "Item Tax Template"
   },
   {
-   "fieldname": "allocable_to_exempt_sales",
+   "fieldname": "directly_attributable_to_sale_to_government",
    "fieldtype": "Link",
-   "label": "Allocable to Exempt Sales",
+   "label": "Directly Attributable to Sale to Government",
    "options": "Purchase Taxes and Charges Template"
   },
   {
-   "fieldname": "item_allocable_to_exempt_sales",
+   "fieldname": "item_directly_attributable_to_sale_to_government",
    "fieldtype": "Link",
-   "label": "Item Allocable to Exempt Sales",
+   "label": "Item Directly Attributable to Sale to Government",
+   "options": "Item Tax Template"
+  },
+  {
+   "fieldname": "directly_attributable_to_exempt_sales",
+   "fieldtype": "Link",
+   "label": "Directly Attributable to Exempt Sales",
+   "options": "Purchase Taxes and Charges Template"
+  },
+  {
+   "fieldname": "item_directly_attributable_to_exempt_sales",
+   "fieldtype": "Link",
+   "label": "Item Directly Attributable to Exempt Sales",
    "options": "Item Tax Template"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-08-19 00:09:48.445644",
+ "modified": "2021-08-20 01:05:44.068092",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "Tax Declaration Setup",

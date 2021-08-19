@@ -160,7 +160,8 @@ def generate_tax_templates():
         'Services Rendered by Non-residents':'',
         'Purchases Not Qualified for Input Tax':'',
         'Others':'',
-        'Allocable to Exempt Sales':''
+        'Allocable to Exempt Sales':'',
+        'Directly Attributable to Sale to Government':''
     }
 
     item_purchase_tax_templates = {
@@ -172,7 +173,8 @@ def generate_tax_templates():
         'Services Rendered by Non-residents':'',
         'Purchases Not Qualified for Input Tax':'',
         'Others':'',
-        'Allocable to Exempt Sales':''
+        'Allocable to Exempt Sales':'',
+        'Directly Attributable to Sale to Government':''
     }
 
     company = frappe.db.get_default("Company")
@@ -253,7 +255,8 @@ def generate_tax_templates():
     tax_declaration_setup.services_rendered_by_non_residents = tax_declaration_setup.services_rendered_by_non_residents or purchase_tax_templates['Services Rendered by Non-residents']
     tax_declaration_setup.purchases_not_qualified_for_input_tax = tax_declaration_setup.purchases_not_qualified_for_input_tax or purchase_tax_templates['Purchases Not Qualified for Input Tax']
     tax_declaration_setup.others = tax_declaration_setup.others or purchase_tax_templates['Others']
-    tax_declaration_setup.allocable_to_exempt_sales = tax_declaration_setup.allocable_to_exempt_sales or purchase_tax_templates['Allocable to Exempt Sales']
+    tax_declaration_setup.directly_attributable_to_exempt_sales = tax_declaration_setup.directly_attributable_to_exempt_sales or purchase_tax_templates['Directly Attributable to Exempt Sales']
+    tax_declaration_setup.directly_attributable_to_sale_to_government = tax_declaration_setup.directly_attributable_to_sale_to_government or purchase_tax_templates['Directly Attributable to Sale to Government']
     
     tax_declaration_setup.item_capital_goods = tax_declaration_setup.item_capital_goods or item_purchase_tax_templates['Capital Goods']
     tax_declaration_setup.item_capital_goods_exceeding_1m = tax_declaration_setup.item_capital_goods_exceeding_1m or item_purchase_tax_templates['Capital Goods Exceeding 1M']
@@ -263,7 +266,8 @@ def generate_tax_templates():
     tax_declaration_setup.item_services_rendered_by_non_residents = tax_declaration_setup.item_services_rendered_by_non_residents or item_purchase_tax_templates['Services Rendered by Non-residents']
     tax_declaration_setup.item_purchases_not_qualified_for_input_tax = tax_declaration_setup.item_purchases_not_qualified_for_input_tax or item_purchase_tax_templates['Purchases Not Qualified for Input Tax']
     tax_declaration_setup.item_others = tax_declaration_setup.item_others or item_purchase_tax_templates['Others']
-    tax_declaration_setup.item_allocable_to_exempt_sales = tax_declaration_setup.item_allocable_to_exempt_sales or item_purchase_tax_templates['Allocable to Exempt Sales']
+    tax_declaration_setup.item_directly_attributable_to_exempt_sales = tax_declaration_setup.item_directly_attributable_to_exempt_sales or item_purchase_tax_templates['Directly Attributable to Exempt Sales']
+    tax_declaration_setup.item_directly_attributable_to_sale_to_government = tax_declaration_setup.item_directly_attributable_to_sale_to_government or item_purchase_tax_templates['Directly Attributable to Sale to Government']
 
     tax_declaration_setup.save()
     
