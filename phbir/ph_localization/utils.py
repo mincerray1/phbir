@@ -88,7 +88,7 @@ def get_supplier_information(supplier):
         zipcode = frappe.db.get_value('Address', supplier_address_dynamic_link_doc.parent, 'pincode')
         zipcode = zipcode if zipcode else ''
 
-        phone = frappe.db.get_value('Address', company_address_dynamic_link_doc.parent, 'phone')
+        phone = frappe.db.get_value('Address', supplier_address_dynamic_link_doc.parent, 'phone')
         phone = phone if phone else ''
         
         supplier_address = supplier_address_dynamic_link_doc.parent if supplier_address_dynamic_link_doc.parent else ''
