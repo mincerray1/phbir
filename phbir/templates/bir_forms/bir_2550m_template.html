@@ -22,6 +22,8 @@
     }
     .bir-form-amount {
         text-align: right;
+        width: 1.65in;
+        border: solid red 1px;
     }
     .bir-form-data {
         font-size: 0.70em;
@@ -64,7 +66,28 @@
     <div style="left: 7.35in; top: 2.40in; letter-spacing: 0.08in;" class="bir-form-text">{{ company.zipcode[:4] }}</div>
     
     <div class="bir-form-data">
-        
+        totals: 
+        {{ totals }}
+
+        <!-- 12A/B -->
+        <div style="left: 4.35in; top: 3.14in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.vat_sales.total_base_tax_base) }}</div>
+        <div style="left: 6.31in; top: 3.14in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.vat_sales.total_base_tax_amount) }}</div>
+
+        <!-- 13A/B -->
+        <div style="left: 4.35in; top: 3.28in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.sales_to_government.total_base_tax_base) }}</div>
+        <div style="left: 6.31in; top: 3.28in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.sales_to_government.total_base_tax_amount) }}</div>
+
+        <!-- 14 -->
+        <div style="left: 4.35in; top: 3.42in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.zero_rated_sales.total_base_tax_base) }}</div>
+
+        <!-- 15 -->
+        <div style="left: 4.35in; top: 3.56in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.exempt_sales.total_base_tax_base) }}</div>
+
+        {% set total_sales_receipts = totals.vat_sales.total_base_tax_base + totals.sales_to_government.total_base_tax_base + totals.zero_rated_sales.total_base_tax_base + totals.exempt_sales.total_base_tax_base %}
+        {% set total_output_tax_due = totals.vat_sales.total_base_tax_amount +totals.sales_to_government.total_base_tax_amount %}
+        <!-- 16 -->
+        <div style="left: 4.35in; top: 3.70in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_sales_receipts) }}</div>
+        <div style="left: 6.31in; top: 3.70in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_output_tax_due) }}</div>
     </div>
     <div>
         <!-- <img src="/assets/phbir/img/forms/bir2550m-1.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;">
