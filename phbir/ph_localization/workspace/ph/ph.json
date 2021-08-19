@@ -43,6 +43,15 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "VAT Industry",
+   "link_to": "VAT Industry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "Books of Accounts",
    "link_type": "DocType",
    "onboard": 0,
@@ -136,7 +145,7 @@
    "type": "Link"
   }
  ],
- "modified": "2021-08-19 01:30:18.462872",
+ "modified": "2021-08-19 19:10:56.786992",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "PH",

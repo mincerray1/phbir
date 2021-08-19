@@ -6,7 +6,9 @@
  "engine": "InnoDB",
  "field_order": [
   "permit_no",
-  "permit_date_issued"
+  "permit_date_issued",
+  "rdo_code",
+  "vat_industry"
  ],
  "fields": [
   {
@@ -18,12 +20,24 @@
    "fieldname": "permit_date_issued",
    "fieldtype": "Date",
    "label": "Permit Date Issued"
+  },
+  {
+   "fieldname": "vat_industry",
+   "fieldtype": "Link",
+   "label": "VAT Industry",
+   "options": "VAT Industry"
+  },
+  {
+   "fieldname": "rdo_code",
+   "fieldtype": "Data",
+   "label": "RDO Code",
+   "length": 3
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-08-16 00:25:47.488041",
+ "modified": "2021-08-19 19:13:17.144640",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "PH Localization Setup",

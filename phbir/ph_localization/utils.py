@@ -30,8 +30,10 @@ def get_custom_formatted_address(address):
 @frappe.whitelist()
 def get_company_information(company):
     company_doc = frappe.get_doc('Company', company)
+
     company_address = ''
     zipcode = ''
+    phone = ''
     company_address_dynamic_link_doc = None
 
     if frappe.db.exists("Dynamic Link", {'link_doctype': 'Company', 'link_name': company, 'parenttype': 'Address'}):
@@ -41,6 +43,10 @@ def get_company_information(company):
     if company_address_dynamic_link_doc:
         zipcode = frappe.db.get_value('Address', company_address_dynamic_link_doc.parent, 'pincode')
         zipcode = zipcode if zipcode else ''
+
+        phone = frappe.db.get_value('Address', company_address_dynamic_link_doc.parent, 'phone')
+        phone = phone if phone else ''
+
         company_address = company_address_dynamic_link_doc.parent if company_address_dynamic_link_doc.parent else ''
     
     if company_address:
@@ -48,6 +54,8 @@ def get_company_information(company):
     
     permit_no = frappe.db.get_single_value('PH Localization Setup', 'permit_no')
     permit_date_issued = frappe.db.get_single_value('PH Localization Setup', 'permit_date_issued')
+    rdo_code = frappe.db.get_single_value('PH Localization Setup', 'rdo_code')
+    vat_industry = frappe.db.get_single_value('PH Localization Setup', 'vat_industry')
 
     result = {
         'company_name': company_doc.name,
@@ -56,7 +64,10 @@ def get_company_information(company):
         'zipcode': zipcode,
         'erpnext_version': __version__,
         'permit_no': permit_no if permit_no else '',
-        'permit_date_issued': permit_date_issued if permit_date_issued else ''
+        'permit_date_issued': permit_date_issued if permit_date_issued else '',
+        'rdo_code': rdo_code if rdo_code else '',
+        'vat_industry': vat_industry if vat_industry else '',
+        'phone': phone if phone else ''
     }
 
     return result
@@ -66,6 +77,7 @@ def get_supplier_information(supplier):
     supplier_doc = frappe.get_doc('Supplier', supplier)
     supplier_address = ''
     zipcode = ''
+    phone = ''
     supplier_address_dynamic_link_doc = None
 
     if frappe.db.exists("Dynamic Link", {'link_doctype': 'Supplier', 'link_name': supplier, 'parenttype': 'Address'}):
@@ -75,6 +87,10 @@ def get_supplier_information(supplier):
     if supplier_address_dynamic_link_doc:
         zipcode = frappe.db.get_value('Address', supplier_address_dynamic_link_doc.parent, 'pincode')
         zipcode = zipcode if zipcode else ''
+
+        phone = frappe.db.get_value('Address', company_address_dynamic_link_doc.parent, 'phone')
+        phone = phone if phone else ''
+        
         supplier_address = supplier_address_dynamic_link_doc.parent if supplier_address_dynamic_link_doc.parent else ''
     
     if supplier_address:
@@ -84,7 +100,8 @@ def get_supplier_information(supplier):
         'supplier_name': supplier_doc.supplier_name,
         'address': supplier_address if supplier_address else '',
         'tin': preformat_tin(supplier_doc.tax_id if supplier_doc.tax_id else ''),
-        'zipcode': zipcode
+        'zipcode': zipcode,
+        'phone': phone if phone else ''
     }
 
     return result

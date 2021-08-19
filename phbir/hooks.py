@@ -168,5 +168,8 @@ fixtures = [
     },
     {
         "dt": "ATC"
+    },
+    {
+        "dt": "VAT Industry"
     }
 ]
