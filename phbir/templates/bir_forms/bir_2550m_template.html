@@ -59,6 +59,13 @@
     <div style="left: 1.48in; top: 1.68in; letter-spacing: 0.07in;" class="bir-form-text">{{ company.tin[3:6] }}</div>
     <div style="left: 2.01in; top: 1.68in; letter-spacing: 0.07in;" class="bir-form-text">{{ company.tin[6:9] }}</div>
     <div style="left: 2.55in; top: 1.68in; letter-spacing: 0.07in; z-index: 2;" class="bir-form-text">{{ company.tin[9:12] }}</div>
+
+    
+    <div style="left: 3.88in; top: 1.68in; letter-spacing: 0.14in;" class="bir-form-text">{{ company.rdo_code[:3] }}</div>
+
+    <div style="left: 5.88in; top: 1.66in; font-size: 0.5em; text-align: center; height: 0.20in; width: 2.10in;" class="bir-form-text">
+        <div style="vertical-align: middle;">{{ company.vat_industry }}</div>
+    </div>
     
     
     <div style="left: 0.92in; top: 2.04in;" class="bir-form-text">{{ company.company_name }}</div>
@@ -88,8 +95,8 @@
         <div style="left: 4.35in; top: 3.70in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_sales_receipts) }}</div>
         <div style="left: 6.31in; top: 3.70in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_output_tax_due) }}</div>
 
-        <!-- less allowable input tax -->
-        {% set total_allowable_input_tax = 0 %}
+        <!-- less other allowable input tax -->
+        {% set total_other_allowable_input_tax = 0 %}
 
         <!-- purchases -->
         <!-- 18A/B -->
@@ -131,7 +138,7 @@
         <div style="left: 4.35in; top: 6.08in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_current_purchases) }}</div>
 
         <!-- total available input tax -->
-        {% set total_available_input_tax = total_allowable_input_tax + totals.capital_goods.total_base_tax_amount + totals.capital_goods_exceeding_1m.total_base_tax_amount 
+        {% set total_available_input_tax = total_other_allowable_input_tax + totals.capital_goods.total_base_tax_amount + totals.capital_goods_exceeding_1m.total_base_tax_amount 
             + totals.domestic_purchases_of_goods.total_base_tax_amount + totals.importation_of_goods.total_base_tax_amount + totals.domestic_purchase_of_services.total_base_tax_amount 
             + totals.services_rendered_by_non_residents.total_base_tax_amount + totals.others.total_base_tax_amount %}
         <!-- 19 -->
@@ -139,6 +146,41 @@
 
         <!-- 20C -->
         <div style="left: 6.31in; top: 6.92in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.allocable_to_exempt_sales.total_base_tax_amount) }}</div>
+
+        <!-- total deductions from input tax -->
+        {% set total_deductions_from_input_tax = 0 + totals.allocable_to_exempt_sales.total_base_tax_amount %}
+        <!-- 20F -->
+        <div style="left: 6.31in; top: 7.34in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_deductions_from_input_tax) }}</div>
+
+        <!-- total allowable input tax -->
+        {% set total_allowable_input_tax = total_available_input_tax - total_deductions_from_input_tax %}
+        <!-- 21 -->
+        <div style="left: 6.31in; top: 7.48in;" class="bir-form-text bir-form-amount">{{ "({:,.2f})".format(total_allowable_input_tax) }}</div>
+
+        <!-- net vat payable -->
+        {% set net_vat_payable = total_available_input_tax - total_deductions_from_input_tax %}
+        <!-- 22 -->
+        <div style="left: 6.31in; top: 7.62in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(net_vat_payable) }}</div>
+        
+        <!-- total tax credit payments -->
+        {% set total_tax_credit_payments = 0 %}
+        <!-- 23G -->
+        <div style="left: 6.31in; top: 8.74in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_tax_credit_payments) }}</div>
+
+        <!-- tax still payable -->
+        {% set tax_still_payable = net_vat_payable - total_tax_credit_payments %}
+        <!-- 24 -->
+        <div style="left: 6.31in; top: 8.88in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(tax_still_payable) if tax_still_payable >= 0 else "({:,.2f})".format(tax_still_payable) }}</div>
+
+        <!-- penalties -->
+        {% set penalties = 0 %}
+        <!-- 25D -->
+        <div style="left: 6.31in; top: 9.14in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(penalties) }}</div>
+
+        <!-- total amount payable -->
+        {% set total_amount_payable = tax_still_payable + penalties %}
+        <!-- 26 -->
+        <div style="left: 6.31in; top: 9.30in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_amount_payable) if total_amount_payable >= 0 else "({:,.2f})".format(total_amount_payable) }}</div>
 
     </div>
     <div>
