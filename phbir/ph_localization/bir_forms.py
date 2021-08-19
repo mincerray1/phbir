@@ -86,6 +86,31 @@ def bir_2550m(company, year, month, response_type="pdf"):
     frappe.has_permission('BIR 2550M', throw=True)
     data = []
 
+    base_net_amounts = []
+
+    base_net_amounts = frappe.db.sql("""
+        SELECT 
+            pi.name, item_code, SUM(base_net_amount) AS net_amount 
+        FROM
+            `tabPurchase Invoice Item` pii
+        LEFT JOIN
+            `tabPurchase Invoice` pi
+        ON
+            pii.parent = pi.name
+        WHERE
+            pi.company = %s
+            AND YEAR(pi.posting_date) = %s
+            AND MONTH(pi.posting_date) = %s
+        GROUP BY pi.name, item_code;
+        """, (company, year, month), as_dict=1)
+
+    tax_amounts = frappe.db.sql("""
+        SELECT
+            pi.name
+        FROM
+            `
+        """, (), as_dict=1)
+
     context = {
         'company': get_company_information(company),
         'year': year,

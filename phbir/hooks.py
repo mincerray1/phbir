@@ -103,6 +103,15 @@ doctype_js = {
 #	}
 # }
 
+doc_events = {
+    "Sales Invoice": {
+        "validate": "phbir.ph_localization.doc_events.sales_invoice_validate",
+    },
+    "Purchase Invoice": {
+        "validate": "phbir.ph_localization.doc_events.purchase_invoice_validate",
+    },
+}
+
 # Scheduled Tasks
 # ---------------
 
