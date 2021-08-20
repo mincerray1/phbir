@@ -36,20 +36,8 @@ frappe.query_reports["BIR 2550M"] = {
                 };
             let u = new URLSearchParams(filter_values).toString();
             
-            var bir_form_url = frappe.urllib.get_full_url(
-                '/api/method/phbir.ph_localization.bir_forms.bir_2550m?' + u + '&response_type=pdf')
-            $.ajax({
-                url: bir_form_url,
-                type: 'GET',
-                success: function(result) {
-                    if(jQuery.isEmptyObject(result)){
-                        frappe.msgprint(__('No Records for these filters'));
-                    }
-                    else{
-                        let bir_form = window.open(bir_form_url);
-                    }
-                }
-            });
+            var bir_form_url = frappe.urllib.get_full_url('/api/method/phbir.ph_localization.bir_forms.bir_2550m?' + u + '&response_type=pdf');
+            let bir_form = window.open(bir_form_url);
 		});
 	}
 };
