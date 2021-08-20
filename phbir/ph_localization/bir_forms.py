@@ -380,11 +380,65 @@ def bir_1601_eq(company, year, quarter, response_type="pdf"):
     frappe.has_permission('BIR 1601-EQ', throw=True)
 
     tax_declaration_setup = frappe.get_doc('Tax Declaration Setup', 'Tax Declaration Setup')
+    year = int(year)
+    quarter = int(quarter)
+    total_remittances_made = 0
+    total_taxes_withheld = 0
+    tax_still_due = 0
+    total_penalties = 0
+    total_amount_still_due = 0
+
+    # TODO: custom base amount
+    data = frappe.db.sql("""
+        SELECT 
+            temp.atc,
+            temp.base_tax_base,
+            a.rate AS tax_rate,
+            temp.base_tax_withheld
+        FROM
+            (
+            SELECT 
+                ptac.atc AS atc,
+                SUM(pi.base_total) AS base_tax_base,
+                SUM(ABS(ptac.base_tax_amount)) AS base_tax_withheld
+            FROM 
+                `tabPurchase Invoice` pi
+            LEFT JOIN
+                `tabPurchase Taxes and Charges` ptac
+            ON
+                pi.name = ptac.parent
+            WHERE
+                pi.docstatus = 1
+                and pi.is_return = 0
+                and (ptac.base_tax_amount < 0 or ptac.add_deduct_tax = 'Deduct')
+                and pi.company = %s
+                and YEAR(pi.posting_date) = %s
+                and QUARTER(pi.posting_date) = %s
+            GROUP BY
+                ptac.atc
+            ) AS temp
+        INNER JOIN 
+            `tabATC` as a
+        ON
+            temp.atc = a.name
+        """, (company, year, quarter), as_dict=1)
+
+    for entry in data:
+        total_taxes_withheld += entry.base_tax_withheld
+    
+    tax_still_due = total_taxes_withheld - total_remittances_made
+    total_amount_still_due = tax_still_due + total_penalties
 
     context = {
         'company': get_company_information(company),
         'year': year,
-        'quarter': quarter
+        'quarter': quarter,
+        'data': data,
+        'total_taxes_withheld': total_taxes_withheld,
+        'total_remittances_made': total_remittances_made,
+        'tax_still_due': tax_still_due,
+        'total_penalties': total_penalties,
+        'total_amount_still_due': total_amount_still_due
     }
 
     filename = "BIR 1601-EQ {} {} {}".format(company, year, quarter)
