@@ -72,7 +72,7 @@ frappe.query_reports["BIR 2307"] = {
                 type: 'GET',
                 success: function(result) {
                     if(jQuery.isEmptyObject(result)){
-                        frappe.msgprint(__('No Records for these settings.'));
+                        frappe.msgprint(__('No Records for these filters'));
                     }
                     else{
                         let bir_form = window.open(bir_form_url);
