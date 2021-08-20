@@ -73,7 +73,7 @@ def bir_2307(company, supplier, purchase_invoice, from_date, to_date, response_t
         'mp_tax_withheld_for_the_quarter_total': mp_tax_withheld_for_the_quarter_total
     }
 
-    filename = "BIR 2307"
+    filename = "BIR 2307 {} {} {} {}".format(company, supplier, from_date, to_date)
     
     context["build_version"] = frappe.utils.get_build_version()
     html = frappe.render_template("templates/bir_forms/bir_2307_template.html", context)
@@ -271,12 +271,21 @@ def bir_2550m(company, year, month, response_type="pdf"):
                         totals['services_rendered_by_non_residents']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['services_rendered_by_non_residents']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
                         
-                    elif tax_declaration_setup.item_purchases_not_qualified_for_input_tax and item_tax_template == tax_declaration_setup.item_purchases_not_qualified_for_input_tax:
+                    # not qualified for input tax (zero rated and exempt)
+                    elif tax_declaration_setup.item_zero_rated_purchase and item_tax_template == tax_declaration_setup.item_zero_rated_purchase:
                         totals['purchases_not_qualified_for_input_tax']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['purchases_not_qualified_for_input_tax']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
-                    elif tax_declaration_setup.purchases_not_qualified_for_input_tax and taxes_and_charges == tax_declaration_setup.purchases_not_qualified_for_input_tax:
+                    elif tax_declaration_setup.zero_rated_purchase and taxes_and_charges == tax_declaration_setup.zero_rated_purchase:
                         totals['purchases_not_qualified_for_input_tax']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['purchases_not_qualified_for_input_tax']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
+                        
+                    elif tax_declaration_setup.item_exempt_purchase and item_tax_template == tax_declaration_setup.item_exempt_purchase:
+                        totals['purchases_not_qualified_for_input_tax']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
+                        totals['purchases_not_qualified_for_input_tax']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
+                    elif tax_declaration_setup.exempt_purchase and taxes_and_charges == tax_declaration_setup.exempt_purchase:
+                        totals['purchases_not_qualified_for_input_tax']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
+                        totals['purchases_not_qualified_for_input_tax']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
+                    # end - not qualified for input tax 
                         
                     elif tax_declaration_setup.item_others and item_tax_template == tax_declaration_setup.item_others:
                         totals['others']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
@@ -356,7 +365,7 @@ def bir_2550m(company, year, month, response_type="pdf"):
         'totals': totals
     }
 
-    filename = "BIR 2550M"
+    filename = "BIR 2550M {} {} {}".format(company, year, month)
     
     context["build_version"] = frappe.utils.get_build_version()
     html = frappe.render_template("templates/bir_forms/bir_2550m_template.html", context)

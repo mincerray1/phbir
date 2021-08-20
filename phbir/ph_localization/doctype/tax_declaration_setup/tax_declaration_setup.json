@@ -22,7 +22,6 @@
   "importation_of_goods",
   "domestic_purchase_of_services",
   "services_rendered_by_non_residents",
-  "purchases_not_qualified_for_input_tax",
   "others",
   "directly_attributable_to_exempt_sales",
   "directly_attributable_to_sale_to_government",
@@ -33,10 +32,15 @@
   "item_importation_of_goods",
   "item_domestic_purchase_of_services",
   "item_services_rendered_by_non_residents",
-  "item_purchases_not_qualified_for_input_tax",
   "item_others",
   "item_directly_attributable_to_exempt_sales",
-  "item_directly_attributable_to_sale_to_government"
+  "item_directly_attributable_to_sale_to_government",
+  "section_break_31",
+  "zero_rated_purchase",
+  "exempt_purchase",
+  "column_break_34",
+  "item_zero_rated_purchase",
+  "item_exempt_purchase"
  ],
  "fields": [
   {
@@ -88,6 +92,7 @@
    "options": "Sales Taxes and Charges Template"
   },
   {
+   "description": "Zero Rated Purchases Not Qualified for Input Tax",
    "fieldname": "zero_rated_sales",
    "fieldtype": "Link",
    "label": "Zero Rated Sales",
@@ -178,18 +183,6 @@
    "options": "Item Tax Template"
   },
   {
-   "fieldname": "purchases_not_qualified_for_input_tax",
-   "fieldtype": "Link",
-   "label": "Purchases Not Qualified for Input Tax",
-   "options": "Purchase Taxes and Charges Template"
-  },
-  {
-   "fieldname": "item_purchases_not_qualified_for_input_tax",
-   "fieldtype": "Link",
-   "label": "Item Purchases Not Qualified for Input Tax",
-   "options": "Item Tax Template"
-  },
-  {
    "fieldname": "others",
    "fieldtype": "Link",
    "label": "Others",
@@ -224,12 +217,45 @@
    "fieldtype": "Link",
    "label": "Item Directly Attributable to Exempt Sales",
    "options": "Item Tax Template"
+  },
+  {
+   "fieldname": "zero_rated_purchase",
+   "fieldtype": "Link",
+   "label": "Zero Rated Purchase",
+   "options": "Purchase Taxes and Charges Template"
+  },
+  {
+   "fieldname": "exempt_purchase",
+   "fieldtype": "Link",
+   "label": "Exempt Purchase",
+   "options": "Purchase Taxes and Charges Template"
+  },
+  {
+   "fieldname": "item_zero_rated_purchase",
+   "fieldtype": "Link",
+   "label": "Item Zero Rated Purchase",
+   "options": "Item Tax Template"
+  },
+  {
+   "fieldname": "item_exempt_purchase",
+   "fieldtype": "Link",
+   "label": "Item Exempt Purchase",
+   "options": "Item Tax Template"
+  },
+  {
+   "fieldname": "section_break_31",
+   "fieldtype": "Section Break",
+   "label": "Purchases Not Qualified for Input Tax"
+  },
+  {
+   "fieldname": "column_break_34",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-08-20 01:05:44.068092",
+ "modified": "2021-08-20 11:02:39.033397",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "Tax Declaration Setup",
