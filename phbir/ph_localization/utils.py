@@ -153,7 +153,6 @@ def generate_tax_templates():
 
     purchase_tax_templates = {
         'Capital Goods':'',
-        'Capital Goods Exceeding 1M':'',
         'Domestic Purchases of Goods':'',
         'Importation of Goods':'',
         'Domestic Purchase of Services':'',
@@ -167,7 +166,6 @@ def generate_tax_templates():
 
     item_purchase_tax_templates = {
         'Capital Goods':'',
-        'Capital Goods Exceeding 1M':'',
         'Domestic Purchases of Goods':'',
         'Importation of Goods':'',
         'Domestic Purchase of Services':'',
@@ -250,7 +248,6 @@ def generate_tax_templates():
     tax_declaration_setup.item_exempt_sales = tax_declaration_setup.item_exempt_sales or item_sales_tax_templates['Exempt Sales']
 
     tax_declaration_setup.capital_goods = tax_declaration_setup.capital_goods or purchase_tax_templates['Capital Goods']
-    tax_declaration_setup.capital_goods_exceeding_1m = tax_declaration_setup.capital_goods_exceeding_1m or purchase_tax_templates['Capital Goods Exceeding 1M']
     tax_declaration_setup.domestic_purchases_of_goods = tax_declaration_setup.domestic_purchases_of_goods or purchase_tax_templates['Domestic Purchases of Goods']
     tax_declaration_setup.importation_of_goods = tax_declaration_setup.importation_of_goods or purchase_tax_templates['Importation of Goods']
     tax_declaration_setup.domestic_purchase_of_services = tax_declaration_setup.domestic_purchase_of_services or purchase_tax_templates['Domestic Purchase of Services']
@@ -262,7 +259,6 @@ def generate_tax_templates():
     tax_declaration_setup.directly_attributable_to_sale_to_government = tax_declaration_setup.directly_attributable_to_sale_to_government or purchase_tax_templates['Directly Attributable to Sale to Government']
     
     tax_declaration_setup.item_capital_goods = tax_declaration_setup.item_capital_goods or item_purchase_tax_templates['Capital Goods']
-    tax_declaration_setup.item_capital_goods_exceeding_1m = tax_declaration_setup.item_capital_goods_exceeding_1m or item_purchase_tax_templates['Capital Goods Exceeding 1M']
     tax_declaration_setup.item_domestic_purchases_of_goods = tax_declaration_setup.item_domestic_purchases_of_goods or item_purchase_tax_templates['Domestic Purchases of Goods']
     tax_declaration_setup.item_importation_of_goods = tax_declaration_setup.item_importation_of_goods or item_purchase_tax_templates['Importation of Goods']
     tax_declaration_setup.item_domestic_purchase_of_services = tax_declaration_setup.item_domestic_purchase_of_services or item_purchase_tax_templates['Domestic Purchase of Services']
