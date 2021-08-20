@@ -92,7 +92,6 @@
    "options": "Sales Taxes and Charges Template"
   },
   {
-   "description": "Zero Rated Purchases Not Qualified for Input Tax",
    "fieldname": "zero_rated_sales",
    "fieldtype": "Link",
    "label": "Zero Rated Sales",
@@ -255,7 +254,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-08-20 11:02:39.033397",
+ "modified": "2021-08-20 11:21:38.908480",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "Tax Declaration Setup",
