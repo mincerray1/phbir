@@ -41,7 +41,7 @@ frappe.query_reports["BIR 2307"] = {
             default: moment(frappe.datetime.get_today()).startOf('quarter'),
             reqd: 1, 
 			on_change: function() {
-				frappe.query_report.set_filter_value("to_date", frappe.datetime.add_months(moment(frappe.query_report.get_filter_value('from_date')).endOf('month'), 2));
+				frappe.query_report.set_filter_value("to_date", frappe.datetime.add_days(frappe.datetime.add_months(frappe.query_report.get_filter_value('from_date'), 3), -1));
 				frappe.query_report.refresh();
 			}
 
@@ -56,19 +56,6 @@ frappe.query_reports["BIR 2307"] = {
     ],
 	onload: function(report) {
 		report.page.add_inner_button(__("Print BIR 2307"), function() {
-            // frappe.call({
-            //     async: false,
-            //     method: "phbir.ph_localization.bir_forms.bir_2307",
-            //     type: "GET",
-            //     args: {
-            //         'filters': frappe.query_report.filters
-            //     },
-            //     callback: function(r) {
-            //         if (!r.exc) {
-            //             frappe.msgprint("hello");
-            //         }
-            //     }
-            // });
             let filter_values = {
                     'company': frappe.query_report.get_filter_value('company'),
                     'supplier': frappe.query_report.get_filter_value('supplier'),
@@ -77,9 +64,21 @@ frappe.query_reports["BIR 2307"] = {
                     'to_date': frappe.query_report.get_filter_value('to_date'),
                 };
             let u = new URLSearchParams(filter_values).toString();
-            console.log("u: " + u);
-            let bir_form_url = '/api/method/phbir.ph_localization.bir_forms.bir_2307?' + u + '&response_type=pdf';
-            let bir_form = window.open(bir_form_url);
+            
+            var bir_form_url = frappe.urllib.get_full_url(
+                '/api/method/phbir.ph_localization.bir_forms.bir_2307?' + u + '&response_type=pdf')
+            $.ajax({
+                url: bir_form_url,
+                type: 'GET',
+                success: function(result) {
+                    if(jQuery.isEmptyObject(result)){
+                        frappe.msgprint(__('No Records for these settings.'));
+                    }
+                    else{
+                        let bir_form = window.open(bir_form_url);
+                    }
+                }
+            });
 		});
 	}
 };

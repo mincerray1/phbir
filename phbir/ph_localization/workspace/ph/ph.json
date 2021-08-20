@@ -43,6 +43,24 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "ATC",
+   "link_to": "ATC",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "PH Tax Type Code",
+   "link_to": "PH Tax Type Code",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "VAT Industry",
    "link_to": "VAT Industry",
    "link_type": "DocType",
@@ -145,7 +163,7 @@
    "type": "Link"
   }
  ],
- "modified": "2021-08-19 19:10:56.786992",
+ "modified": "2021-08-20 15:03:26.322813",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "PH",
