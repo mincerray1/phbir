@@ -47,152 +47,152 @@
         height: 18px;
         text-align: right;
     }
-    </style>
-    <div style="left: 2.63in; top: 1.26in; letter-spacing: 0.08in;" class="bir-form-text">{{ ("0" + month)[-2:] }}</div>
-    <div style="left: 2.96in; top: 1.26in; letter-spacing: 0.13in;" class="bir-form-text">{{ year }}</div>
+</style>
+<div style="left: 2.63in; top: 1.26in; letter-spacing: 0.08in;" class="bir-form-text">{{ ("0" + month)[-2:] }}</div>
+<div style="left: 2.96in; top: 1.26in; letter-spacing: 0.13in;" class="bir-form-text">{{ year }}</div>
 
-    <!-- cover the circles! -->
-    <div style="left: 2.52in; top: 1.68in; width: 0.41in; height: 0.16in; z-index: 1; background-color: white;" class="bir-form-text"></div>
+<!-- cover the circles! -->
+<div style="left: 2.52in; top: 1.68in; width: 0.41in; height: 0.16in; z-index: 1; background-color: white;" class="bir-form-text"></div>
+
+
+<div style="left: 0.96in; top: 1.68in; letter-spacing: 0.07in;" class="bir-form-text">{{ company.tin[:3] }}</div>
+<div style="left: 1.48in; top: 1.68in; letter-spacing: 0.07in;" class="bir-form-text">{{ company.tin[3:6] }}</div>
+<div style="left: 2.01in; top: 1.68in; letter-spacing: 0.07in;" class="bir-form-text">{{ company.tin[6:9] }}</div>
+<div style="left: 2.55in; top: 1.68in; letter-spacing: 0.07in; z-index: 2;" class="bir-form-text">{{ company.tin[9:12] }}</div>
+
+
+<div style="left: 3.88in; top: 1.68in; letter-spacing: 0.14in;" class="bir-form-text">{{ company.rdo_code[:3] }}</div>
+
+<div style="left: 5.88in; top: 1.66in; font-size: 0.5em; text-align: center; height: 0.20in; width: 2.10in;" class="bir-form-text">
+    <div style="vertical-align: middle;">{{ company.vat_industry }}</div>
+</div>
+
+
+<div style="left: 0.92in; top: 2.04in;" class="bir-form-text">{{ company.company_name }}</div>
+<div style="left: 6.76in; top: 2.04in; letter-spacing: 0.06in;" class="bir-form-text">{{ company.phone }}</div>
+<div style="left: 0.92in; top: 2.39in;" class="bir-form-text">{{ company.address }}</div>
+<div style="left: 7.35in; top: 2.40in; letter-spacing: 0.08in;" class="bir-form-text">{{ company.zipcode[:4] }}</div>
+
+<div class="bir-form-data">
+    <!-- sales -->
+
+    <!-- 12A/B -->
+    <div style="left: 4.35in; top: 3.14in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.vat_sales.total_base_tax_base) }}</div>
+    <div style="left: 6.31in; top: 3.14in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.vat_sales.total_base_tax_amount) }}</div>
+
+    <!-- 13A/B -->
+    <div style="left: 4.35in; top: 3.28in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.sales_to_government.total_base_tax_base) }}</div>
+    <div style="left: 6.31in; top: 3.28in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.sales_to_government.total_base_tax_amount) }}</div>
+
+    <!-- 14 -->
+    <div style="left: 4.35in; top: 3.42in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.zero_rated_sales.total_base_tax_base) }}</div>
+
+    <!-- 15 -->
+    <div style="left: 4.35in; top: 3.56in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.exempt_sales.total_base_tax_base) }}</div>
+
+    {% set total_sales_receipts = totals.vat_sales.total_base_tax_base + totals.sales_to_government.total_base_tax_base + totals.zero_rated_sales.total_base_tax_base + totals.exempt_sales.total_base_tax_base %}
+    {% set total_output_tax_due = totals.vat_sales.total_base_tax_amount +totals.sales_to_government.total_base_tax_amount %}
+    <!-- 16 -->
+    <div style="left: 4.35in; top: 3.70in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_sales_receipts) }}</div>
+    <div style="left: 6.31in; top: 3.70in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_output_tax_due) }}</div>
+
+    <!-- less other allowable input tax -->
+    {% set total_other_allowable_input_tax = 0 %}
+
+    <!-- purchases -->
+    <!-- 18A/B -->
+    <div style="left: 4.35in; top: 4.96in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.capital_goods.total_base_tax_base) }}</div>
+    <div style="left: 6.31in; top: 4.96in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.capital_goods.total_base_tax_amount) }}</div>
+
+    <!-- 18C/D -->
+    <div style="left: 4.35in; top: 5.10in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.capital_goods_exceeding_1m.total_base_tax_base) }}</div>
+    <div style="left: 6.31in; top: 5.10in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.capital_goods_exceeding_1m.total_base_tax_amount) }}</div>
+
+    <!-- 18E/F -->
+    <div style="left: 4.35in; top: 5.24in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.domestic_purchases_of_goods.total_base_tax_base) }}</div>
+    <div style="left: 6.31in; top: 5.24in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.domestic_purchases_of_goods.total_base_tax_amount) }}</div>
+
+    <!-- 18G/H -->
+    <div style="left: 4.35in; top: 5.38in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.importation_of_goods.total_base_tax_base) }}</div>
+    <div style="left: 6.31in; top: 5.38in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.importation_of_goods.total_base_tax_amount) }}</div>
+
+    <!-- 18I/J -->
+    <div style="left: 4.35in; top: 5.52in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.domestic_purchase_of_services.total_base_tax_base) }}</div>
+    <div style="left: 6.31in; top: 5.52in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.domestic_purchase_of_services.total_base_tax_amount) }}</div>
+
+    <!-- 18K/L -->
+    <div style="left: 4.35in; top: 5.66in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.services_rendered_by_non_residents.total_base_tax_base) }}</div>
+    <div style="left: 6.31in; top: 5.66in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.services_rendered_by_non_residents.total_base_tax_amount) }}</div>
+
+    <!-- 18M -->
+    <div style="left: 4.35in; top: 5.80in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.purchases_not_qualified_for_input_tax.total_base_tax_base) }}</div>
+
+    <!-- 18N/O -->
+    <div style="left: 4.35in; top: 5.94in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.others.total_base_tax_base) }}</div>
+    <div style="left: 6.31in; top: 5.94in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.others.total_base_tax_amount) }}</div>
+
+    <!-- total current purchases -->
+    {% set total_current_purchases = totals.capital_goods.total_base_tax_base + totals.capital_goods_exceeding_1m.total_base_tax_base 
+        + totals.domestic_purchases_of_goods.total_base_tax_base + totals.importation_of_goods.total_base_tax_base + totals.domestic_purchase_of_services.total_base_tax_base 
+        + totals.services_rendered_by_non_residents.total_base_tax_base + totals.purchases_not_qualified_for_input_tax.total_base_tax_base + totals.others.total_base_tax_base %}
+    <!-- 18P -->
+    <div style="left: 4.35in; top: 6.08in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_current_purchases) }}</div>
+
+    <!-- total available input tax -->
+    {% set total_available_input_tax = total_other_allowable_input_tax + totals.capital_goods.total_base_tax_amount + totals.capital_goods_exceeding_1m.total_base_tax_amount 
+        + totals.domestic_purchases_of_goods.total_base_tax_amount + totals.importation_of_goods.total_base_tax_amount + totals.domestic_purchase_of_services.total_base_tax_amount 
+        + totals.services_rendered_by_non_residents.total_base_tax_amount + totals.others.total_base_tax_amount %}
+    <!-- 19 -->
+    <div style="left: 6.31in; top: 6.22in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_available_input_tax) }}</div>
+
+    <!-- 20C -->
+    <div style="left: 6.31in; top: 6.92in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(0) }}</div>
+    <!-- <div style="left: 6.31in; top: 6.92in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.directly_attributable_to_exempt_sales.total_base_tax_amount) }}</div> -->
+
+    <!-- total deductions from input tax -->
+    {% set total_deductions_from_input_tax = 0 %}
+    <!-- {% set total_deductions_from_input_tax = 0 + totals.directly_attributable_to_exempt_sales.total_base_tax_amount %} -->
+    <!-- 20F -->
+    <div style="left: 6.31in; top: 7.34in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_deductions_from_input_tax) }}</div>
+
+    <!-- total allowable input tax -->
+    {% set total_allowable_input_tax = total_available_input_tax - total_deductions_from_input_tax %}
+    <!-- 21 -->
+    <div style="left: 6.31in; top: 7.48in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_allowable_input_tax) }}</div>
+
+    <!-- net vat payable -->
+    {% set net_vat_payable = total_output_tax_due - total_allowable_input_tax %}
+    <!-- 22 -->
+    <div style="left: 6.31in; top: 7.62in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(net_vat_payable) if net_vat_payable >= 0 else "({:,.2f})".format(-net_vat_payable) }}</div>
     
-    
-    <div style="left: 0.96in; top: 1.68in; letter-spacing: 0.07in;" class="bir-form-text">{{ company.tin[:3] }}</div>
-    <div style="left: 1.48in; top: 1.68in; letter-spacing: 0.07in;" class="bir-form-text">{{ company.tin[3:6] }}</div>
-    <div style="left: 2.01in; top: 1.68in; letter-spacing: 0.07in;" class="bir-form-text">{{ company.tin[6:9] }}</div>
-    <div style="left: 2.55in; top: 1.68in; letter-spacing: 0.07in; z-index: 2;" class="bir-form-text">{{ company.tin[9:12] }}</div>
+    <!-- total tax credit payments -->
+    {% set total_tax_credit_payments = 0 %}
+    <!-- 23G -->
+    <div style="left: 6.31in; top: 8.74in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_tax_credit_payments) }}</div>
 
-    
-    <div style="left: 3.88in; top: 1.68in; letter-spacing: 0.14in;" class="bir-form-text">{{ company.rdo_code[:3] }}</div>
+    <!-- tax still payable -->
+    {% set tax_still_payable = net_vat_payable - total_tax_credit_payments %}
+    <!-- 24 -->
+    <div style="left: 6.31in; top: 8.88in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(tax_still_payable) if tax_still_payable >= 0 else "({:,.2f})".format(-tax_still_payable) }}</div>
 
-    <div style="left: 5.88in; top: 1.66in; font-size: 0.5em; text-align: center; height: 0.20in; width: 2.10in;" class="bir-form-text">
-        <div style="vertical-align: middle;">{{ company.vat_industry }}</div>
-    </div>
-    
-    
-    <div style="left: 0.92in; top: 2.04in;" class="bir-form-text">{{ company.company_name }}</div>
-    <div style="left: 6.76in; top: 2.04in; letter-spacing: 0.06in;" class="bir-form-text">{{ company.phone }}</div>
-    <div style="left: 0.92in; top: 2.39in;" class="bir-form-text">{{ company.address }}</div>
-    <div style="left: 7.35in; top: 2.40in; letter-spacing: 0.08in;" class="bir-form-text">{{ company.zipcode[:4] }}</div>
-    
-    <div class="bir-form-data">
-        <!-- sales -->
+    <!-- penalties -->
+    {% set penalties = 0 %}
+    <!-- 25D -->
+    <div style="left: 6.31in; top: 9.14in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(penalties) }}</div>
 
-        <!-- 12A/B -->
-        <div style="left: 4.35in; top: 3.14in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.vat_sales.total_base_tax_base) }}</div>
-        <div style="left: 6.31in; top: 3.14in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.vat_sales.total_base_tax_amount) }}</div>
+    <!-- total amount payable -->
+    {% set total_amount_payable = tax_still_payable + penalties %}
+    <!-- 26 -->
+    <div style="left: 6.31in; top: 9.32in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_amount_payable) if total_amount_payable >= 0 else "({:,.2f})".format(-total_amount_payable) }}</div>
 
-        <!-- 13A/B -->
-        <div style="left: 4.35in; top: 3.28in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.sales_to_government.total_base_tax_base) }}</div>
-        <div style="left: 6.31in; top: 3.28in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.sales_to_government.total_base_tax_amount) }}</div>
+</div>
+<div>
+    <!-- <img src="/assets/phbir/img/forms/bir2550m-1.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;">
+    <img src="/assets/phbir/img/forms/bir2550m-2.png" height="100%" width="100%" style="position: absolute; top: 14.00in; left: 0; z-index: -1;"> -->
 
-        <!-- 14 -->
-        <div style="left: 4.35in; top: 3.42in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.zero_rated_sales.total_base_tax_base) }}</div>
-
-        <!-- 15 -->
-        <div style="left: 4.35in; top: 3.56in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.exempt_sales.total_base_tax_base) }}</div>
-
-        {% set total_sales_receipts = totals.vat_sales.total_base_tax_base + totals.sales_to_government.total_base_tax_base + totals.zero_rated_sales.total_base_tax_base + totals.exempt_sales.total_base_tax_base %}
-        {% set total_output_tax_due = totals.vat_sales.total_base_tax_amount +totals.sales_to_government.total_base_tax_amount %}
-        <!-- 16 -->
-        <div style="left: 4.35in; top: 3.70in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_sales_receipts) }}</div>
-        <div style="left: 6.31in; top: 3.70in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_output_tax_due) }}</div>
-
-        <!-- less other allowable input tax -->
-        {% set total_other_allowable_input_tax = 0 %}
-
-        <!-- purchases -->
-        <!-- 18A/B -->
-        <div style="left: 4.35in; top: 4.96in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.capital_goods.total_base_tax_base) }}</div>
-        <div style="left: 6.31in; top: 4.96in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.capital_goods.total_base_tax_amount) }}</div>
-
-        <!-- 18C/D -->
-        <div style="left: 4.35in; top: 5.10in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.capital_goods_exceeding_1m.total_base_tax_base) }}</div>
-        <div style="left: 6.31in; top: 5.10in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.capital_goods_exceeding_1m.total_base_tax_amount) }}</div>
-
-        <!-- 18E/F -->
-        <div style="left: 4.35in; top: 5.24in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.domestic_purchases_of_goods.total_base_tax_base) }}</div>
-        <div style="left: 6.31in; top: 5.24in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.domestic_purchases_of_goods.total_base_tax_amount) }}</div>
-
-        <!-- 18G/H -->
-        <div style="left: 4.35in; top: 5.38in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.importation_of_goods.total_base_tax_base) }}</div>
-        <div style="left: 6.31in; top: 5.38in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.importation_of_goods.total_base_tax_amount) }}</div>
-
-        <!-- 18I/J -->
-        <div style="left: 4.35in; top: 5.52in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.domestic_purchase_of_services.total_base_tax_base) }}</div>
-        <div style="left: 6.31in; top: 5.52in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.domestic_purchase_of_services.total_base_tax_amount) }}</div>
-
-        <!-- 18K/L -->
-        <div style="left: 4.35in; top: 5.66in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.services_rendered_by_non_residents.total_base_tax_base) }}</div>
-        <div style="left: 6.31in; top: 5.66in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.services_rendered_by_non_residents.total_base_tax_amount) }}</div>
-
-        <!-- 18M -->
-        <div style="left: 4.35in; top: 5.80in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.purchases_not_qualified_for_input_tax.total_base_tax_base) }}</div>
-
-        <!-- 18N/O -->
-        <div style="left: 4.35in; top: 5.94in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.others.total_base_tax_base) }}</div>
-        <div style="left: 6.31in; top: 5.94in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.others.total_base_tax_amount) }}</div>
-
-        <!-- total current purchases -->
-        {% set total_current_purchases = totals.capital_goods.total_base_tax_base + totals.capital_goods_exceeding_1m.total_base_tax_base 
-            + totals.domestic_purchases_of_goods.total_base_tax_base + totals.importation_of_goods.total_base_tax_base + totals.domestic_purchase_of_services.total_base_tax_base 
-            + totals.services_rendered_by_non_residents.total_base_tax_base + totals.purchases_not_qualified_for_input_tax.total_base_tax_base + totals.others.total_base_tax_base %}
-        <!-- 18P -->
-        <div style="left: 4.35in; top: 6.08in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_current_purchases) }}</div>
-
-        <!-- total available input tax -->
-        {% set total_available_input_tax = total_other_allowable_input_tax + totals.capital_goods.total_base_tax_amount + totals.capital_goods_exceeding_1m.total_base_tax_amount 
-            + totals.domestic_purchases_of_goods.total_base_tax_amount + totals.importation_of_goods.total_base_tax_amount + totals.domestic_purchase_of_services.total_base_tax_amount 
-            + totals.services_rendered_by_non_residents.total_base_tax_amount + totals.others.total_base_tax_amount %}
-        <!-- 19 -->
-        <div style="left: 6.31in; top: 6.22in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_available_input_tax) }}</div>
-
-        <!-- 20C -->
-        <div style="left: 6.31in; top: 6.92in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(0) }}</div>
-        <!-- <div style="left: 6.31in; top: 6.92in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(totals.directly_attributable_to_exempt_sales.total_base_tax_amount) }}</div> -->
-
-        <!-- total deductions from input tax -->
-        {% set total_deductions_from_input_tax = 0 %}
-        <!-- {% set total_deductions_from_input_tax = 0 + totals.directly_attributable_to_exempt_sales.total_base_tax_amount %} -->
-        <!-- 20F -->
-        <div style="left: 6.31in; top: 7.34in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_deductions_from_input_tax) }}</div>
-
-        <!-- total allowable input tax -->
-        {% set total_allowable_input_tax = total_available_input_tax - total_deductions_from_input_tax %}
-        <!-- 21 -->
-        <div style="left: 6.31in; top: 7.48in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_allowable_input_tax) }}</div>
-
-        <!-- net vat payable -->
-        {% set net_vat_payable = total_output_tax_due - total_allowable_input_tax %}
-        <!-- 22 -->
-        <div style="left: 6.31in; top: 7.62in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(net_vat_payable) if net_vat_payable >= 0 else "({:,.2f})".format(-net_vat_payable) }}</div>
-        
-        <!-- total tax credit payments -->
-        {% set total_tax_credit_payments = 0 %}
-        <!-- 23G -->
-        <div style="left: 6.31in; top: 8.74in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_tax_credit_payments) }}</div>
-
-        <!-- tax still payable -->
-        {% set tax_still_payable = net_vat_payable - total_tax_credit_payments %}
-        <!-- 24 -->
-        <div style="left: 6.31in; top: 8.88in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(tax_still_payable) if tax_still_payable >= 0 else "({:,.2f})".format(-tax_still_payable) }}</div>
-
-        <!-- penalties -->
-        {% set penalties = 0 %}
-        <!-- 25D -->
-        <div style="left: 6.31in; top: 9.14in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(penalties) }}</div>
-
-        <!-- total amount payable -->
-        {% set total_amount_payable = tax_still_payable + penalties %}
-        <!-- 26 -->
-        <div style="left: 6.31in; top: 9.32in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_amount_payable) if total_amount_payable >= 0 else "({:,.2f})".format(-total_amount_payable) }}</div>
-
-    </div>
-    <div>
-        <!-- <img src="/assets/phbir/img/forms/bir2550m-1.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;">
-        <img src="/assets/phbir/img/forms/bir2550m-2.png" height="100%" width="100%" style="position: absolute; top: 14.00in; left: 0; z-index: -1;"> -->
-
-        <img src="https://erpnextsandbox.serviotech.com/assets/phbir/img/forms/bir2550m-1.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;">
-        <img src="https://erpnextsandbox.serviotech.com/assets/phbir/img/forms/bir2550m-2.png" height="100%" width="100%" style="position: absolute; top: 14.00in; left: 0; z-index: -1;">
-    </div>
+    <img src="https://erpnextsandbox.serviotech.com/assets/phbir/img/forms/bir2550m-1.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;">
+    <img src="https://erpnextsandbox.serviotech.com/assets/phbir/img/forms/bir2550m-2.png" height="100%" width="100%" style="position: absolute; top: 14.00in; left: 0; z-index: -1;">
+</div>
     
     <!-- <div style="page-break-before: always;">
         <img src="/assets/phbir/img/forms/2307-2.png" height="100%" width="100%" style="position: absolute; top: 13in; left: 0; z-index: -1;">

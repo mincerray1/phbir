@@ -375,6 +375,48 @@ def bir_2550m(company, year, month, response_type="pdf"):
     return_document(html, filename, options, response_type)
 
 @frappe.whitelist()
+def bir_1601_eq(company, year, quarter, response_type="pdf"):
+    precision = cint(frappe.db.get_default("currency_precision")) or 2
+    frappe.has_permission('BIR 1601-EQ', throw=True)
+
+    tax_declaration_setup = frappe.get_doc('Tax Declaration Setup', 'Tax Declaration Setup')
+
+    context = {
+        'company': get_company_information(company),
+        'year': year,
+        'quarter': quarter
+    }
+
+    filename = "BIR 1601-EQ {} {} {}".format(company, year, quarter)
+    
+    context["build_version"] = frappe.utils.get_build_version()
+    html = frappe.render_template("templates/bir_forms/bir_1601_eq_template.html", context)
+    options["page-size"] = "Legal"
+
+    return_document(html, filename, options, response_type)
+
+@frappe.whitelist()
+def bir_1601_fq(company, year, quarter, response_type="pdf"):
+    precision = cint(frappe.db.get_default("currency_precision")) or 2
+    frappe.has_permission('BIR 1601-FQ', throw=True)
+
+    tax_declaration_setup = frappe.get_doc('Tax Declaration Setup', 'Tax Declaration Setup')
+
+    context = {
+        'company': get_company_information(company),
+        'year': year,
+        'quarter': quarter
+    }
+
+    filename = "BIR 1601-EQ {} {} {}".format(company, year, quarter)
+    
+    context["build_version"] = frappe.utils.get_build_version()
+    html = frappe.render_template("templates/bir_forms/bir_1601_fq_template.html", context)
+    options["page-size"] = "Legal"
+
+    return_document(html, filename, options, response_type)
+
+@frappe.whitelist()
 def return_document(html, filename="document", options=options, response_type="download"):
     frappe.local.response.filename = "{filename}.pdf".format(filename=filename)
     frappe.local.response.filecontent = get_pdf(html, options)

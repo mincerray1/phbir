@@ -1,0 +1,75 @@
+<style>
+    .print-format {
+        font-family: monospace;
+        font-size: 0.80em;
+        width: 8.5in;
+        min-height: 14in;
+        
+        margin-top: 0mm;
+        margin-left: 0mm;
+        margin-right: 0mm;
+        margin-bottom: 0mm;
+        
+        padding-top: 0mm;
+        padding-left: 0mm;
+        padding-right: 0mm;
+        margin-bottom: 0mm;
+    }
+    .bir-form-text {
+        font-size: 0.80em;
+        width: 100%;
+        position: absolute;
+    }
+    .bir-form-amount {
+        text-align: right;
+    }
+    .bir-form-data {
+        font-size: 0.70em;
+    }
+    table.table-income-payments {
+        left: 0.28in; 
+        top: 5.44in; 
+        width: 8in;
+    }
+    table.table-income-payments tr td {
+        height: 18px;
+        text-align: right;
+    }
+    
+    table.table-money-payments {
+        left: 0.28in; 
+        top: 7.98in; 
+        width: 8in;
+    }
+    table.table-money-payments tr td {
+        height: 18px;
+        text-align: right;
+    }
+</style>
+
+<div style="left: 2.63in; top: 1.26in; letter-spacing: 0.08in;" class="bir-form-text">{{ ("0" + quarter) }}</div>
+<div style="left: 2.96in; top: 1.26in; letter-spacing: 0.13in;" class="bir-form-text">{{ year }}</div>
+
+<div style="left: 0.96in; top: 1.68in; letter-spacing: 0.07in;" class="bir-form-text">{{ company.tin[:3] }}</div>
+<div style="left: 1.48in; top: 1.68in; letter-spacing: 0.07in;" class="bir-form-text">{{ company.tin[3:6] }}</div>
+<div style="left: 2.01in; top: 1.68in; letter-spacing: 0.07in;" class="bir-form-text">{{ company.tin[6:9] }}</div>
+<div style="left: 2.55in; top: 1.68in; letter-spacing: 0.07in; z-index: 2;" class="bir-form-text">{{ company.tin[9:12] }}</div>
+
+
+<div style="left: 3.88in; top: 1.68in; letter-spacing: 0.14in;" class="bir-form-text">{{ company.rdo_code[:3] }}</div>
+
+<div style="left: 0.92in; top: 2.04in;" class="bir-form-text">{{ company.company_name }}</div>
+<div style="left: 0.92in; top: 2.39in;" class="bir-form-text">{{ company.address }}</div>
+<div style="left: 7.35in; top: 2.40in; letter-spacing: 0.08in;" class="bir-form-text">{{ company.zipcode[:4] }}</div>
+
+<div class="bir-form-data">
+
+</div>
+
+<div>
+    <!-- <img src="/assets/phbir/img/forms/1601-EQ January 2019 ENCS final-1.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;"> -->
+    <!-- <img src="/assets/phbir/img/forms/1601-EQ January 2019 ENCS final-2.png" height="100%" width="100%" style="position: absolute; top: 14.00in; left: 0; z-index: -1;"> -->
+
+    <img src="https://erpnextsandbox.serviotech.com/assets/phbir/img/forms/1601-EQ January 2019 ENCS final-1.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;">
+    <!-- <img src="https://erpnextsandbox.serviotech.com/assets/phbir/img/forms/1601-EQ January 2019 ENCS final-2.png" height="100%" width="100%" style="position: absolute; top: 14.00in; left: 0; z-index: -1;"> -->
+</div>

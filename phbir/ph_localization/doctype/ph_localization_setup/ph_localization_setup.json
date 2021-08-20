@@ -8,7 +8,9 @@
   "permit_no",
   "permit_date_issued",
   "rdo_code",
-  "vat_industry"
+  "column_break_4",
+  "vat_industry",
+  "withholding_agent_category"
  ],
  "fields": [
   {
@@ -32,12 +34,23 @@
    "fieldtype": "Data",
    "label": "RDO Code",
    "length": 3
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Private",
+   "fieldname": "withholding_agent_category",
+   "fieldtype": "Select",
+   "label": "Withholding Agent Category",
+   "options": "Private\nGovernment"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-08-19 19:13:17.144640",
+ "modified": "2021-08-20 23:11:09.258785",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "PH Localization Setup",

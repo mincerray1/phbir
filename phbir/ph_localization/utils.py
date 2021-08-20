@@ -34,6 +34,7 @@ def get_company_information(company):
     company_address = ''
     zipcode = ''
     phone = ''
+    email_id = ''
     company_address_dynamic_link_doc = None
 
     if frappe.db.exists("Dynamic Link", {'link_doctype': 'Company', 'link_name': company, 'parenttype': 'Address'}):
@@ -42,6 +43,7 @@ def get_company_information(company):
 
     if company_address_dynamic_link_doc:
         zipcode = frappe.db.get_value('Address', company_address_dynamic_link_doc.parent, 'pincode')
+        email_id = frappe.db.get_value('Address', company_address_dynamic_link_doc.parent, 'email_id')
         zipcode = zipcode if zipcode else ''
 
         phone = frappe.db.get_value('Address', company_address_dynamic_link_doc.parent, 'phone')
@@ -56,6 +58,7 @@ def get_company_information(company):
     permit_date_issued = frappe.db.get_single_value('PH Localization Setup', 'permit_date_issued')
     rdo_code = frappe.db.get_single_value('PH Localization Setup', 'rdo_code')
     vat_industry = frappe.db.get_single_value('PH Localization Setup', 'vat_industry')
+    withholding_agent_category = frappe.db.get_single_value('PH Localization Setup', 'withholding_agent_category')
 
     result = {
         'company_name': company_doc.name,
@@ -67,7 +70,9 @@ def get_company_information(company):
         'permit_date_issued': permit_date_issued if permit_date_issued else '',
         'rdo_code': rdo_code if rdo_code else '',
         'vat_industry': vat_industry if vat_industry else '',
-        'phone': phone if phone else ''
+        'withholding_agent_category': withholding_agent_category if withholding_agent_category else '',
+        'phone': phone if phone else '',
+        'email_id': email_id if email_id else ''
     }
 
     return result
