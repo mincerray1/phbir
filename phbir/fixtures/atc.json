@@ -1321,13 +1321,13 @@
   "description": "A. On interest, commissions and discounts from lending activities as well as income from financial leasing on the basis of the remaining maturities of instruments from which receipts are derived          - Maturity period is five years or less",
   "docstatus": 0,
   "doctype": "ATC",
-  "modified": "2021-08-21 11:32:30.542484",
+  "modified": "2021-08-21 13:31:34.890040",
   "name": "WB301",
   "parent": null,
   "parentfield": null,
   "parenttype": null,
   "rate": 5.0,
-  "tax_type_code": null
+  "tax_type_code": "WB"
  },
  {
   "atc": "WI156",

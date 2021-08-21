@@ -167,6 +167,9 @@ fixtures = [
         ]
     },
     {
+        "dt": "PH Tax Type Code"
+    },
+    {
         "dt": "ATC"
     },
     {
