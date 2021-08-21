@@ -464,15 +464,30 @@ def bir_1601_eq_qap(company, year, quarter, response_type="download"):
     total_amount_still_due = 0
 
     # TODO: custom base amount
+    # (CASE 
+    #                 WHEN EXISTS(SELECT 1 FROM `tabPurchase Taxes and Charges` temp 
+    #                         WHERE temp.parent = ptac.parent AND temp.name <> ptac.name and (temp.base_tax_amount < 0 or temp.add_deduct_tax = 'Deduct')) /*multiple atc in one doc*/
+    #                 THEN
+    #                     ROUND((ABS(ptac.base_tax_amount) / (a.rate / 100)), 2)
+    #                 ELSE
+    #                     pi.base_total
+    #             END)
     data = frappe.db.sql("""
-        SELECT 
+        SELECT
+            temp.supplier,
+            temp.year,
+            temp.month,
             temp.atc,
+            a.rate,
+            /*ROUND((temp.base_tax_withheld / (a.rate / 100)), 2) AS base_tax_base,*/
             temp.base_tax_base,
-            a.rate AS tax_rate,
             temp.base_tax_withheld
         FROM
             (
             SELECT 
+                pi.supplier,
+                YEAR(pi.posting_date) AS year,
+                MONTH(pi.posting_date) AS month,
                 ptac.atc AS atc,
                 SUM(pi.base_total) AS base_tax_base,
                 SUM(ABS(ptac.base_tax_amount)) AS base_tax_withheld
@@ -490,13 +505,16 @@ def bir_1601_eq_qap(company, year, quarter, response_type="download"):
                 and YEAR(pi.posting_date) = %s
                 and QUARTER(pi.posting_date) = %s
             GROUP BY
+                pi.supplier,
+                YEAR(pi.posting_date),
+                MONTH(pi.posting_date),
                 ptac.atc
             ) AS temp
         INNER JOIN 
             `tabATC` as a
         ON
             temp.atc = a.name
-        WHERE
+        WHERE 
             a.tax_type_code IN ('WE', 'WB', 'WV')
         """, (company, year, quarter), as_dict=1)
 
@@ -506,6 +524,7 @@ def bir_1601_eq_qap(company, year, quarter, response_type="download"):
     tax_still_due = total_taxes_withheld - total_remittances_made
     total_amount_still_due = tax_still_due + total_penalties
 
+    company_information = get_company_information(company)
     context = {
         'company': get_company_information(company),
         'year': year,
@@ -517,14 +536,74 @@ def bir_1601_eq_qap(company, year, quarter, response_type="download"):
         'total_penalties': total_penalties,
         'total_amount_still_due': total_amount_still_due
     }
-
-    filename = "BIR 1601-EQ {} {} {}".format(company, year, quarter)
     file_extension = "dat"
     
     context["build_version"] = frappe.utils.get_build_version()
-    content = 'hellow'
+
+    content = ''
+    header = ''
+
+    return_period = '{MM}/{YYYY}'.format(MM=('0' + str(first_month_in_quarter(quarter)))[-2:], YYYY=year)
+    return_period_no_slash = '{MM}{YYYY}'.format(MM=('0' + str(first_month_in_quarter(quarter)))[-2:], YYYY=year)
+
+    header = '{next}'.format(header=header, next='HQAP'[:5])
+    header = '{header},{next}'.format(header=header, next='H1601EQ'[:7])
+    header = '{header},{next}'.format(header=header, next=company_information['tin'][:9])
+    header = '{header},{next}'.format(header=header, next=company_information['tin'][9:13])
+    header = '{header},{next}'.format(header=header, next=company_information['company_name'][:50])
+    header = '{header},{next}'.format(header=header, next=return_period[:7])
+    header = '{header},{next}'.format(header=header, next=company_information['rdo_code'][:3])
+
+    content = header + '\n'
+    details = ''
+    i = 0
+    total_base_tax_base = 0
+    total_base_tax_withheld = 0
+    for entry in data:
+        i += 1
+        payee_information = get_supplier_information(entry.supplier)
+        details = details + '{next}'.format(details=details, next='D1'[:2])
+        details = '{details},{next}'.format(details=details, next='1601EQ'[:2])
+        details = '{details},{next}'.format(details=details, next=str(i)[:8])
+        details = '{details},{next}'.format(details=details, next=payee_information['tin'][:9])
+        details = '{details},{next}'.format(details=details, next=payee_information['tin'][9:13])
+        details = '{details},{next}'.format(details=details, next=payee_information['supplier_name'][:50])
+        
+        # blank first name, last name, middle name TODO: get first contact info?
+        details = '{details},{next}'.format(details=details, next='')
+        details = '{details},{next}'.format(details=details, next='')
+        details = '{details},{next}'.format(details=details, next='')
+
+        detail_return_period = '{MM}/{YYYY}'.format(MM=('0' + str(entry.month))[-2:], YYYY=entry.year)
+        details = '{details},{next}'.format(details=details, next=detail_return_period[:7])
+        details = '{details},{next}'.format(details=details, next=entry.atc[:5])
+        details = '{details},{next}'.format(details=details, next=flt(entry.rate, 2))
+        details = '{details},{next}'.format(details=details, next=flt(entry.base_tax_base, 2))
+        details = '{details},{next}'.format(details=details, next=flt(entry.base_tax_withheld, 2))
+
+        total_base_tax_base += entry.base_tax_base
+        total_base_tax_withheld += entry.base_tax_withheld
+        details = details + '\n'
+    
+    content = content + details
+
+    controls = ''
+    controls = '{next}'.format(controls=controls, next='C1'[:5])
+    controls = '{controls},{next}'.format(controls=controls, next='1601EQ'[:6])
+    controls = '{controls},{next}'.format(controls=controls, next=company_information['tin'][:9])
+    controls = '{controls},{next}'.format(controls=controls, next=company_information['tin'][9:13])
+    controls = '{controls},{next}'.format(controls=controls, next=return_period[:7])
+    controls = '{controls},{next}'.format(controls=controls, next=flt(total_base_tax_base, 2))
+    controls = '{controls},{next}'.format(controls=controls, next=flt(total_base_tax_withheld, 2))
+
+    content = content + controls
+    
+    filename = "{tin}{branch_code}{return_period}{form_type}".format(tin=company_information['tin'][:9],branch_code=company_information['tin'][9:13],return_period=return_period_no_slash,form_type='1601EQ')
 
     return_document(content, filename, file_extension, response_type)
+
+def first_month_in_quarter(quarter):
+    return ((quarter - 1) * 3) + 1
 
 @frappe.whitelist()
 def bir_1601_fq(company, year, quarter, response_type="pdf"):
