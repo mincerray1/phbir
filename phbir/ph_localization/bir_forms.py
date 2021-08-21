@@ -563,7 +563,7 @@ def bir_1601_eq_qap(company, year, quarter, response_type="download"):
         i += 1
         payee_information = get_supplier_information(entry.supplier)
         details = details + '{next}'.format(details=details, next='D1'[:2])
-        details = '{details},{next}'.format(details=details, next='1601EQ'[:2])
+        details = '{details},{next}'.format(details=details, next='1601EQ'[:6])
         details = '{details},{next}'.format(details=details, next=str(i)[:8])
         details = '{details},{next}'.format(details=details, next=payee_information['tin'][:9])
         details = '{details},{next}'.format(details=details, next=payee_information['tin'][9:13])
@@ -610,21 +610,228 @@ def bir_1601_fq(company, year, quarter, response_type="pdf"):
     precision = cint(frappe.db.get_default("currency_precision")) or 2
     frappe.has_permission('BIR 1601-FQ', throw=True)
 
-    tax_declaration_setup = frappe.get_doc('Tax Declaration Setup', 'Tax Declaration Setup')
+    year = int(year)
+    quarter = int(quarter)
+    total_remittances_made = 0
+    total_taxes_withheld = 0
+    tax_still_due = 0
+    total_penalties = 0
+    total_amount_still_due = 0
+
+    # TODO: custom base amount
+    data = frappe.db.sql("""
+        SELECT 
+            temp.atc,
+            temp.base_tax_base,
+            a.rate AS tax_rate,
+            temp.base_tax_withheld
+        FROM
+            (
+            SELECT 
+                ptac.atc AS atc,
+                SUM(pi.base_total) AS base_tax_base,
+                SUM(ABS(ptac.base_tax_amount)) AS base_tax_withheld
+            FROM 
+                `tabPurchase Invoice` pi
+            LEFT JOIN
+                `tabPurchase Taxes and Charges` ptac
+            ON
+                pi.name = ptac.parent
+            WHERE
+                pi.docstatus = 1
+                and pi.is_return = 0
+                and (ptac.base_tax_amount < 0 or ptac.add_deduct_tax = 'Deduct')
+                and pi.company = %s
+                and YEAR(pi.posting_date) = %s
+                and QUARTER(pi.posting_date) = %s
+            GROUP BY
+                ptac.atc
+            ) AS temp
+        INNER JOIN 
+            `tabATC` as a
+        ON
+            temp.atc = a.name
+        WHERE
+            a.tax_type_code IN ('WF')
+        """, (company, year, quarter), as_dict=1)
+
+    for entry in data:
+        total_taxes_withheld += entry.base_tax_withheld
+    
+    tax_still_due = total_taxes_withheld - total_remittances_made
+    total_amount_still_due = tax_still_due + total_penalties
 
     context = {
         'company': get_company_information(company),
         'year': year,
-        'quarter': quarter
+        'quarter': quarter,
+        'data': data,
+        'total_taxes_withheld': total_taxes_withheld,
+        'total_remittances_made': total_remittances_made,
+        'tax_still_due': tax_still_due,
+        'total_penalties': total_penalties,
+        'total_amount_still_due': total_amount_still_due
     }
 
-    filename = "BIR 1601-EQ {} {} {}".format(company, year, quarter)
+    filename = "BIR 1601-FQ {} {} {}".format(company, year, quarter)
     
     context["build_version"] = frappe.utils.get_build_version()
     html = frappe.render_template("templates/bir_forms/bir_1601_fq_template.html", context)
     options["page-size"] = "Legal"
 
     return_pdf_document(html, filename, options, response_type)
+
+@frappe.whitelist()
+def bir_1601_fq_qap(company, year, quarter, response_type="download"):
+    precision = cint(frappe.db.get_default("currency_precision")) or 2
+    frappe.has_permission('BIR 1601-FQ', throw=True)
+
+    year = int(year)
+    quarter = int(quarter)
+    total_remittances_made = 0
+    total_taxes_withheld = 0
+    tax_still_due = 0
+    total_penalties = 0
+    total_amount_still_due = 0
+
+    # TODO: custom base amount
+    # (CASE 
+    #                 WHEN EXISTS(SELECT 1 FROM `tabPurchase Taxes and Charges` temp 
+    #                         WHERE temp.parent = ptac.parent AND temp.name <> ptac.name and (temp.base_tax_amount < 0 or temp.add_deduct_tax = 'Deduct')) /*multiple atc in one doc*/
+    #                 THEN
+    #                     ROUND((ABS(ptac.base_tax_amount) / (a.rate / 100)), 2)
+    #                 ELSE
+    #                     pi.base_total
+    #             END)
+    data = frappe.db.sql("""
+        SELECT
+            temp.supplier,
+            temp.year,
+            temp.month,
+            temp.atc,
+            a.rate,
+            /*ROUND((temp.base_tax_withheld / (a.rate / 100)), 2) AS base_tax_base,*/
+            temp.base_tax_base,
+            temp.base_tax_withheld
+        FROM
+            (
+            SELECT 
+                pi.supplier,
+                YEAR(pi.posting_date) AS year,
+                MONTH(pi.posting_date) AS month,
+                ptac.atc AS atc,
+                SUM(pi.base_total) AS base_tax_base,
+                SUM(ABS(ptac.base_tax_amount)) AS base_tax_withheld
+            FROM 
+                `tabPurchase Invoice` pi
+            LEFT JOIN
+                `tabPurchase Taxes and Charges` ptac
+            ON
+                pi.name = ptac.parent
+            WHERE
+                pi.docstatus = 1
+                and pi.is_return = 0
+                and (ptac.base_tax_amount < 0 or ptac.add_deduct_tax = 'Deduct')
+                and pi.company = %s
+                and YEAR(pi.posting_date) = %s
+                and QUARTER(pi.posting_date) = %s
+            GROUP BY
+                pi.supplier,
+                YEAR(pi.posting_date),
+                MONTH(pi.posting_date),
+                ptac.atc
+            ) AS temp
+        INNER JOIN 
+            `tabATC` as a
+        ON
+            temp.atc = a.name
+        WHERE 
+            a.tax_type_code IN ('WF')
+        """, (company, year, quarter), as_dict=1)
+
+    for entry in data:
+        total_taxes_withheld += entry.base_tax_withheld
+    
+    tax_still_due = total_taxes_withheld - total_remittances_made
+    total_amount_still_due = tax_still_due + total_penalties
+
+    company_information = get_company_information(company)
+    context = {
+        'company': get_company_information(company),
+        'year': year,
+        'quarter': quarter,
+        'data': data,
+        'total_taxes_withheld': total_taxes_withheld,
+        'total_remittances_made': total_remittances_made,
+        'tax_still_due': tax_still_due,
+        'total_penalties': total_penalties,
+        'total_amount_still_due': total_amount_still_due
+    }
+    file_extension = "dat"
+    
+    context["build_version"] = frappe.utils.get_build_version()
+
+    content = ''
+    header = ''
+
+    return_period = '{MM}/{YYYY}'.format(MM=('0' + str(first_month_in_quarter(quarter)))[-2:], YYYY=year)
+    return_period_no_slash = '{MM}{YYYY}'.format(MM=('0' + str(first_month_in_quarter(quarter)))[-2:], YYYY=year)
+
+    header = '{next}'.format(header=header, next='HQAP'[:5])
+    header = '{header},{next}'.format(header=header, next='H1601FQ'[:7])
+    header = '{header},{next}'.format(header=header, next=company_information['tin'][:9])
+    header = '{header},{next}'.format(header=header, next=company_information['tin'][9:13])
+    header = '{header},{next}'.format(header=header, next=company_information['company_name'][:50])
+    header = '{header},{next}'.format(header=header, next=return_period[:7])
+    header = '{header},{next}'.format(header=header, next=company_information['rdo_code'][:3])
+
+    content = header + '\n'
+    details = ''
+    i = 0
+    total_base_tax_base = 0
+    total_base_tax_withheld = 0
+    for entry in data:
+        i += 1
+        payee_information = get_supplier_information(entry.supplier)
+        details = details + '{next}'.format(details=details, next='D1'[:2])
+        details = '{details},{next}'.format(details=details, next='1601FQ'[:6])
+        details = '{details},{next}'.format(details=details, next=payee_information['tin'][:9])
+        details = '{details},{next}'.format(details=details, next=payee_information['tin'][9:13])
+        details = '{details},{next}'.format(details=details, next=payee_information['supplier_name'][:50])
+        
+        # blank first name, last name, middle name TODO: get first contact info?
+        details = '{details},{next}'.format(details=details, next='')
+        details = '{details},{next}'.format(details=details, next='')
+        details = '{details},{next}'.format(details=details, next='')
+
+        detail_return_period = '{MM}/{YYYY}'.format(MM=('0' + str(entry.month))[-2:], YYYY=entry.year)
+        details = '{details},{next}'.format(details=details, next=detail_return_period[:7])
+        details = '{details},{next}'.format(details=details, next=str(i)[:8])
+        details = '{details},{next}'.format(details=details, next=entry.atc[:5])
+        details = '{details},{next}'.format(details=details, next=flt(entry.rate, 2))
+        details = '{details},{next}'.format(details=details, next=flt(entry.base_tax_base, 2))
+        details = '{details},{next}'.format(details=details, next=flt(entry.base_tax_withheld, 2))
+
+        total_base_tax_base += entry.base_tax_base
+        total_base_tax_withheld += entry.base_tax_withheld
+        details = details + '\n'
+    
+    content = content + details
+
+    controls = ''
+    controls = '{next}'.format(controls=controls, next='C1'[:5])
+    controls = '{controls},{next}'.format(controls=controls, next='1601FQ'[:6])
+    controls = '{controls},{next}'.format(controls=controls, next=company_information['tin'][:9])
+    controls = '{controls},{next}'.format(controls=controls, next=company_information['tin'][9:13])
+    controls = '{controls},{next}'.format(controls=controls, next=return_period[:7])
+    controls = '{controls},{next}'.format(controls=controls, next=flt(total_base_tax_base, 2))
+    controls = '{controls},{next}'.format(controls=controls, next=flt(total_base_tax_withheld, 2))
+
+    content = content + controls
+    
+    filename = "{tin}{branch_code}{return_period}{form_type}".format(tin=company_information['tin'][:9],branch_code=company_information['tin'][9:13],return_period=return_period_no_slash,form_type='1601FQ')
+
+    return_document(content, filename, file_extension, response_type)
 
 @frappe.whitelist()
 def return_pdf_document(html, filename="document", options=options, response_type="download"):
