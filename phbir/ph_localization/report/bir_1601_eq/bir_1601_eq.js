@@ -39,6 +39,18 @@ frappe.query_reports["BIR 1601-EQ"] = {
             var bir_form_url = frappe.urllib.get_full_url('/api/method/phbir.ph_localization.bir_forms.bir_1601_eq?' + u + '&response_type=pdf');
             let bir_form = window.open(bir_form_url);
         });
+
+        report.page.add_inner_button(__("Download QAP"), function() {
+            let filter_values = {
+                    'company': frappe.query_report.get_filter_value('company'),
+                    'year': frappe.query_report.get_filter_value('year'),
+                    'quarter': frappe.query_report.get_filter_value('quarter'),
+                };
+            let u = new URLSearchParams(filter_values).toString();
+            
+            var bir_form_url = frappe.urllib.get_full_url('/api/method/phbir.ph_localization.bir_forms.bir_1601_eq_qap?' + u + '&response_type=download');
+            let bir_form = window.open(bir_form_url);
+        });
     }
 };
 

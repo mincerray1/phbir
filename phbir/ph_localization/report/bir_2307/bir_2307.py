@@ -48,7 +48,7 @@ def get_data(company, supplier, purchase_invoice, from_date, to_date):
             pi.docstatus = 1
             and pi.is_return = 0
             and (ptac.base_tax_amount < 0 or ptac.add_deduct_tax = 'Deduct')
-            and ptac.atc IN (SELECT atc FROM `tabATC`)
+            and ptac.atc IN (SELECT atc FROM `tabATC` WHERE tax_type_code IN ('WE', 'WB', 'WV'))
             and pi.supplier = %s
             and pi.posting_date >= %s
             and pi.posting_date <= %s
