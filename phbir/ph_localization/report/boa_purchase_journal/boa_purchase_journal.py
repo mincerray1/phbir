@@ -25,8 +25,8 @@ def get_data(filters):
         pi.bill_no,
         (pi.base_net_total + pi.base_discount_amount) as total,
         (pi.base_discount_amount) as net_discount,
-        pi.base_taxes_and_charges_added as tax_amount,
-        pi.base_taxes_and_charges_deducted as withholding_tax_amount,
+        IFNULL(ptac_totals.base_taxes_and_charges_added, 0) as tax_amount,
+        IFNULL(ptac_totals.base_taxes_and_charges_deducted, 0) as withholding_tax_amount,
         pi.base_grand_total as grand_total
     FROM
         `tabPurchase Invoice` pi
@@ -34,6 +34,37 @@ def get_data(filters):
         `tabSupplier` s
     ON 
         pi.supplier = s.name
+    LEFT JOIN
+        (
+            SELECT 
+                ptac.parent,
+                SUM(ABS(
+                    CASE 
+                    WHEN (ptac.base_tax_amount > 0 and ptac.add_deduct_tax = 'Add') or (ptac.base_tax_amount < 0 and ptac.add_deduct_tax = 'Deduct') 
+                        THEN ptac.base_tax_amount 
+                    ELSE 
+                        0 
+                    END)) AS base_taxes_and_charges_added,
+                SUM(ABS(
+                    CASE 
+                    WHEN (ptac.base_tax_amount < 0 and ptac.add_deduct_tax = 'Add') or (ptac.base_tax_amount > 0 and ptac.add_deduct_tax = 'Deduct') 
+                        THEN ptac.base_tax_amount 
+                    ELSE 
+                        0 
+                    END)) AS base_taxes_and_charges_deducted
+            FROM
+                `tabPurchase Taxes and Charges` ptac
+            /*LEFT JOIN
+                `tabPurchase Invoice` parent
+            ON
+                ptac.parent = parent.name
+            WHERE
+                parent.docstatus = 1
+                and parent.is_return = 0*/
+            GROUP BY ptac.parent
+        ) AS ptac_totals
+    ON 
+        pi.name = ptac_totals.parent
     WHERE
         pi.docstatus = 1
         and pi.is_return = 0
