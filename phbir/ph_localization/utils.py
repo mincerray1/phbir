@@ -137,6 +137,22 @@ def get_years():
     
     return result
 
+def report_is_permitted(report_name):
+    doc = frappe.get_doc("Report", report_name)
+    doc.custom_columns = []
+
+    if not doc.is_permitted():
+        frappe.throw(
+            _("You don't have access to Report: {0}").format(report_name),
+            frappe.PermissionError,
+        )
+
+@frappe.whitelist()
+def is_local_dev():
+    # ence.local:8002 (has local port = True)
+    # erpnextsandbox.serviotech.com (no local port = False)
+    return len(frappe.utils.get_host_name().split(':')) == 2
+
 #### migrate methods, move out as needed
 @frappe.whitelist()
 def generate_tax_templates():

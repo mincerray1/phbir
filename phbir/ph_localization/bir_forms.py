@@ -3,7 +3,7 @@ from frappe import _
 from frappe.utils.pdf import get_pdf
 from frappe.utils import getdate, flt, cint, add_days, add_months, cstr, get_datetime, nowdate, today
 from datetime import datetime
-from phbir.ph_localization.utils import get_company_information, get_supplier_information
+from phbir.ph_localization.utils import get_company_information, get_supplier_information, report_is_permitted
 import pytz
 import json
 
@@ -16,7 +16,7 @@ options = {
 
 @frappe.whitelist()
 def bir_2307(company, supplier, purchase_invoice, from_date, to_date, response_type="pdf"):
-    frappe.has_permission('BIR 2307', throw=True)
+    report_is_permitted('BIR 2307')
 
     from phbir.ph_localization.report.bir_2307.bir_2307 import get_data as get_data_bir_2307
     data = get_data_bir_2307(company, supplier, purchase_invoice, from_date, to_date)
@@ -84,7 +84,7 @@ def bir_2307(company, supplier, purchase_invoice, from_date, to_date, response_t
 @frappe.whitelist()
 def bir_2550m(company, year, month, response_type="pdf"):
     precision = cint(frappe.db.get_default("currency_precision")) or 2
-    frappe.has_permission('BIR 2550M', throw=True)
+    report_is_permitted('BIR 2550M')
 
     tax_declaration_setup = frappe.get_doc('Tax Declaration Setup', 'Tax Declaration Setup')
 
@@ -377,7 +377,7 @@ def bir_2550m(company, year, month, response_type="pdf"):
 @frappe.whitelist()
 def bir_1601_eq(company, year, quarter, response_type="pdf"):
     precision = cint(frappe.db.get_default("currency_precision")) or 2
-    frappe.has_permission('BIR 1601-EQ', throw=True)
+    report_is_permitted('BIR 1601-EQ')
 
     year = int(year)
     quarter = int(quarter)
@@ -453,7 +453,7 @@ def bir_1601_eq(company, year, quarter, response_type="pdf"):
 @frappe.whitelist()
 def bir_1601_eq_qap(company, year, quarter, response_type="download"):
     precision = cint(frappe.db.get_default("currency_precision")) or 2
-    frappe.has_permission('BIR 1601-EQ', throw=True)
+    report_is_permitted('BIR 1601-EQ')
 
     year = int(year)
     quarter = int(quarter)
@@ -608,7 +608,7 @@ def first_month_in_quarter(quarter):
 @frappe.whitelist()
 def bir_1601_fq(company, year, quarter, response_type="pdf"):
     precision = cint(frappe.db.get_default("currency_precision")) or 2
-    frappe.has_permission('BIR 1601-FQ', throw=True)
+    report_is_permitted('BIR 1601-FQ')
 
     year = int(year)
     quarter = int(quarter)
@@ -684,7 +684,7 @@ def bir_1601_fq(company, year, quarter, response_type="pdf"):
 @frappe.whitelist()
 def bir_1601_fq_qap(company, year, quarter, response_type="download"):
     precision = cint(frappe.db.get_default("currency_precision")) or 2
-    frappe.has_permission('BIR 1601-FQ', throw=True)
+    report_is_permitted('BIR 1601-FQ')
 
     year = int(year)
     quarter = int(quarter)

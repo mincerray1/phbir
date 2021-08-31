@@ -114,6 +114,13 @@ doc_events = {
     },
 }
 
+jenv = {
+	"methods": [
+		"is_local_dev:phbir.ph_localization.utils.is_local_dev"
+	]
+}
+
+
 # Scheduled Tasks
 # ---------------
 
