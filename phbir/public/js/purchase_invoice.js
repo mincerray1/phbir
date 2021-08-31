@@ -126,6 +126,13 @@ $.extend(phbir.purchase_invoice, {
         refresh_field("custom_base_tax_base");
         refresh_field("custom_tax_base");
     
-        frm.toggle_display(["custom_base_tax_base"], frm.doc.currency != company_currency);
+        // frm.toggle_display(["custom_base_tax_base"], frm.doc.currency != company_currency);
+        // let hidden = 1;
+        // hidden = frm.doc.currency != company_currency ? 1 : 0;
+
+        // frm.set_df_property("custom_base_tax_base", "taxes", "hidden", hidden);
+        // let df = frappe.meta.get_docfield('Purchase Taxes and Charges','custom_base_tax_base', frm.doc.name);
+        // df.hidden = hidden;
+        // refresh_field("custom_base_tax_base");
     },
 });
