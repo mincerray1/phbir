@@ -14,6 +14,8 @@ frappe.ui.form.on('Purchase Invoice', {
                 frappe.set_route("query-report", "BIR 2307");
             }, __("View"));
         }
+
+        phbir.purchase_invoice.set_dynamic_labels(frm);
     },
 
     conversion_rate: function(frm) {
@@ -25,7 +27,7 @@ frappe.ui.form.on('Purchase Invoice', {
                 refresh_field("custom_tax_base");
             }
         });
-    }
+    },
 });
 
 frappe.ui.form.on('Purchase Taxes and Charges', {
@@ -62,7 +64,7 @@ frappe.ui.form.on('Purchase Taxes and Charges', {
     },
 
     form_render: function(frm, cdt, cdn) {
-        phbir.purchase_invoice.set_dynamic_labels(frm, cdt, cdn);
+        phbir.purchase_invoice.set_dynamic_labels(frm);
     }
 });
 
@@ -98,11 +100,11 @@ $.extend(phbir.purchase_invoice, {
         refresh_field("custom_base_tax_base");
     },
 
-    set_dynamic_labels: function(frm, cdt, cdn) {
+    set_dynamic_labels: function(frm) {
         let company_currency = erpnext.get_currency(frm.doc.company);
         
-        frm.set_currency_labels(["custom_base_tax_base"], company_currency);
-        frm.set_currency_labels(["custom_tax_base"], frm.doc.currency);
+        frm.set_currency_labels(["custom_base_tax_base"], company_currency, "taxes");
+        frm.set_currency_labels(["custom_tax_base"], frm.doc.currency, "taxes");
         refresh_field("custom_base_tax_base");
         refresh_field("custom_tax_base");
     
