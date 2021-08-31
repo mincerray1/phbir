@@ -182,24 +182,28 @@
   {
    "fieldname": "directly_attributable_to_sale_to_government",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Directly Attributable to Sale to Government",
    "options": "Purchase Taxes and Charges Template"
   },
   {
    "fieldname": "item_directly_attributable_to_sale_to_government",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Item Directly Attributable to Sale to Government",
    "options": "Item Tax Template"
   },
   {
    "fieldname": "directly_attributable_to_exempt_sales",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Directly Attributable to Exempt Sales",
    "options": "Purchase Taxes and Charges Template"
   },
   {
    "fieldname": "item_directly_attributable_to_exempt_sales",
    "fieldtype": "Link",
+   "hidden": 1,
    "label": "Item Directly Attributable to Exempt Sales",
    "options": "Item Tax Template"
   },
@@ -240,7 +244,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-08-20 11:29:45.790955",
+ "modified": "2021-08-31 12:21:13.400617",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "Tax Declaration Setup",
