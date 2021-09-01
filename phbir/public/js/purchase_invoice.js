@@ -14,8 +14,6 @@ frappe.ui.form.on('Purchase Invoice', {
                 frappe.set_route("query-report", "BIR 2307");
             }, __("View"));
         }
-
-        phbir.purchase_invoice.set_dynamic_labels(frm);
     },
 
     conversion_rate: function(frm) {
@@ -23,8 +21,6 @@ frappe.ui.form.on('Purchase Invoice', {
             if (row.charge_type == 'Actual' && row.use_custom_tax_base) {
                 frappe.model.set_value(row.doctype, row.name, "use_custom_tax_base", 0);
                 frappe.model.set_value(row.doctype, row.name, "custom_tax_base", 0);
-                refresh_field("use_custom_tax_base");
-                refresh_field("custom_tax_base");
 
                 // frappe.model.set_value(row.doctype, row.name, "custom_tax_base", flt(row.custom_tax_base / frm.doc.conversion_rate, precision("custom_tax_base", row)));
                 // refresh_field("custom_tax_base");
@@ -67,7 +63,7 @@ frappe.ui.form.on('Purchase Taxes and Charges', {
     },
 
     form_render: function(frm, cdt, cdn) {
-        phbir.purchase_invoice.set_dynamic_labels(frm);
+        phbir.purchase_invoice.set_dynamic_labels(frm, cdt, cdn);
     },
 
     atc_rate: function(frm, cdt, cdn) {
@@ -126,16 +122,17 @@ $.extend(phbir.purchase_invoice, {
         refresh_field("custom_base_tax_base");
     },
 
-    set_dynamic_labels: function(frm) {
+    set_dynamic_labels: function(frm, cdt, cdn) {
         let company_currency = erpnext.get_currency(frm.doc.company);
         
         frm.set_currency_labels(["custom_base_tax_base"], company_currency, "taxes");
         frm.set_currency_labels(["custom_tax_base"], frm.doc.currency, "taxes");
 
-        
-        let hidden = frm.doc.currency != company_currency ? 0 : 1;
-        let df = frappe.meta.get_docfield('Purchase Taxes and Charges','custom_base_tax_base', frm.doc.name);
-        df.hidden = hidden;
+        let df_custom_tax_base = frappe.meta.get_docfield(cdt,'custom_tax_base', cdn);
+
+        let hidden = (frm.doc.currency != company_currency ? 0 : 1) || df_custom_tax_base.hidden;
+        let df_custom_base_tax_base = frappe.meta.get_docfield(cdt,'custom_base_tax_base', cdn);
+        df_custom_base_tax_base.hidden = hidden;
 
         refresh_field("custom_base_tax_base");
         refresh_field("custom_tax_base");
