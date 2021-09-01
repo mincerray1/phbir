@@ -25,6 +25,9 @@ frappe.ui.form.on('Purchase Invoice', {
                 frappe.model.set_value(row.doctype, row.name, "custom_tax_base", 0);
                 refresh_field("use_custom_tax_base");
                 refresh_field("custom_tax_base");
+
+                // frappe.model.set_value(row.doctype, row.name, "custom_tax_base", flt(row.custom_tax_base / frm.doc.conversion_rate, precision("custom_tax_base", row)));
+                // refresh_field("custom_tax_base");
             }
         });
     },
@@ -74,6 +77,8 @@ frappe.ui.form.on('Purchase Taxes and Charges', {
             frappe.model.set_value(cdt, cdn, "rate", row.atc_rate);
             refresh_field("rate");
         }
+
+        phbir.purchase_invoice.calculate_custom_tax_amount(frm, cdt, cdn);
     },
 
     atc: function(frm, cdt, cdn) {
@@ -115,6 +120,9 @@ $.extend(phbir.purchase_invoice, {
         let row = locals[cdt][cdn];
         let custom_base_tax_base = flt(flt(row.custom_tax_base)*conversion_rate, precision("custom_base_tax_base", row));
         frappe.model.set_value(cdt, cdn, "custom_base_tax_base", custom_base_tax_base);
+        let hidden = frm.doc.currency != company_currency ? 0 : 1;
+        let df = frappe.meta.get_docfield('Purchase Taxes and Charges','custom_base_tax_base', cdn);
+        df.hidden = hidden;
         refresh_field("custom_base_tax_base");
     },
 
@@ -123,16 +131,13 @@ $.extend(phbir.purchase_invoice, {
         
         frm.set_currency_labels(["custom_base_tax_base"], company_currency, "taxes");
         frm.set_currency_labels(["custom_tax_base"], frm.doc.currency, "taxes");
+
+        
+        let hidden = frm.doc.currency != company_currency ? 0 : 1;
+        let df = frappe.meta.get_docfield('Purchase Taxes and Charges','custom_base_tax_base', frm.doc.name);
+        df.hidden = hidden;
+
         refresh_field("custom_base_tax_base");
         refresh_field("custom_tax_base");
-    
-        // frm.toggle_display(["custom_base_tax_base"], frm.doc.currency != company_currency);
-        // let hidden = 1;
-        // hidden = frm.doc.currency != company_currency ? 1 : 0;
-
-        // frm.set_df_property("custom_base_tax_base", "taxes", "hidden", hidden);
-        // let df = frappe.meta.get_docfield('Purchase Taxes and Charges','custom_base_tax_base', frm.doc.name);
-        // df.hidden = hidden;
-        // refresh_field("custom_base_tax_base");
     },
 });
