@@ -15,11 +15,11 @@ options = {
 }
 
 @frappe.whitelist()
-def bir_2307(company, supplier, purchase_invoice, from_date, to_date, response_type="pdf"):
+def bir_2307(company, supplier, doctype, purchase_invoice, payment_entry, from_date, to_date, response_type="pdf"):
     report_is_permitted('BIR 2307')
 
     from phbir.ph_localization.report.bir_2307.bir_2307 import get_data as get_data_bir_2307
-    data = get_data_bir_2307(company, supplier, purchase_invoice, from_date, to_date)
+    data = get_data_bir_2307(company, supplier, doctype, purchase_invoice, payment_entry, from_date, to_date)
 
     data_ip = []
     data_mp = []

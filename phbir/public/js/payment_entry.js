@@ -1,6 +1,22 @@
 frappe.provide("phbir.payment_entry");
 
 frappe.ui.form.on('Payment Entry', {
+    refresh: function(frm) {
+        if(frm.doc.docstatus == 1 && frm.doc.payment_type === "Pay" && frm.doc.party_type === "Supplier") {
+            frm.add_custom_button(__('BIR 2307'), function() {
+                frappe.route_options = {
+                    company: frm.doc.company,
+                    supplier: frm.doc.party,
+                    doctype: 'Payment Entry',
+                    payment_entry: frm.doc.name,
+                    from_date: moment(frm.doc.posting_date).format('YYYY-MM-DD'),
+                    to_date: moment(frm.doc.posting_date).format('YYYY-MM-DD')
+                };
+                frappe.set_route("query-report", "BIR 2307");
+            }, __("View"));
+        }
+    },
+
     target_exchange_rate: function(frm) {
         $.each(frm.doc.taxes, function(index, row){
             if (row.charge_type == 'Actual' && row.use_custom_tax_base) {
