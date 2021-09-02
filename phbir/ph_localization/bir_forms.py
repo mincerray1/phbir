@@ -514,30 +514,60 @@ def bir_1601_eq_qap(company, year, quarter, response_type="download"):
         FROM
             (
             SELECT 
-                pi.supplier,
-                YEAR(pi.posting_date) AS year,
-                MONTH(pi.posting_date) AS month,
-                ptac.atc AS atc,
-                SUM(pi.base_total) AS base_tax_base,
-                SUM(ABS(ptac.base_tax_amount)) AS base_tax_withheld
-            FROM 
-                `tabPurchase Invoice` pi
-            LEFT JOIN
-                `tabPurchase Taxes and Charges` ptac
-            ON
-                pi.name = ptac.parent
-            WHERE
-                pi.docstatus = 1
-                and pi.is_return = 0
-                and ((ptac.base_tax_amount < 0 and ptac.add_deduct_tax != 'Deduct') or (ptac.base_tax_amount >= 0 and ptac.add_deduct_tax = 'Deduct'))
-                and pi.company = %s
-                and YEAR(pi.posting_date) = %s
-                and QUARTER(pi.posting_date) = %s
+                source.supplier,
+                YEAR(source.posting_date) AS year,
+                MONTH(source.posting_date) AS month,
+                source.atc AS atc,
+                SUM(source.base_total) AS base_tax_base,
+                SUM(ABS(source.base_tax_amount)) AS base_tax_withheld
+            FROM
+            (
+                SELECT 
+                    pi.supplier,
+                    pi.posting_date,
+                    ptac.atc AS atc,
+                    pi.base_total,
+                    ptac.base_tax_amount
+                FROM 
+                    `tabPurchase Invoice` pi
+                LEFT JOIN
+                    `tabPurchase Taxes and Charges` ptac
+                ON
+                    pi.name = ptac.parent
+                WHERE
+                    pi.docstatus = 1
+                    and pi.is_return = 0
+                    and ((ptac.base_tax_amount < 0 and ptac.add_deduct_tax != 'Deduct') or (ptac.base_tax_amount >= 0 and ptac.add_deduct_tax = 'Deduct'))
+                    and pi.company = %s
+                    and YEAR(pi.posting_date) = %s
+                    and QUARTER(pi.posting_date) = %s
+                UNION ALL
+                SELECT 
+                    pe.party,
+                    pe.posting_date,
+                    atac.atc AS atc,
+                    pe.base_paid_amount,
+                    atac.base_tax_amount
+                FROM 
+                    `tabPayment Entry` pe
+                LEFT JOIN
+                    `tabAdvance Taxes and Charges` atac
+                ON
+                    pe.name = atac.parent
+                WHERE
+                    pe.docstatus = 1
+                    and pe.payment_type = 'Pay'
+                    and pe.party_type = 'Supplier'
+                    and ((atac.base_tax_amount < 0 and atac.add_deduct_tax != 'Deduct') or (atac.base_tax_amount >= 0 and atac.add_deduct_tax = 'Deduct'))
+                    and pe.company = %s
+                    and YEAR(pe.posting_date) = %s
+                    and QUARTER(pe.posting_date) = %s
+            ) source
             GROUP BY
-                pi.supplier,
-                YEAR(pi.posting_date),
-                MONTH(pi.posting_date),
-                ptac.atc
+                source.supplier,
+                YEAR(source.posting_date),
+                MONTH(source.posting_date),
+                source.atc
             ) AS temp
         INNER JOIN 
             `tabATC` as a
@@ -545,7 +575,7 @@ def bir_1601_eq_qap(company, year, quarter, response_type="download"):
             temp.atc = a.name
         WHERE 
             a.tax_type_code IN ('WE', 'WB', 'WV')
-        """, (company, year, quarter), as_dict=1)
+        """, (company, year, quarter, company, year, quarter), as_dict=1)
 
     for entry in data:
         total_taxes_withheld += entry.base_tax_withheld
@@ -765,36 +795,65 @@ def bir_1601_fq_qap(company, year, quarter, response_type="download"):
             temp.month,
             temp.atc,
             a.rate,
-            /*ROUND((temp.base_tax_withheld / (a.rate / 100)), 2) AS base_tax_base,*/
             temp.base_tax_base,
             temp.base_tax_withheld
         FROM
             (
             SELECT 
-                pi.supplier,
-                YEAR(pi.posting_date) AS year,
-                MONTH(pi.posting_date) AS month,
-                ptac.atc AS atc,
-                SUM(pi.base_total) AS base_tax_base,
-                SUM(ABS(ptac.base_tax_amount)) AS base_tax_withheld
-            FROM 
-                `tabPurchase Invoice` pi
-            LEFT JOIN
-                `tabPurchase Taxes and Charges` ptac
-            ON
-                pi.name = ptac.parent
-            WHERE
-                pi.docstatus = 1
-                and pi.is_return = 0
-                and (ptac.base_tax_amount < 0 or ptac.add_deduct_tax = 'Deduct')
-                and pi.company = %s
-                and YEAR(pi.posting_date) = %s
-                and QUARTER(pi.posting_date) = %s
+                source.supplier,
+                YEAR(source.posting_date) AS year,
+                MONTH(source.posting_date) AS month,
+                source.atc AS atc,
+                SUM(source.base_total) AS base_tax_base,
+                SUM(ABS(source.base_tax_amount)) AS base_tax_withheld
+            FROM
+            (
+                SELECT 
+                    pi.supplier,
+                    pi.posting_date,
+                    ptac.atc AS atc,
+                    pi.base_total,
+                    ptac.base_tax_amount
+                FROM 
+                    `tabPurchase Invoice` pi
+                LEFT JOIN
+                    `tabPurchase Taxes and Charges` ptac
+                ON
+                    pi.name = ptac.parent
+                WHERE
+                    pi.docstatus = 1
+                    and pi.is_return = 0
+                    and ((ptac.base_tax_amount < 0 and ptac.add_deduct_tax != 'Deduct') or (ptac.base_tax_amount >= 0 and ptac.add_deduct_tax = 'Deduct'))
+                    and pi.company = %s
+                    and YEAR(pi.posting_date) = %s
+                    and QUARTER(pi.posting_date) = %s
+                UNION ALL
+                SELECT 
+                    pe.party,
+                    pe.posting_date,
+                    atac.atc AS atc,
+                    pe.base_paid_amount,
+                    atac.base_tax_amount
+                FROM 
+                    `tabPayment Entry` pe
+                LEFT JOIN
+                    `tabAdvance Taxes and Charges` atac
+                ON
+                    pe.name = atac.parent
+                WHERE
+                    pe.docstatus = 1
+                    and pe.payment_type = 'Pay'
+                    and pe.party_type = 'Supplier'
+                    and ((atac.base_tax_amount < 0 and atac.add_deduct_tax != 'Deduct') or (atac.base_tax_amount >= 0 and atac.add_deduct_tax = 'Deduct'))
+                    and pe.company = %s
+                    and YEAR(pe.posting_date) = %s
+                    and QUARTER(pe.posting_date) = %s
+            ) source
             GROUP BY
-                pi.supplier,
-                YEAR(pi.posting_date),
-                MONTH(pi.posting_date),
-                ptac.atc
+                source.supplier,
+                YEAR(source.posting_date),
+                MONTH(source.posting_date),
+                source.atc
             ) AS temp
         INNER JOIN 
             `tabATC` as a
@@ -802,7 +861,7 @@ def bir_1601_fq_qap(company, year, quarter, response_type="download"):
             temp.atc = a.name
         WHERE 
             a.tax_type_code IN ('WF')
-        """, (company, year, quarter), as_dict=1)
+        """, (company, year, quarter, company, year, quarter), as_dict=1)
 
     for entry in data:
         total_taxes_withheld += entry.base_tax_withheld
