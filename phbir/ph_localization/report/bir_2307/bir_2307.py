@@ -56,7 +56,7 @@ def get_data(company, supplier, doctype, purchase_invoice, payment_entry, from_d
             WHERE
                 pi.docstatus = 1
                 and pi.is_return = 0
-                and (ptac.base_tax_amount < 0 or ptac.add_deduct_tax = 'Deduct')
+                and ((ptac.base_tax_amount < 0 and ptac.add_deduct_tax != 'Deduct') or (ptac.base_tax_amount >= 0 and ptac.add_deduct_tax = 'Deduct'))
                 and ptac.atc IN (SELECT atc FROM `tabATC` WHERE tax_type_code IN ('WE', 'WB', 'WV'))
                 and pi.supplier = %s
                 and pi.posting_date >= %s
@@ -77,10 +77,10 @@ def get_data(company, supplier, doctype, purchase_invoice, payment_entry, from_d
                 END) AS payment_type,
                 atac.atc AS atc,
                 pe.name AS document_no,
-                (CASE WHEN MONTH(pe.posting_date) IN (1, 4, 7, 10) THEN pe.paid_amount ELSE 0 END) AS month_1,
-                (CASE WHEN MONTH(pe.posting_date) IN (2, 5, 8, 11) THEN pe.paid_amount ELSE 0 END) AS month_2,
-                (CASE WHEN MONTH(pe.posting_date) IN (3, 6, 9, 12) THEN pe.paid_amount ELSE 0 END) AS month_3,
-                pe.paid_amount AS total,
+                (CASE WHEN MONTH(pe.posting_date) IN (1, 4, 7, 10) THEN pe.base_paid_amount ELSE 0 END) AS month_1,
+                (CASE WHEN MONTH(pe.posting_date) IN (2, 5, 8, 11) THEN pe.base_paid_amount ELSE 0 END) AS month_2,
+                (CASE WHEN MONTH(pe.posting_date) IN (3, 6, 9, 12) THEN pe.base_paid_amount ELSE 0 END) AS month_3,
+                pe.base_paid_amount AS total,
                 ABS(atac.base_tax_amount) AS tax_withheld_for_the_quarter
             FROM 
                 `tabPayment Entry` pe
