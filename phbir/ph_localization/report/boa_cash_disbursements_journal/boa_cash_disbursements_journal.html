@@ -1,4 +1,4 @@
-<h2 class="text-center">{%= __("Cash Receipts Journal") %}</h2>
+<h2 class="text-center">{%= __("Cash Disbursements Journal") %}</h2>
 <!-- erpnext.get_currency(frappe.defaults.get_default("company")) -->
 {% let currency = erpnext.get_currency(filters.company) %}
 {% let company_information = get_company_information(filters.company) %}
@@ -30,7 +30,7 @@
     </div>
     <div>
         <span>Report: </span>
-        <span class="">{%= __("Cash Receipts Journal") %}</span>
+        <span class="">{%= __("Cash Disbursements Journal") %}</span>
     </div>
 
     {% let no_of_records = 0 %}
