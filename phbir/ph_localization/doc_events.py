@@ -34,3 +34,11 @@ def validate_item_tax_template(doc):
             msg=message
         )
     
+def payment_entry_validate(doc, method):
+    for item in doc.taxes:
+        if item.tax_amount < 0:
+            message = "Tax amount cannot be negative <strong>{}</strong>.".format(item.tax_amount)
+            frappe.throw(
+                title="Advance Taxes and Charges",
+                msg=message
+            )

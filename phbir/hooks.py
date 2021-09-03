@@ -112,6 +112,9 @@ doc_events = {
     "Purchase Invoice": {
         "validate": "phbir.ph_localization.doc_events.purchase_invoice_validate",
     },
+    "Payment Entry": {
+        "validate": "phbir.ph_localization.doc_events.payment_entry_validate",
+    },
 }
 
 jenv = {
