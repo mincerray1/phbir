@@ -32,10 +32,17 @@
         <span class="">{%= __("Sales Journal") %}</span>
     </div>
 
+    {% let no_of_records = 0 %}
+    {% for(var i=0, l=data.length; i<l; i++) { %}
+        {% if(!data[i].is_total_row && !data[i].is_subtotal_row) { %}
+            {% no_of_records = no_of_records + 1 %}
+        {% } %}
+    {% } %}
     <div>
         <span>No of Records: </span>
-        <span class="">{%= (data.length - (report.add_total_row == 1 ? 1 : 0)) %}</span>
+        <span class="">{%= no_of_records %}</span>
     </div>
+    
     <div>
         <span>{%= __("Period Covered: ") %}</span>        
         <span>
