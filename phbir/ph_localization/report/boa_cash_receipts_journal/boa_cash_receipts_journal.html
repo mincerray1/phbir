@@ -73,9 +73,13 @@
 	</thead>
 	<tbody>
         {% let sum_debit = 0, sum_credit = 0 %}
+        {% let subtotal_debit = 0, subtotal_credit = 0 %}
+        {% let previous_voucher_type = '', previous_voucher_no = '' %}
+        {% let current_voucher_type = '', current_voucher_no = '' %}
         
 		{% for(var i=0, l=data.length; i<l; i++) { %}
             {% if(!data[i].is_total_row) { %}
+
 			    <tr>
                     <td>{%= frappe.datetime.str_to_user(data[i].posting_date) %}</td>
                     <td>{%= data[i].voucher_type %}</td>
@@ -83,14 +87,23 @@
                     <td>{%= data[i].party_name %}</td>
                     <td>{%= data[i].remarks %}</td>
                     <td>{%= data[i].account_number %}</td>
-                    <td>{%= data[i].account_name %}</td>
 
-                    <td style="text-align: right">{%= format_currency(data[i].debit, currency) %}</td>
-                    <td style="text-align: right">{%= format_currency(data[i].credit, currency) %}</td>
+                    {% if(data[i].is_subtotal_row == 0) { %}
+                        <td>{%= data[i].account_name %}</td>
+                        <td style="text-align: right">{%= format_currency(data[i].debit, currency) %}</td>
+                        <td style="text-align: right">{%= format_currency(data[i].credit, currency) %}</td>
+                    {% } %}
+
+                    {% if(data[i].is_subtotal_row == 1) { %}
+                        <td style="text-align: right"><strong>{%= data[i].account_name %}</strong></td>
+                        <td style="text-align: right"><strong>{%= format_currency(data[i].debit, currency) %}</strong></td>
+                        <td style="text-align: right"><strong>{%= format_currency(data[i].credit, currency) %}</strong></td>
+                    {% } %}
 
                     {% sum_debit = sum_debit + data[i].debit %}
                     {% sum_credit = sum_credit + data[i].credit %}
                 </tr>
+                
             {% } %}
 		{% } %}
     </tbody>

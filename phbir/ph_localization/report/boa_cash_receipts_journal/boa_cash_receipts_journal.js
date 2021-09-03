@@ -30,7 +30,17 @@ frappe.query_reports["BOA Cash Receipts Journal"] = {
             default: frappe.datetime.get_today(),
             reqd: 1
         }
-    ]
+    ],
+    
+	"formatter": function(value, row, column, data, default_formatter) {
+        value = default_formatter(value, row, column, data);
+        let subtotal_fields = ['account_name', 'debit', 'credit'];
+		if (data && data['is_subtotal_row'] == 1 && subtotal_fields.includes(column.fieldname)) {
+            value = "<div style='font-weight: bold;'>" + value + "</div>";
+		}
+
+		return value;
+	},
 };
 
 function get_company_information(company){

@@ -2,7 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
-from frappe.utils import (getdate)
+from frappe.utils import (getdate, flt)
 from frappe import _
 
 def execute(filters=None):
@@ -94,8 +94,73 @@ def get_data(filters):
     ORDER BY
         temp.posting_date ASC, temp.voucher_no ASC, (CASE WHEN temp.debit > 0 THEN 0 ELSE 1 END) ASC, temp.creation ASC
     """, (getdate(filters.from_date), getdate(filters.to_date), filters.company, getdate(filters.from_date), getdate(filters.to_date), filters.company), as_dict=1)
+    
+    current_voucher_no = ''
+    current_voucher_type = ''
 
-    result.extend(data)
+    previous_voucher_no = ''
+    previous_voucher_type = ''
+    subtotal_debit = 0
+    subtotal_credit = 0
+
+    data_with_subtotal = []
+    
+    subtotals = {}
+    for row in data:
+
+        current_voucher_no = row.voucher_no
+        current_voucher_type = row.voucher_type
+        if current_voucher_no == previous_voucher_no and current_voucher_type == previous_voucher_type:
+            subtotal_debit = subtotal_debit + row.debit
+            subtotal_credit = subtotal_credit + row.credit
+        else:
+            print("previous_voucher_no: {}".format(previous_voucher_no))
+            print("subtotal_debit: {}".format(subtotal_debit))
+            print("subtotal_credit: {}".format(subtotal_credit))
+
+            # add subtotal row, reset subtotals
+            if previous_voucher_type and previous_voucher_no: # not first row
+                data_with_subtotal.append({
+                    'posting_date':'',
+                    'voucher_type': '',
+                    'voucher_no': '',
+                    'party': '',
+                    'party_name': '',
+                    'remarks': '',
+                    'account_number': '',
+                    'account_name': 'Subtotal',
+                    'debit': subtotal_debit,
+                    'credit': subtotal_credit,
+                    'is_subtotal_row': 1
+                })
+
+            subtotal_debit = 0
+            subtotal_credit = 0
+            subtotal_debit = subtotal_debit + row.debit
+            subtotal_credit = subtotal_credit + row.credit
+        
+        row['is_subtotal_row'] = 0
+        data_with_subtotal.append(row)
+        
+        previous_voucher_no = current_voucher_no
+        previous_voucher_type = current_voucher_type
+    
+    # subtotal for last set
+    data_with_subtotal.append({
+        'posting_date':'',
+        'voucher_type': '',
+        'voucher_no': '',
+        'party': '',
+        'party_name': '',
+        'remarks': '',
+        'account_number': '',
+        'account_name': 'Subtotal',
+        'debit': subtotal_debit,
+        'credit': subtotal_credit,
+        'is_subtotal_row': 1
+    })
+    
+    result.extend(data_with_subtotal)
     return result
 
 def get_columns():
