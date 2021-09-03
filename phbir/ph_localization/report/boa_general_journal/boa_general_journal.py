@@ -34,7 +34,7 @@ def get_data(filters):
         and ge.posting_date <= %s
         and ge.company = %s
     ORDER BY
-        ge.posting_date ASC, ge.voucher_no, (CASE WHEN ge.debit > 0 THEN 0 ELSE 1 END) ASC
+        ge.posting_date ASC, ge.voucher_no, (CASE WHEN ge.debit > 0 THEN 0 ELSE 1 END) ASC, ge.creation ASC
     """, (getdate(filters.from_date), getdate(filters.to_date), filters.company), as_dict=1)
 
     return result

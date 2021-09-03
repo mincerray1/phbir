@@ -113,16 +113,18 @@
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Cash Receipts Journal",
+   "link_to": "BOA Cash Receipts Journal",
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
   },
   {
    "hidden": 0,
-   "is_query_report": 0,
+   "is_query_report": 1,
    "label": "Cash Disbursements Journal",
+   "link_to": "BOA Cash Disbursements Journal",
    "link_type": "Report",
    "onboard": 0,
    "type": "Link"
@@ -181,7 +183,7 @@
    "type": "Link"
   }
  ],
- "modified": "2021-08-21 13:27:25.098068",
+ "modified": "2021-09-03 16:32:47.762006",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "PH",
