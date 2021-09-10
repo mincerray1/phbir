@@ -1,6 +1,6 @@
 ## PH Localization
 
-This app is for Philippine-specific features.
+This app is for Philippine local features.
 
 #### License
 
