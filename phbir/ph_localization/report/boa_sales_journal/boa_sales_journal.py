@@ -156,7 +156,7 @@ def get_columns():
             "label": _("Document No"),
             "fieldtype": "Link",
             "options": "Sales Invoice",
-            "width": 150
+            "width": 200
         },
         # {
         #     "fieldname": "is_return",

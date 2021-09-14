@@ -170,7 +170,7 @@ def get_columns():
             "label": _("Document No"),
             "fieldtype": "Link",
             "options": "Purchase Invoice",
-            "width": 150
+            "width": 200
         },
         {
             "fieldname": "tax_id",
