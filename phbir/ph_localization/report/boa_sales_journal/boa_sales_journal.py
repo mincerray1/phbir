@@ -12,7 +12,8 @@ def execute(filters=None):
     return columns, data
 
 def get_data(filters):
-    result = frappe.db.sql("""
+    result = []
+    data_si = frappe.db.sql("""
     SELECT 
         si.posting_date, 
         (CASE WHEN IFNULL(si.tax_id, '') = '' THEN c.tax_id ELSE si.tax_id END) AS tax_id,
@@ -63,6 +64,63 @@ def get_data(filters):
     ORDER BY
         si.posting_date ASC
     """, (getdate(filters.from_date), getdate(filters.to_date), filters.company), as_dict=1)
+
+    result.extend(data_si)
+
+    data_return = frappe.db.sql("""
+    SELECT 
+        si.posting_date, 
+        (CASE WHEN IFNULL(si.tax_id, '') = '' THEN c.tax_id ELSE si.tax_id END) AS tax_id,
+        si.customer,
+        c.customer_name,
+        /* si.customer_address, */
+        si.name,
+        si.currency,
+        si.is_return,
+        si.po_no,
+        (si.base_net_total + si.base_discount_amount) as total,
+        (si.base_discount_amount) as net_discount,
+        IFNULL(stac_add.base_tax_amount, 0) as tax_amount,
+        (IFNULL(-stac_deduct.base_tax_amount, 0)) as withholding_tax_amount,
+        si.base_grand_total as grand_total
+    FROM
+        `tabSales Invoice` si
+    LEFT JOIN
+        `tabCustomer` c
+    ON 
+        si.customer = c.name
+    LEFT JOIN
+        (
+            SELECT stac.parent, SUM(stac.tax_amount) AS tax_amount, SUM(stac.base_tax_amount) AS base_tax_amount, 
+                SUM(stac.tax_amount_after_discount_amount) AS tax_amount_after_discount_amount, SUM(stac.base_tax_amount_after_discount_amount) AS base_tax_amount_after_discount_amount
+            FROM `tabSales Taxes and Charges` stac
+            WHERE stac.base_tax_amount < 0
+            GROUP BY stac.parent
+        ) stac_add
+    ON
+        si.name = stac_add.parent
+    LEFT JOIN
+        (
+            SELECT stac.parent, SUM(stac.tax_amount) AS tax_amount, SUM(stac.base_tax_amount) AS base_tax_amount, 
+                SUM(stac.tax_amount_after_discount_amount) AS tax_amount_after_discount_amount, SUM(stac.base_tax_amount_after_discount_amount) AS base_tax_amount_after_discount_amount
+            FROM `tabSales Taxes and Charges` stac
+            WHERE stac.base_tax_amount >= 0
+            GROUP BY stac.parent
+        ) stac_deduct
+    ON
+        si.name = stac_deduct.parent
+    WHERE
+        si.docstatus = 1
+        and si.is_return = 1
+        and si.posting_date >= %s
+        and si.posting_date <= %s
+        and si.company = %s
+    ORDER BY
+        si.posting_date ASC
+    """, (getdate(filters.from_date), getdate(filters.to_date), filters.company), as_dict=1)
+
+    result.extend(data_return)
+    result = sorted(result, key=lambda row: row.posting_date)
 
     return result
 
