@@ -953,7 +953,7 @@ def bir_0619_e(company, year, month, due_date, response_type="pdf"):
     report_is_permitted('BIR 0619-E')
 
     year = int(year)
-    month = int(month)
+    month = ("0" + str(month))[:2]
     due_date = getdate(due_date)
 
     context = {
@@ -977,7 +977,7 @@ def bir_0619_f(company, year, month, due_date, response_type="pdf"):
     report_is_permitted('BIR 0619-F')
 
     year = int(year)
-    month = int(month)
+    month = ("0" + str(month))[:2]
     due_date = getdate(due_date)
 
     context = {
