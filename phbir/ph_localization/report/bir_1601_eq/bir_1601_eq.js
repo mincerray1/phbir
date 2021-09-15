@@ -29,12 +29,12 @@ frappe.query_reports["BIR 1601-EQ"] = {
 	],
     "onload": function(report) {
         report.page.add_inner_button(__("Print BIR 1601-EQ"), function() {
-            let filter_values = {
+            let context = {
                     'company': frappe.query_report.get_filter_value('company'),
                     'year': frappe.query_report.get_filter_value('year'),
                     'quarter': frappe.query_report.get_filter_value('quarter'),
                 };
-            let u = new URLSearchParams(filter_values).toString();
+            let u = new URLSearchParams(context).toString();
             
             var bir_form_url = frappe.urllib.get_full_url('/api/method/phbir.ph_localization.bir_forms.bir_1601_eq?' + u + '&response_type=pdf');
             let bir_form = window.open(bir_form_url);

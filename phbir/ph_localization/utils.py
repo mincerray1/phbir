@@ -60,6 +60,14 @@ def get_company_information(company):
     vat_industry = frappe.db.get_single_value('PH Localization Setup', 'vat_industry')
     withholding_agent_category = frappe.db.get_single_value('PH Localization Setup', 'withholding_agent_category')
 
+    authorized_representative_1 = frappe.db.get_single_value('PH Localization Setup', 'authorized_representative_1')
+    title_1 = frappe.db.get_single_value('PH Localization Setup', 'title_1')
+    tin_of_signatory_1 = frappe.db.get_single_value('PH Localization Setup', 'tin_of_signatory_1')
+    authorized_representative_2 = frappe.db.get_single_value('PH Localization Setup', 'authorized_representative_2')
+    title_2 = frappe.db.get_single_value('PH Localization Setup', 'title_2')
+    tin_of_signatory_2 = frappe.db.get_single_value('PH Localization Setup', 'tin_of_signatory_2')
+
+
     result = {
         'company_name': company_doc.name,
         'address': company_address if company_address else '',
@@ -72,7 +80,13 @@ def get_company_information(company):
         'vat_industry': vat_industry if vat_industry else '',
         'withholding_agent_category': withholding_agent_category if withholding_agent_category else '',
         'phone': phone if phone else '',
-        'email_id': email_id if email_id else ''
+        'email_id': email_id if email_id else '',
+        'authorized_representative_1': authorized_representative_1,
+        'title_1': title_1,
+        'tin_of_signatory_1': tin_of_signatory_1,
+        'authorized_representative_2': authorized_representative_2,
+        'title_2': title_2,
+        'tin_of_signatory_2': tin_of_signatory_2
     }
 
     return result

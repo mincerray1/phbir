@@ -17,6 +17,7 @@ frappe.query_reports["BIR 0619-F"] = {
 			"label": __("Year"),
             "fieldtype": "Select",
             "options": get_years(),
+            "default": moment(frappe.datetime.get_today()).year(),
             "reqd": 1
 		},
 		{
@@ -24,6 +25,7 @@ frappe.query_reports["BIR 0619-F"] = {
 			"label": __("Month"),
 			"fieldtype": "Select",
 			"options": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+            "default": moment(frappe.datetime.get_today()).month(),
             "reqd": 1
 		},
         {
