@@ -35,13 +35,13 @@
 <div style="left: 2.48in; top: 1.84in; letter-spacing: 0.1in;" class="bir-form-text">{{ due_date.strftime('%d') }}</div>
 <div style="left: 2.91in; top: 1.84in; letter-spacing: 0.1in;" class="bir-form-text">{{ due_date.strftime('%Y') }}</div>
 
-{% if amended_form %}
+{% if amended_form == 1 %}
     <div style="left: 3.89in; top: 1.86in; letter-spacing: 0.11in;" class="bir-form-text">✗</div>
 {% else %}
     <div style="left: 4.46in; top: 1.86in; letter-spacing: 0.11in;" class="bir-form-text">✗</div>
 {% endif %}
 
-{% if any_taxes_withheld %}
+{% if any_taxes_withheld == 1 %}
     <div style="left: 5.28in; top: 1.86in; letter-spacing: 0.11in;" class="bir-form-text">✗</div>
 {% else %}
     <div style="left: 5.88in; top: 1.86in; letter-spacing: 0.11in;" class="bir-form-text">✗</div>

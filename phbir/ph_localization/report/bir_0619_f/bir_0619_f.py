@@ -14,7 +14,7 @@ def execute(filters=None):
 def get_data(filters):
     data = [
         {
-            'bir_0619_e': '✓'
+            'bir_0619_f': '✓'
         }
     ]
 
@@ -23,7 +23,7 @@ def get_data(filters):
 def get_columns():
     columns = [
         {
-            "fieldname": "bir_0619_F",
+            "fieldname": "bir_0619_f",
             "label": _("BIR 0619-F"),
             "fieldtype": "Data",
             "width": 120

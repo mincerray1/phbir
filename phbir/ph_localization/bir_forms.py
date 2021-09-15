@@ -948,7 +948,7 @@ def bir_1601_fq_qap(company, year, quarter, response_type="download"):
     return_document(content, filename, file_extension, response_type)
 
 @frappe.whitelist()
-def bir_0619_e(company, year, month, due_date, 
+def bir_0619_e(company, year, month, due_date, amended_form, any_taxes_withheld,
     amount_of_remittance=0, amount_remitted=0,
     surcharge=0, compromise=0, interest=0,
     cash_drawee_bank='', cash_number='', cash_date=None, cash_amount=0,
@@ -968,6 +968,8 @@ def bir_0619_e(company, year, month, due_date,
         'year': year,
         'month': month,
         'due_date': due_date,
+        'amended_form': int(amended_form),
+        'any_taxes_withheld': int(any_taxes_withheld),
         'amount_of_remittance': flt(amount_of_remittance, precision), 
         'amount_remitted': flt(amount_remitted, precision), 
         'surcharge': flt(surcharge, precision), 
@@ -1000,7 +1002,14 @@ def bir_0619_e(company, year, month, due_date,
     return_pdf_document(html, filename, options, response_type)
 
 @frappe.whitelist()
-def bir_0619_f(company, year, month, due_date, response_type="pdf"):
+def bir_0619_f(company, year, month, due_date, amended_form, any_taxes_withheld,
+    amount_of_remittance_wmf10=0, amount_of_remittance_wmf20=0, amount_remitted=0,
+    surcharge=0, compromise=0, interest=0,
+    cash_drawee_bank='', cash_number='', cash_date=None, cash_amount=0,
+    check_drawee_bank='', check_number='', check_date=None, check_amount=0,
+    tax_debit_memo_number='', tax_debit_memo_date=None, tax_debit_memo_amount=0,
+    others_name='', others_drawee_bank='', others_number='', others_date=None, others_amount=0,
+    response_type="pdf"):
     precision = cint(frappe.db.get_default("currency_precision")) or 2
     report_is_permitted('BIR 0619-F')
 
@@ -1012,7 +1021,31 @@ def bir_0619_f(company, year, month, due_date, response_type="pdf"):
         'company': get_company_information(company),
         'year': year,
         'month': month,
-        'due_date': due_date
+        'due_date': due_date,
+        'amended_form': int(amended_form),
+        'any_taxes_withheld': int(any_taxes_withheld),
+        'amount_of_remittance_wmf10': flt(amount_of_remittance_wmf10, precision), 
+        'amount_of_remittance_wmf20': flt(amount_of_remittance_wmf20, precision), 
+        'amount_remitted': flt(amount_remitted, precision), 
+        'surcharge': flt(surcharge, precision), 
+        'compromise': flt(compromise, precision), 
+        'interest': flt(interest, precision), 
+        'cash_drawee_bank': cash_drawee_bank, 
+        'cash_number': cash_number, 
+        'cash_date': getdate(cash_date), 
+        'cash_amount': flt(cash_amount, precision), 
+        'check_drawee_bank': check_drawee_bank, 
+        'check_number': check_number, 
+        'check_date': getdate(check_date), 
+        'check_amount': flt(check_amount, precision), 
+        'tax_debit_memo_number': tax_debit_memo_number, 
+        'tax_debit_memo_date': getdate(tax_debit_memo_date), 
+        'tax_debit_memo_amount': flt(tax_debit_memo_amount, precision), 
+        'others_name': others_name, 
+        'others_drawee_bank': others_drawee_bank, 
+        'others_number': others_number, 
+        'others_date': getdate(others_date), 
+        'others_amount': flt(others_amount, precision), 
     }
 
     filename = "BIR 0619-F {} {} {}".format(company, year, month)
