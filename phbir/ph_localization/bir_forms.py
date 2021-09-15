@@ -967,7 +967,7 @@ def bir_0619_e(company, year, month, due_date, response_type="pdf"):
     
     context["build_version"] = frappe.utils.get_build_version()
     html = frappe.render_template("templates/bir_forms/bir_0619_e_template.html", context)
-    options["page-size"] = "Legal"
+    options["page-size"] = "Letter"
 
     return_pdf_document(html, filename, options, response_type)
 
@@ -991,7 +991,7 @@ def bir_0619_f(company, year, month, due_date, response_type="pdf"):
     
     context["build_version"] = frappe.utils.get_build_version()
     html = frappe.render_template("templates/bir_forms/bir_0619_f_template.html", context)
-    options["page-size"] = "Legal"
+    options["page-size"] = "Letter"
 
     return_pdf_document(html, filename, options, response_type)
 
