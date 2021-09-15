@@ -948,6 +948,54 @@ def bir_1601_fq_qap(company, year, quarter, response_type="download"):
     return_document(content, filename, file_extension, response_type)
 
 @frappe.whitelist()
+def bir_0619_e(company, year, month, due_date, response_type="pdf"):
+    precision = cint(frappe.db.get_default("currency_precision")) or 2
+    report_is_permitted('BIR 0619-E')
+
+    year = int(year)
+    month = int(month)
+    due_date = getdate(due_date)
+
+    context = {
+        'company': get_company_information(company),
+        'year': year,
+        'month': month,
+        'due_date': due_date
+    }
+
+    filename = "BIR 0619-E {} {} {}".format(company, year, month)
+    
+    context["build_version"] = frappe.utils.get_build_version()
+    html = frappe.render_template("templates/bir_forms/bir_0619_e_template.html", context)
+    options["page-size"] = "Legal"
+
+    return_pdf_document(html, filename, options, response_type)
+
+@frappe.whitelist()
+def bir_0619_f(company, year, month, due_date, response_type="pdf"):
+    precision = cint(frappe.db.get_default("currency_precision")) or 2
+    report_is_permitted('BIR 0619-F')
+
+    year = int(year)
+    month = int(month)
+    due_date = getdate(due_date)
+
+    context = {
+        'company': get_company_information(company),
+        'year': year,
+        'month': month,
+        'due_date': due_date
+    }
+
+    filename = "BIR 0619-F {} {} {}".format(company, year, month)
+    
+    context["build_version"] = frappe.utils.get_build_version()
+    html = frappe.render_template("templates/bir_forms/bir_0619_f_template.html", context)
+    options["page-size"] = "Legal"
+
+    return_pdf_document(html, filename, options, response_type)
+
+@frappe.whitelist()
 def return_pdf_document(html, filename="document", options=options, response_type="download"):
     frappe.local.response.filename = "{filename}.pdf".format(filename=filename)
     frappe.local.response.filecontent = get_pdf(html, options)

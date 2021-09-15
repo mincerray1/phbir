@@ -1,0 +1,63 @@
+<style>
+.print-format {
+    font-family: monospace;
+    font-size: 0.80em;
+    width: 8.5in;
+    min-height: 14in;
+    
+    margin-top: 0mm;
+    margin-left: 0mm;
+    margin-right: 0mm;
+    margin-bottom: 0mm;
+    
+    padding-top: 0mm;
+    padding-left: 0mm;
+    padding-right: 0mm;
+    margin-bottom: 0mm;
+}
+.bir-form-text {
+    font-size: 0.80em;
+    width: 100%;
+    position: absolute;
+}
+.bir-form-amount {
+    text-align: right;
+}
+.bir-form-data {
+    font-size: 0.70em;
+}
+</style>
+
+<div style="left: 5.59in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">{{ due_date.strftime('%m') }}</div>
+<div style="left: 5.98in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">{{ due_date.strftime('%d') }}</div>
+<div style="left: 6.34in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">{{ due_date.strftime('%Y') }}</div>
+
+<div style="left: 3.30in; top: 2.20in; letter-spacing: 0.12in;" class="bir-form-text">{{ company.tin[:3] }}</div>
+<div style="left: 4.09in; top: 2.20in; letter-spacing: 0.12in;" class="bir-form-text">{{ company.tin[3:6] }}</div>
+<div style="left: 4.88in; top: 2.20in; letter-spacing: 0.12in;" class="bir-form-text">{{ company.tin[6:9] }}</div>
+<div style="left: 5.67in; top: 2.20in; letter-spacing: 0.12in;" class="bir-form-text">{{ company.tin[9:12] }}</div>
+
+<div style="left: 7.70in; top: 2.20in; letter-spacing: 0.12in;" class="bir-form-text">{{ company.rdo_code[:3] }}</div>
+
+<div style="left: 0.43in; top: 2.60in; letter-spacing: 0.12in" class="bir-form-text">{{ company.company_name.upper() }}</div>
+
+<div style="left: 0.43in; top: 2.99in; letter-spacing: 0.11in;" class="bir-form-text">{{ company.address.upper() }}</div>
+<div style="left: 7.48in; top: 3.28in; letter-spacing: 0.12in;" class="bir-form-text">{{ company.zipcode[:4] }}</div>
+
+<div style="left: 1.55in; top: 3.55in; letter-spacing: 0.11in;" class="bir-form-text">{{ company.phone }}</div>
+
+{% if company.withholding_agent_category == 'Government' %}
+    <div style="left: 7.25in; top: 3.57in; letter-spacing: 0.11in;" class="bir-form-text">✗</div>
+{% else %}
+    <div style="left: 6.25in; top: 3.57in; letter-spacing: 0.11in;" class="bir-form-text">✗</div>
+{% endif %}
+
+<div class="bir-form-data">
+</div>
+<div>
+    {% if is_local_dev() %}
+        <img src="https://erpnextsandbox.serviotech.com/assets/phbir/img/forms/0619-F Jan 2018 rev final-1.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;">
+    {% else %}
+        <img src="/assets/phbir/img/forms/0619-F Jan 2018 rev final-1.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;">
+    {% endif %}
+</div>
