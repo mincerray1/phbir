@@ -2,6 +2,8 @@
 // For license information, please see license.txt
 /* eslint-disable */
 
+{% include 'phbir/public/js/utils.js' %}
+
 frappe.query_reports["BIR 0619-E"] = {
 	"filters": [
 		{
@@ -303,18 +305,3 @@ frappe.query_reports["BIR 0619-E"] = {
         });
     }
 };
-
-function get_years() {
-    let result = [];
-    frappe.call({
-        async: false,
-        method: "phbir.ph_localization.utils.get_years",
-        type: "GET",
-        callback: function(r) {
-            if (!r.exc) {
-                result = r.message;
-            }
-        }
-    });
-    return result;
-}

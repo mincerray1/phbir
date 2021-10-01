@@ -2,6 +2,8 @@
 // For license information, please see license.txt
 /* eslint-disable */
 
+{% include 'phbir/public/js/utils.js' %}
+
 frappe.query_reports["Summary Alphalist of Withholding Taxes"] = {
 	"filters": [
 		{
