@@ -20,6 +20,7 @@
    "label": "Settings",
    "link_type": "DocType",
    "onboard": 0,
+   "only_for": "Philippines",
    "type": "Card Break"
   },
   {
@@ -29,6 +30,7 @@
    "link_to": "PH Localization Setup",
    "link_type": "DocType",
    "onboard": 0,
+   "only_for": "Philippines",
    "type": "Link"
   },
   {
@@ -38,6 +40,7 @@
    "link_to": "Tax Declaration Setup",
    "link_type": "DocType",
    "onboard": 0,
+   "only_for": "Philippines",
    "type": "Link"
   },
   {
@@ -47,6 +50,7 @@
    "link_to": "ATC",
    "link_type": "DocType",
    "onboard": 0,
+   "only_for": "Philippines",
    "type": "Link"
   },
   {
@@ -56,6 +60,7 @@
    "link_to": "PH Tax Type Code",
    "link_type": "DocType",
    "onboard": 0,
+   "only_for": "Philippines",
    "type": "Link"
   },
   {
@@ -65,6 +70,7 @@
    "link_to": "VAT Industry",
    "link_type": "DocType",
    "onboard": 0,
+   "only_for": "Philippines",
    "type": "Link"
   },
   {
@@ -73,6 +79,7 @@
    "label": "Books of Accounts",
    "link_type": "DocType",
    "onboard": 0,
+   "only_for": "Philippines",
    "type": "Card Break"
   },
   {
@@ -82,6 +89,7 @@
    "link_to": "BOA Sales Journal",
    "link_type": "Report",
    "onboard": 0,
+   "only_for": "Philippines",
    "type": "Link"
   },
   {
@@ -91,6 +99,7 @@
    "link_to": "BOA Purchase Journal",
    "link_type": "Report",
    "onboard": 0,
+   "only_for": "Philippines",
    "type": "Link"
   },
   {
@@ -100,6 +109,7 @@
    "link_to": "BOA Inventory Book",
    "link_type": "Report",
    "onboard": 0,
+   "only_for": "Philippines",
    "type": "Link"
   },
   {
@@ -109,6 +119,7 @@
    "link_to": "BOA General Journal",
    "link_type": "Report",
    "onboard": 0,
+   "only_for": "Philippines",
    "type": "Link"
   },
   {
@@ -118,6 +129,7 @@
    "link_to": "BOA Cash Receipts Journal",
    "link_type": "Report",
    "onboard": 0,
+   "only_for": "Philippines",
    "type": "Link"
   },
   {
@@ -127,6 +139,7 @@
    "link_to": "BOA Cash Disbursements Journal",
    "link_type": "Report",
    "onboard": 0,
+   "only_for": "Philippines",
    "type": "Link"
   },
   {
@@ -136,6 +149,7 @@
    "link_to": "General Ledger",
    "link_type": "Report",
    "onboard": 0,
+   "only_for": "Philippines",
    "type": "Link"
   },
   {
@@ -144,6 +158,7 @@
    "label": "BIR Forms",
    "link_type": "DocType",
    "onboard": 0,
+   "only_for": "Philippines",
    "type": "Card Break"
   },
   {
@@ -153,6 +168,7 @@
    "link_to": "BIR 2307",
    "link_type": "Report",
    "onboard": 0,
+   "only_for": "Philippines",
    "type": "Link"
   },
   {
@@ -162,6 +178,7 @@
    "link_to": "BIR 2550M",
    "link_type": "Report",
    "onboard": 0,
+   "only_for": "Philippines",
    "type": "Link"
   },
   {
@@ -171,6 +188,7 @@
    "link_to": "BIR 1601-EQ",
    "link_type": "Report",
    "onboard": 0,
+   "only_for": "Philippines",
    "type": "Link"
   },
   {
@@ -180,6 +198,7 @@
    "link_to": "BIR 1601-FQ",
    "link_type": "Report",
    "onboard": 0,
+   "only_for": "Philippines",
    "type": "Link"
   },
   {
@@ -189,6 +208,7 @@
    "link_to": "BIR 0619-E",
    "link_type": "Report",
    "onboard": 0,
+   "only_for": "Philippines",
    "type": "Link"
   },
   {
@@ -198,10 +218,30 @@
    "link_to": "BIR 0619-F",
    "link_type": "Report",
    "onboard": 0,
+   "only_for": "Philippines",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Reports",
+   "link_type": "DocType",
+   "onboard": 0,
+   "only_for": "Philippines",
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "Summary Alphalist of Withholding Taxes",
+   "link_to": "Summary Alphalist of Withholding Taxes",
+   "link_type": "Report",
+   "onboard": 0,
+   "only_for": "Philippines",
    "type": "Link"
   }
  ],
- "modified": "2021-09-16 00:17:39.026163",
+ "modified": "2021-10-01 11:24:07.899378",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "PH",
