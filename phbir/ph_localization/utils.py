@@ -98,29 +98,37 @@ def get_supplier_information(supplier):
     zipcode = ''
     phone = ''
     supplier_address_dynamic_link_doc = None
+    supplier_address_doc = None
     contact_doc = None
     contact_first_name = ''
     contact_middle_name = ''
     contact_last_name = ''
     supplier_type = supplier_doc.supplier_type
 
-    if frappe.db.exists("Dynamic Link", {'link_doctype': 'Supplier', 'link_name': supplier, 'parenttype': 'Address'}):
-        supplier_address_dynamic_link_doc = frappe.get_last_doc('Dynamic Link', filters={'link_doctype': 'Supplier', 'link_name': supplier, 'parenttype': 'Address'})
+    # if frappe.db.exists("Dynamic Link", {'link_doctype': 'Supplier', 'link_name': supplier, 'parenttype': 'Address'}):
+    #     supplier_address_dynamic_link_doc = frappe.get_last_doc('Dynamic Link', filters={'link_doctype': 'Supplier', 'link_name': supplier, 'parenttype': 'Address'})
+    if supplier_doc.supplier_primary_address and frappe.db.exists("Address", {'name': supplier_doc.supplier_primary_address}):
+        supplier_address_doc = frappe.get_doc('Address', supplier_doc.supplier_primary_address)
 
-    if supplier_doc.supplier_primary_contact:
+    if supplier_doc.supplier_primary_contact and frappe.db.exists("Contact", {'name': supplier_doc.supplier_primary_contact}):
         contact_doc = frappe.get_doc('Contact', supplier_doc.supplier_primary_contact)
         contact_first_name = contact_doc.first_name
         contact_middle_name = contact_doc.middle_name
         contact_last_name = contact_doc.last_name
 
-    if supplier_address_dynamic_link_doc:
-        zipcode = frappe.db.get_value('Address', supplier_address_dynamic_link_doc.parent, 'pincode')
-        zipcode = zipcode if zipcode else ''
+    # if supplier_address_dynamic_link_doc:
+    #     zipcode = frappe.db.get_value('Address', supplier_address_dynamic_link_doc.parent, 'pincode')
+    #     zipcode = zipcode if zipcode else ''
 
-        phone = frappe.db.get_value('Address', supplier_address_dynamic_link_doc.parent, 'phone')
-        phone = phone if phone else ''
+    #     phone = frappe.db.get_value('Address', supplier_address_dynamic_link_doc.parent, 'phone')
+    #     phone = phone if phone else ''
         
-        supplier_address = supplier_address_dynamic_link_doc.parent if supplier_address_dynamic_link_doc.parent else ''
+    #     supplier_address = supplier_address_dynamic_link_doc.parent if supplier_address_dynamic_link_doc.parent else ''
+    
+    if supplier_address_doc:
+        zipcode = supplier_address_doc.pincode
+        phone = supplier_address_doc.phone        
+        supplier_address = supplier_address_doc.name
     
     if supplier_address:
         supplier_address = get_custom_formatted_address(supplier_address)
@@ -130,11 +138,72 @@ def get_supplier_information(supplier):
     result = {
         'supplier_name': supplier_doc.supplier_name,
         'supplier_type': supplier_type,
-        'contact_first_name': contact_doc.first_name,
-        'contact_middle_name': contact_doc.middle_name,
-        'contact_last_name': contact_doc.last_name,
+        'contact_first_name': contact_first_name,
+        'contact_middle_name': contact_middle_name,
+        'contact_last_name': contact_last_name,
         'address': supplier_address if supplier_address else '',
         'tin': preformat_tin(supplier_doc.tax_id if supplier_doc.tax_id else ''),
+        'tin_with_dash': preformat_tin_with_dash(supplier_doc.tax_id if supplier_doc.tax_id else ''),
+        'branch_code': branch_code,
+        'zipcode': zipcode,
+        'phone': phone if phone else ''
+    }
+
+    return result
+
+@frappe.whitelist()
+def get_customer_information(customer):
+    customer_doc = frappe.get_doc('Customer', customer)
+    customer_address = ''
+    zipcode = ''
+    phone = ''
+    customer_address_dynamic_link_doc = None
+    customer_address_doc = None
+    contact_doc = None
+    contact_first_name = ''
+    contact_middle_name = ''
+    contact_last_name = ''
+    customer_type = customer_doc.customer_type
+
+    # if frappe.db.exists("Dynamic Link", {'link_doctype': 'Customer', 'link_name': customer, 'parenttype': 'Address'}):
+    #     customer_address_dynamic_link_doc = frappe.get_last_doc('Dynamic Link', filters={'link_doctype': 'Customer', 'link_name': customer, 'parenttype': 'Address'})
+    if customer_doc.customer_primary_address and frappe.db.exists("Address", {'name': supplier_doc.customer_primary_address}):
+        customer_address_doc = frappe.get_doc('Address', customer_doc.customer_primary_address)
+
+    if customer_doc.customer_primary_contact and frappe.db.exists("Contact", {'name': customer_doc.customer_primary_contact}):
+        contact_doc = frappe.get_doc('Contact', customer_doc.customer_primary_contact)
+        contact_first_name = contact_doc.first_name
+        contact_middle_name = contact_doc.middle_name
+        contact_last_name = contact_doc.last_name
+
+    # if customer_address_dynamic_link_doc:
+    #     zipcode = frappe.db.get_value('Address', customer_address_dynamic_link_doc.parent, 'pincode')
+    #     zipcode = zipcode if zipcode else ''
+
+    #     phone = frappe.db.get_value('Address', customer_address_dynamic_link_doc.parent, 'phone')
+    #     phone = phone if phone else ''
+        
+    #     customer_address = customer_address_dynamic_link_doc.parent if customer_address_dynamic_link_doc.parent else ''
+    
+    if customer_address_doc:
+        zipcode = customer_address_doc.pincode
+        phone = customer_address_doc.phone        
+        customer_address = customer_address_doc.name
+    
+    if customer_address:
+        customer_address = get_custom_formatted_address(customer_address)
+    tin = preformat_tin(customer_doc.tax_id if customer_doc.tax_id else '')
+    branch_code = tin[9:12]
+
+    result = {
+        'customer_name': customer_doc.customer_name,
+        'customer_type': customer_type,
+        'contact_first_name': contact_first_name,
+        'contact_middle_name': contact_middle_name,
+        'contact_last_name': contact_last_name,
+        'address': customer_address if customer_address else '',
+        'tin': preformat_tin(customer_doc.tax_id if customer_doc.tax_id else ''),
+        'tin_with_dash': preformat_tin_with_dash(customer_doc.tax_id if customer_doc.tax_id else ''),
         'branch_code': branch_code,
         'zipcode': zipcode,
         'phone': phone if phone else ''
@@ -147,6 +216,14 @@ def preformat_tin(tin):
     result = "{0}000000000000".format(tin)
     # tin is 12 or 13? digits
     return result[:13]
+
+    
+@frappe.whitelist()
+def preformat_tin_with_dash(tin):
+    result = "{0}000000000000".format(tin)
+    # tin is 12 or 13? digits
+    result = "{0}-{1}-{2}-{3}".format(result[:3], result[3:6], result[6:9], result[9:13])
+    return result[:16]
 
 @frappe.whitelist()
 def get_years():
