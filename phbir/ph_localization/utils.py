@@ -98,10 +98,20 @@ def get_supplier_information(supplier):
     zipcode = ''
     phone = ''
     supplier_address_dynamic_link_doc = None
+    contact_doc = None
+    contact_first_name = ''
+    contact_middle_name = ''
+    contact_last_name = ''
+    supplier_type = supplier_doc.supplier_type
 
     if frappe.db.exists("Dynamic Link", {'link_doctype': 'Supplier', 'link_name': supplier, 'parenttype': 'Address'}):
         supplier_address_dynamic_link_doc = frappe.get_last_doc('Dynamic Link', filters={'link_doctype': 'Supplier', 'link_name': supplier, 'parenttype': 'Address'})
-    
+
+    if supplier_doc.supplier_primary_contact:
+        contact_doc = frappe.get_doc('Contact', supplier_doc.supplier_primary_contact)
+        contact_first_name = contact_doc.first_name
+        contact_middle_name = contact_doc.middle_name
+        contact_last_name = contact_doc.last_name
 
     if supplier_address_dynamic_link_doc:
         zipcode = frappe.db.get_value('Address', supplier_address_dynamic_link_doc.parent, 'pincode')
@@ -114,11 +124,18 @@ def get_supplier_information(supplier):
     
     if supplier_address:
         supplier_address = get_custom_formatted_address(supplier_address)
+    tin = preformat_tin(supplier_doc.tax_id if supplier_doc.tax_id else '')
+    branch_code = tin[9:12]
 
     result = {
         'supplier_name': supplier_doc.supplier_name,
+        'supplier_type': supplier_type,
+        'contact_first_name': contact_doc.first_name,
+        'contact_middle_name': contact_doc.middle_name,
+        'contact_last_name': contact_doc.last_name,
         'address': supplier_address if supplier_address else '',
         'tin': preformat_tin(supplier_doc.tax_id if supplier_doc.tax_id else ''),
+        'branch_code': branch_code,
         'zipcode': zipcode,
         'phone': phone if phone else ''
     }
@@ -128,8 +145,8 @@ def get_supplier_information(supplier):
 @frappe.whitelist()
 def preformat_tin(tin):
     result = "{0}000000000000".format(tin)
-    # tin is 12 digits
-    return result[:12]
+    # tin is 12 or 13? digits
+    return result[:13]
 
 @frappe.whitelist()
 def get_years():

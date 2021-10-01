@@ -628,10 +628,9 @@ def bir_1601_eq_qap(company, year, quarter, response_type="download"):
         details = '{details},{next}'.format(details=details, next=payee_information['tin'][9:13])
         details = '{details},{next}'.format(details=details, next=payee_information['supplier_name'][:50])
         
-        # blank first name, last name, middle name TODO: get first contact info?
-        details = '{details},{next}'.format(details=details, next='')
-        details = '{details},{next}'.format(details=details, next='')
-        details = '{details},{next}'.format(details=details, next='')
+        details = '{details},{next}'.format(details=details, next=(payee_information['contact_last_name'][:30] if payee_information['supplier_type'] == 'Individual' else ''))
+        details = '{details},{next}'.format(details=details, next=(payee_information['contact_first_name'][:30] if payee_information['supplier_type'] == 'Individual' else ''))
+        details = '{details},{next}'.format(details=details, next=(payee_information['contact_middle_name'][:30] if payee_information['supplier_type'] == 'Individual' else ''))
 
         detail_return_period = '{MM}/{YYYY}'.format(MM=('0' + str(entry.month))[-2:], YYYY=entry.year)
         details = '{details},{next}'.format(details=details, next=detail_return_period[:7])
@@ -913,10 +912,9 @@ def bir_1601_fq_qap(company, year, quarter, response_type="download"):
         details = '{details},{next}'.format(details=details, next=payee_information['tin'][9:13])
         details = '{details},{next}'.format(details=details, next=payee_information['supplier_name'][:50])
         
-        # blank first name, last name, middle name TODO: get first contact info?
-        details = '{details},{next}'.format(details=details, next='')
-        details = '{details},{next}'.format(details=details, next='')
-        details = '{details},{next}'.format(details=details, next='')
+        details = '{details},{next}'.format(details=details, next=(payee_information['contact_last_name'][:30] if payee_information['supplier_type'] == 'Individual' else ''))
+        details = '{details},{next}'.format(details=details, next=(payee_information['contact_first_name'][:30] if payee_information['supplier_type'] == 'Individual' else ''))
+        details = '{details},{next}'.format(details=details, next=(payee_information['contact_middle_name'][:30] if payee_information['supplier_type'] == 'Individual' else ''))
 
         detail_return_period = '{MM}/{YYYY}'.format(MM=('0' + str(entry.month))[-2:], YYYY=entry.year)
         details = '{details},{next}'.format(details=details, next=detail_return_period[:7])
