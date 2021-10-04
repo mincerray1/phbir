@@ -19,6 +19,7 @@ def execute(filters=None):
 
 @frappe.whitelist()
 def generate_sawt_data_file(company, year, month, sawt_form, response_type="download"):
+    # file structure: https://www.bir.gov.ph/images/bir_files/old_files/pdf/27815rmc%20no.%203-2006_annex%20a.pdf
     data = get_data(company, year, month)
     company_information = get_company_information(company)
     file_extension = "dat"
