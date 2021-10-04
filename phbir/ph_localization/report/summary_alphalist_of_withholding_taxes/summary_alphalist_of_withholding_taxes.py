@@ -14,7 +14,7 @@ def execute(filters=None):
 
     company_information = get_company_information(filters.company)
 
-    return columns, data, None, None, company_information
+    return columns, data, None, None, None, company_information
 
 def get_data(company, year, month):
     result = []
@@ -91,9 +91,10 @@ def get_data(company, year, month):
     for entry in data:
         customer_information = get_customer_information(entry.customer)
 
+        # blank registered_name if individual?
         row = {
             'tin': customer_information['tin_with_dash'],
-            'registered_name': '' if customer_information['customer_type'] == 'Individual' else entry.customer,
+            'registered_name': entry.customer,
             'individual': '' if customer_information['customer_type'] == 'Company' 
                 else "{0}, {1} {2}".format(customer_information['contact_last_name'], customer_information['contact_first_name'], customer_information['contact_middle_name']),
             'atc': entry.atc,
