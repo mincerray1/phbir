@@ -3,8 +3,9 @@
 
 import frappe
 from frappe import _
-from frappe.utils import flt
+from frappe.utils import flt, getdate
 from phbir.ph_localization.utils import get_company_information, get_customer_information
+from phbir.ph_localization.bir_forms import return_document
 
 def execute(filters=None):
     columns, data = [], []
@@ -15,6 +16,76 @@ def execute(filters=None):
     company_information = get_company_information(filters.company)
 
     return columns, data, None, None, None, company_information
+
+@frappe.whitelist()
+def generate_sawt_data_file(company, year, month, sawt_form, response_type="download"):
+    data = get_data(company, year, month)
+    company_information = get_company_information(company)
+    file_extension = "dat"
+
+    content = ''
+    header = ''
+
+    return_period = '{MM}/{YYYY}'.format(MM=('0' + str(month))[-2:], YYYY=year)
+    return_period_no_slash = '{MM}{YYYY}'.format(MM=('0' + str(month))[-2:], YYYY=year)
+
+    header = '{next}'.format(header=header, next='HSAWT'[:5])
+    header = '{header},{next}'.format(header=header, next='H{}'.format(sawt_form)[:6])
+    header = '{header},{next}'.format(header=header, next=company_information['tin'][:9])
+    header = '{header},{next}'.format(header=header, next=company_information['tin'][9:12]) # branch code - 3 chars only
+    header = '{header},"{next}"'.format(header=header, next=company_information['company_name'][:50])
+    header = '{header},"{next}"'.format(header=header, next='') # blank last, first, middle name? EN user will always be company
+    header = '{header},"{next}"'.format(header=header, next='')
+    header = '{header},"{next}"'.format(header=header, next='')
+    header = '{header},{next}'.format(header=header, next=return_period[:7])
+    header = '{header},{next}'.format(header=header, next=company_information['rdo_code'][:3])
+
+    content = header + '\n'
+    details = ''
+    i = 0
+    total_base_tax_base = 0
+    total_base_tax_withheld = 0
+
+    for entry in data:
+        i += 1
+        details = details + '{next}'.format(details=details, next='DSAWT'[:5]) # alpha type
+        details = '{details},{next}'.format(details=details, next='D{}'.format(sawt_form)[:6]) # type code
+        details = '{details},{next}'.format(details=details, next=str(i)[:8]) # seq_num
+        details = '{details},{next}'.format(details=details, next=entry['tin'][:9])
+        details = '{details},{next}'.format(details=details, next=entry['branch_code'][:3])
+        details = '{details},"{next}"'.format(details=details, next=entry['registered_name'][:50])
+        
+        details = '{details},"{next}"'.format(details=details, next=(entry['contact_last_name'][:30] if entry['customer_type'] == 'Individual' else ''))
+        details = '{details},"{next}"'.format(details=details, next=(entry['contact_first_name'][:30] if entry['customer_type'] == 'Individual' else ''))
+        details = '{details},"{next}"'.format(details=details, next=(entry['contact_middle_name'][:30] if entry['customer_type'] == 'Individual' else ''))
+
+        details = '{details},{next}'.format(details=details, next=return_period[:7])
+        details = '{details},{next}'.format(details=details, next='') # nature of payment = blank. blank in bir alphalist
+        details = '{details},{next}'.format(details=details, next=entry['atc'][:5])
+        details = '{details},{next}'.format(details=details, next=flt(entry['atc_rate'], 2))
+        details = '{details},{next}'.format(details=details, next=flt(entry['income_payment'], 2))
+        details = '{details},{next}'.format(details=details, next=flt(entry['tax_withheld'], 2))
+
+        total_base_tax_base += entry['income_payment']
+        total_base_tax_withheld += entry['tax_withheld']
+        details = details + '\n'
+    
+    content = content + details
+
+    control = ''
+    control = '{next}'.format(control=control, next='CSAWT'[:5])
+    control = '{control},{next}'.format(control=control, next='C{}'.format(sawt_form)[:6])
+    control = '{control},{next}'.format(control=control, next=company_information['tin'][:9])
+    control = '{control},{next}'.format(control=control, next=company_information['branch_code'][:3])
+    control = '{control},{next}'.format(control=control, next=return_period[:7])
+    control = '{control},{next}'.format(control=control, next=flt(total_base_tax_base, 2))
+    control = '{control},{next}'.format(control=control, next=flt(total_base_tax_withheld, 2))
+
+    content = content + control
+
+    filename = "{tin}{branch_code}{return_period}{form_type}".format(tin=company_information['tin'][:9],branch_code=company_information['branch_code'][:3],return_period=return_period_no_slash,form_type=sawt_form)
+
+    return_document(content, filename, file_extension, response_type)
 
 def get_data(company, year, month):
     result = []
@@ -93,13 +164,20 @@ def get_data(company, year, month):
 
         # blank registered_name if individual?
         row = {
-            'tin': customer_information['tin_with_dash'],
+            'tin': customer_information['tin'],
+            'tin_with_dash': customer_information['tin_with_dash'],
+            'branch_code': customer_information['branch_code'],
             'registered_name': entry.customer,
             'individual': '' if customer_information['customer_type'] == 'Company' 
                 else "{0}, {1} {2}".format(customer_information['contact_last_name'], customer_information['contact_first_name'], customer_information['contact_middle_name']),
+            'contact_last_name': customer_information['contact_last_name'],
+            'contact_first_name': customer_information['contact_first_name'],
+            'contact_middle_name': customer_information['contact_middle_name'],
+            'customer_type': customer_information['customer_type'],
             'atc': entry.atc,
             'income_payment': entry.income_payment,
-            'atc_rate': "{:.0%}".format(entry.atc_rate / 100),
+            'formatted_atc_rate': "{:.0%}".format(entry.atc_rate / 100),
+            'atc_rate': entry.atc_rate,
             'tax_withheld': entry.tax_withheld
         }
 
@@ -110,7 +188,7 @@ def get_data(company, year, month):
 def get_columns():
     columns = [
         {
-            "fieldname": "tin",
+            "fieldname": "tin_with_dash",
             "label": _("TIN"),
             "fieldtype": "Data",
             "width": 180
@@ -142,7 +220,7 @@ def get_columns():
             "width": 200
         },
         {
-            "fieldname": "atc_rate",
+            "fieldname": "formatted_atc_rate",
             "label": _("Tax Rate"),
             "fieldtype": "Data",
             "width": 80

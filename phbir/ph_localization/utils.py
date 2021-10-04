@@ -72,6 +72,7 @@ def get_company_information(company):
         'company_name': company_doc.name,
         'address': company_address if company_address else '',
         'tin': preformat_tin(company_doc.tax_id if company_doc.tax_id else ''),
+        'branch_code': preformat_tin(company_doc.tax_id if company_doc.tax_id else '')[9:12],
         'zipcode': zipcode,
         'erpnext_version': __version__,
         'permit_no': permit_no if permit_no else '',
