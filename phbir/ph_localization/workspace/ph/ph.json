@@ -239,9 +239,29 @@
    "onboard": 0,
    "only_for": "Philippines",
    "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "RELIEF Summary List of Sales",
+   "link_to": "RELIEF Summary List of Sales",
+   "link_type": "Report",
+   "onboard": 0,
+   "only_for": "Philippines",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "RELIEF Summary List of Purchases",
+   "link_to": "RELIEF Summary List of Purchases",
+   "link_type": "Report",
+   "onboard": 0,
+   "only_for": "Philippines",
+   "type": "Link"
   }
  ],
- "modified": "2021-10-01 15:55:42.900685",
+ "modified": "2021-10-08 17:59:52.562202",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "PH",
