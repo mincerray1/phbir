@@ -635,9 +635,9 @@ def bir_1601_eq_qap(company, year, quarter, response_type="download"):
         detail_return_period = '{MM}/{YYYY}'.format(MM=('0' + str(entry.month))[-2:], YYYY=entry.year)
         details = '{details},{next}'.format(details=details, next=detail_return_period[:7])
         details = '{details},{next}'.format(details=details, next=entry.atc[:5])
-        details = '{details},{next}'.format(details=details, next=flt(entry.rate, 2))
-        details = '{details},{next}'.format(details=details, next=flt(entry.base_tax_base, 2))
-        details = '{details},{next}'.format(details=details, next=flt(entry.base_tax_withheld, 2))
+        details = '{details},{next}'.format(details=details, next="{:.2f}".format(flt(entry.rate, 2)))
+        details = '{details},{next}'.format(details=details, next="{:.2f}".format(flt(entry.base_tax_base, 2)))
+        details = '{details},{next}'.format(details=details, next="{:.2f}".format(flt(entry.base_tax_withheld, 2)))
 
         total_base_tax_base += entry.base_tax_base
         total_base_tax_withheld += entry.base_tax_withheld
@@ -651,8 +651,8 @@ def bir_1601_eq_qap(company, year, quarter, response_type="download"):
     controls = '{controls},{next}'.format(controls=controls, next=company_information['tin'][:9])
     controls = '{controls},{next}'.format(controls=controls, next=company_information['tin'][9:13])
     controls = '{controls},{next}'.format(controls=controls, next=return_period[:7])
-    controls = '{controls},{next}'.format(controls=controls, next=flt(total_base_tax_base, 2))
-    controls = '{controls},{next}'.format(controls=controls, next=flt(total_base_tax_withheld, 2))
+    controls = '{controls},{next}'.format(controls=controls, next="{:.2f}".format(flt(total_base_tax_base, 2)))
+    controls = '{controls},{next}'.format(controls=controls, next="{:.2f}".format(flt(total_base_tax_withheld, 2)))
 
     content = content + controls
     
@@ -920,9 +920,9 @@ def bir_1601_fq_qap(company, year, quarter, response_type="download"):
         details = '{details},{next}'.format(details=details, next=detail_return_period[:7])
         details = '{details},{next}'.format(details=details, next=str(i)[:8])
         details = '{details},{next}'.format(details=details, next=entry.atc[:5])
-        details = '{details},{next}'.format(details=details, next=flt(entry.rate, 2))
-        details = '{details},{next}'.format(details=details, next=flt(entry.base_tax_base, 2))
-        details = '{details},{next}'.format(details=details, next=flt(entry.base_tax_withheld, 2))
+        details = '{details},{next}'.format(details=details, next="{:.2f}".format(flt(entry.rate, 2)))
+        details = '{details},{next}'.format(details=details, next="{:.2f}".format(flt(entry.base_tax_base, 2)))
+        details = '{details},{next}'.format(details=details, next="{:.2f}".format(flt(entry.base_tax_withheld, 2)))
 
         total_base_tax_base += entry.base_tax_base
         total_base_tax_withheld += entry.base_tax_withheld
@@ -936,8 +936,8 @@ def bir_1601_fq_qap(company, year, quarter, response_type="download"):
     controls = '{controls},{next}'.format(controls=controls, next=company_information['tin'][:9])
     controls = '{controls},{next}'.format(controls=controls, next=company_information['tin'][9:13])
     controls = '{controls},{next}'.format(controls=controls, next=return_period[:7])
-    controls = '{controls},{next}'.format(controls=controls, next=flt(total_base_tax_base, 2))
-    controls = '{controls},{next}'.format(controls=controls, next=flt(total_base_tax_withheld, 2))
+    controls = '{controls},{next}'.format(controls=controls, next="{:.2f}".format(flt(total_base_tax_base, 2)))
+    controls = '{controls},{next}'.format(controls=controls, next="{:.2f}".format(flt(total_base_tax_withheld, 2)))
 
     content = content + controls
     
