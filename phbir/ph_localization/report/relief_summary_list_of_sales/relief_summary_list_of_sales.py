@@ -60,8 +60,8 @@ def get_data(company, year, month):
         ON
             sii.parent = si.name
         WHERE
-            si.company = %s
-            AND si.docstatus = 1
+            si.docstatus = 1
+            AND si.company = %s
             AND YEAR(si.posting_date) = %s
             AND MONTH(si.posting_date) = %s
         GROUP BY si.name, si.customer, item_code, sii.item_tax_template, si.taxes_and_charges;
@@ -80,8 +80,8 @@ def get_data(company, year, month):
         ON
             si.name = stac.parent
         WHERE
-            si.company = %s
-            AND si.docstatus = 1
+            si.docstatus = 1
+            AND si.company = %s
             AND stac.base_tax_amount >= 0
             AND YEAR(si.posting_date) = %s
             AND MONTH(si.posting_date) = %s
@@ -215,7 +215,7 @@ def generate_sls_data_file(company, year, month, fiscal_month_end, response_type
     
     content = content + details
 
-    filename = "{tin}s{return_period}".format(tin=company_information['tin'][:9],return_period=return_period_no_slash)
+    filename = "{tin}S{return_period}".format(tin=company_information['tin'][:9],return_period=return_period_no_slash)
 
     return_document(content, filename, file_extension, response_type)
 
@@ -244,31 +244,31 @@ def get_columns():
             "fieldname": "zero_rated",
             "label": _("Zero Rated"),
             "fieldtype": "Currency",
-            "width": 200
+            "width": 150
         },
         {
             "fieldname": "exempt",
             "label": _("Exempt"),
             "fieldtype": "Currency",
-            "width": 200
+            "width": 150
         },
         {
             "fieldname": "gross_taxable",
             "label": _("Gross Taxable"),
             "fieldtype": "Currency",
-            "width": 200
+            "width": 150
         },
         {
             "fieldname": "taxable_net",
             "label": _("Taxable Net"),
             "fieldtype": "Currency",
-            "width": 200
+            "width": 150
         },
         {
             "fieldname": "output_tax",
             "label": _("Output Tax"),
             "fieldtype": "Currency",
-            "width": 200
+            "width": 150
         },
     ]
 
