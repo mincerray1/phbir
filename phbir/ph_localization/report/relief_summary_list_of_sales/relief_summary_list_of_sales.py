@@ -82,7 +82,7 @@ def get_data(company, year, month):
         INNER JOIN
             `tabAccount` a
         ON
-            atac.account_head = a.name
+            stac.account_head = a.name
         WHERE
             si.docstatus = 1
             AND stac.base_tax_amount >= 0
