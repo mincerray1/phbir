@@ -175,6 +175,7 @@ def bir_2550m(company, year, month, response_type="pdf"):
             `tabPurchase Taxes and Charges` ptac
         ON
             pi.name = ptac.parent
+<<<<<<< HEAD
         INNER JOIN
             `tabAccount` a
         ON
@@ -184,6 +185,12 @@ def bir_2550m(company, year, month, response_type="pdf"):
             AND a.account_type = 'Tax'
             AND ptac.base_tax_amount >= 0
             AND pi.company = %s
+=======
+        WHERE
+            pi.company = %s
+            AND pi.docstatus = 1
+            AND ptac.base_tax_amount >= 0
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
             AND YEAR(pi.posting_date) = %s
             AND MONTH(pi.posting_date) = %s
         """, (company, year, month), as_dict=1)
@@ -216,6 +223,7 @@ def bir_2550m(company, year, month, response_type="pdf"):
             `tabSales Taxes and Charges` stac
         ON
             si.name = stac.parent
+<<<<<<< HEAD
         INNER JOIN
             `tabAccount` a
         ON
@@ -225,6 +233,12 @@ def bir_2550m(company, year, month, response_type="pdf"):
             AND a.account_type = 'Tax'
             AND stac.base_tax_amount >= 0
             AND si.company = %s
+=======
+        WHERE
+            si.company = %s
+            AND si.docstatus = 1
+            AND stac.base_tax_amount >= 0
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
             AND YEAR(si.posting_date) = %s
             AND MONTH(si.posting_date) = %s
         """, (company, year, month), as_dict=1)
@@ -426,15 +440,21 @@ def bir_1601_eq(company, year, quarter, response_type="pdf"):
                     `tabPurchase Taxes and Charges` ptac
                 ON
                     pi.name = ptac.parent
+<<<<<<< HEAD
                 INNER JOIN
                     `tabAccount` a
                 ON
                     ptac.account_head = a.name
+=======
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
                 WHERE
                     pi.docstatus = 1
                     and pi.is_return = 0
                     and ((ptac.base_tax_amount < 0 and ptac.add_deduct_tax != 'Deduct') or (ptac.base_tax_amount >= 0 and ptac.add_deduct_tax = 'Deduct'))
+<<<<<<< HEAD
                     and a.account_type = 'Tax'
+=======
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
                     and pi.company = %s
                     and YEAR(pi.posting_date) = %s
                     and QUARTER(pi.posting_date) = %s
@@ -449,16 +469,22 @@ def bir_1601_eq(company, year, quarter, response_type="pdf"):
                     `tabAdvance Taxes and Charges` atac
                 ON
                     pe.name = atac.parent
+<<<<<<< HEAD
                 INNER JOIN
                     `tabAccount` a
                 ON
                     atac.account_head = a.name
+=======
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
                 WHERE
                     pe.docstatus = 1
                     and pe.payment_type = 'Pay'
                     and pe.party_type = 'Supplier'
                     and ((atac.base_tax_amount < 0 and atac.add_deduct_tax != 'Deduct') or (atac.base_tax_amount >= 0 and atac.add_deduct_tax = 'Deduct'))
+<<<<<<< HEAD
                     and a.account_type = 'Tax'
+=======
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
                     and pe.company = %s
                     and YEAR(pe.posting_date) = %s
                     and QUARTER(pe.posting_date) = %s
@@ -554,15 +580,21 @@ def bir_1601_eq_qap(company, year, quarter, response_type="download"):
                     `tabPurchase Taxes and Charges` ptac
                 ON
                     pi.name = ptac.parent
+<<<<<<< HEAD
                 INNER JOIN
                     `tabAccount` a
                 ON
                     ptac.account_head = a.name
+=======
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
                 WHERE
                     pi.docstatus = 1
                     and pi.is_return = 0
                     and ((ptac.base_tax_amount < 0 and ptac.add_deduct_tax != 'Deduct') or (ptac.base_tax_amount >= 0 and ptac.add_deduct_tax = 'Deduct'))
+<<<<<<< HEAD
                     and a.account_type = 'Tax'
+=======
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
                     and pi.company = %s
                     and YEAR(pi.posting_date) = %s
                     and QUARTER(pi.posting_date) = %s
@@ -579,16 +611,22 @@ def bir_1601_eq_qap(company, year, quarter, response_type="download"):
                     `tabAdvance Taxes and Charges` atac
                 ON
                     pe.name = atac.parent
+<<<<<<< HEAD
                 INNER JOIN
                     `tabAccount` a
                 ON
                     atac.account_head = a.name
+=======
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
                 WHERE
                     pe.docstatus = 1
                     and pe.payment_type = 'Pay'
                     and pe.party_type = 'Supplier'
                     and ((atac.base_tax_amount < 0 and atac.add_deduct_tax != 'Deduct') or (atac.base_tax_amount >= 0 and atac.add_deduct_tax = 'Deduct'))
+<<<<<<< HEAD
                     and a.account_type = 'Tax'
+=======
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
                     and pe.company = %s
                     and YEAR(pe.posting_date) = %s
                     and QUARTER(pe.posting_date) = %s
@@ -665,9 +703,15 @@ def bir_1601_eq_qap(company, year, quarter, response_type="download"):
         detail_return_period = '{MM}/{YYYY}'.format(MM=('0' + str(entry.month))[-2:], YYYY=entry.year)
         details = '{details},{next}'.format(details=details, next=detail_return_period[:7])
         details = '{details},{next}'.format(details=details, next=entry.atc[:5])
+<<<<<<< HEAD
         details = '{details},{next}'.format(details=details, next="{:.2f}".format(flt(entry.rate, 2)))
         details = '{details},{next}'.format(details=details, next="{:.2f}".format(flt(entry.base_tax_base, 2)))
         details = '{details},{next}'.format(details=details, next="{:.2f}".format(flt(entry.base_tax_withheld, 2)))
+=======
+        details = '{details},{next}'.format(details=details, next=flt(entry.rate, 2))
+        details = '{details},{next}'.format(details=details, next=flt(entry.base_tax_base, 2))
+        details = '{details},{next}'.format(details=details, next=flt(entry.base_tax_withheld, 2))
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
 
         total_base_tax_base += entry.base_tax_base
         total_base_tax_withheld += entry.base_tax_withheld
@@ -681,8 +725,13 @@ def bir_1601_eq_qap(company, year, quarter, response_type="download"):
     controls = '{controls},{next}'.format(controls=controls, next=company_information['tin'][:9])
     controls = '{controls},{next}'.format(controls=controls, next=company_information['tin'][9:13])
     controls = '{controls},{next}'.format(controls=controls, next=return_period[:7])
+<<<<<<< HEAD
     controls = '{controls},{next}'.format(controls=controls, next="{:.2f}".format(flt(total_base_tax_base, 2)))
     controls = '{controls},{next}'.format(controls=controls, next="{:.2f}".format(flt(total_base_tax_withheld, 2)))
+=======
+    controls = '{controls},{next}'.format(controls=controls, next=flt(total_base_tax_base, 2))
+    controls = '{controls},{next}'.format(controls=controls, next=flt(total_base_tax_withheld, 2))
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
 
     content = content + controls
     
@@ -731,15 +780,21 @@ def bir_1601_fq(company, year, quarter, response_type="pdf"):
                     `tabPurchase Taxes and Charges` ptac
                 ON
                     pi.name = ptac.parent
+<<<<<<< HEAD
                 INNER JOIN
                     `tabAccount` a
                 ON
                     ptac.account_head = a.name
+=======
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
                 WHERE
                     pi.docstatus = 1
                     and pi.is_return = 0
                     and ((ptac.base_tax_amount < 0 and ptac.add_deduct_tax != 'Deduct') or (ptac.base_tax_amount >= 0 and ptac.add_deduct_tax = 'Deduct'))
+<<<<<<< HEAD
                     and a.account_type = 'Tax'
+=======
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
                     and pi.company = %s
                     and YEAR(pi.posting_date) = %s
                     and QUARTER(pi.posting_date) = %s
@@ -754,16 +809,22 @@ def bir_1601_fq(company, year, quarter, response_type="pdf"):
                     `tabAdvance Taxes and Charges` atac
                 ON
                     pe.name = atac.parent
+<<<<<<< HEAD
                 INNER JOIN
                     `tabAccount` a
                 ON
                     atac.account_head = a.name
+=======
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
                 WHERE
                     pe.docstatus = 1
                     and pe.payment_type = 'Pay'
                     and pe.party_type = 'Supplier'
                     and ((atac.base_tax_amount < 0 and atac.add_deduct_tax != 'Deduct') or (atac.base_tax_amount >= 0 and atac.add_deduct_tax = 'Deduct'))
+<<<<<<< HEAD
                     and a.account_type = 'Tax'
+=======
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
                     and pe.company = %s
                     and YEAR(pe.posting_date) = %s
                     and QUARTER(pe.posting_date) = %s
@@ -859,15 +920,21 @@ def bir_1601_fq_qap(company, year, quarter, response_type="download"):
                     `tabPurchase Taxes and Charges` ptac
                 ON
                     pi.name = ptac.parent
+<<<<<<< HEAD
                 INNER JOIN
                     `tabAccount` a
                 ON
                     ptac.account_head = a.name
+=======
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
                 WHERE
                     pi.docstatus = 1
                     and pi.is_return = 0
                     and ((ptac.base_tax_amount < 0 and ptac.add_deduct_tax != 'Deduct') or (ptac.base_tax_amount >= 0 and ptac.add_deduct_tax = 'Deduct'))
+<<<<<<< HEAD
                     and a.account_type = 'Tax'
+=======
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
                     and pi.company = %s
                     and YEAR(pi.posting_date) = %s
                     and QUARTER(pi.posting_date) = %s
@@ -884,16 +951,22 @@ def bir_1601_fq_qap(company, year, quarter, response_type="download"):
                     `tabAdvance Taxes and Charges` atac
                 ON
                     pe.name = atac.parent
+<<<<<<< HEAD
                 INNER JOIN
                     `tabAccount` a
                 ON
                     atac.account_head = a.name
+=======
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
                 WHERE
                     pe.docstatus = 1
                     and pe.payment_type = 'Pay'
                     and pe.party_type = 'Supplier'
                     and ((atac.base_tax_amount < 0 and atac.add_deduct_tax != 'Deduct') or (atac.base_tax_amount >= 0 and atac.add_deduct_tax = 'Deduct'))
+<<<<<<< HEAD
                     and a.account_type = 'Tax'
+=======
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
                     and pe.company = %s
                     and YEAR(pe.posting_date) = %s
                     and QUARTER(pe.posting_date) = %s
@@ -970,9 +1043,15 @@ def bir_1601_fq_qap(company, year, quarter, response_type="download"):
         details = '{details},{next}'.format(details=details, next=detail_return_period[:7])
         details = '{details},{next}'.format(details=details, next=str(i)[:8])
         details = '{details},{next}'.format(details=details, next=entry.atc[:5])
+<<<<<<< HEAD
         details = '{details},{next}'.format(details=details, next="{:.2f}".format(flt(entry.rate, 2)))
         details = '{details},{next}'.format(details=details, next="{:.2f}".format(flt(entry.base_tax_base, 2)))
         details = '{details},{next}'.format(details=details, next="{:.2f}".format(flt(entry.base_tax_withheld, 2)))
+=======
+        details = '{details},{next}'.format(details=details, next=flt(entry.rate, 2))
+        details = '{details},{next}'.format(details=details, next=flt(entry.base_tax_base, 2))
+        details = '{details},{next}'.format(details=details, next=flt(entry.base_tax_withheld, 2))
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
 
         total_base_tax_base += entry.base_tax_base
         total_base_tax_withheld += entry.base_tax_withheld
@@ -986,8 +1065,13 @@ def bir_1601_fq_qap(company, year, quarter, response_type="download"):
     controls = '{controls},{next}'.format(controls=controls, next=company_information['tin'][:9])
     controls = '{controls},{next}'.format(controls=controls, next=company_information['tin'][9:13])
     controls = '{controls},{next}'.format(controls=controls, next=return_period[:7])
+<<<<<<< HEAD
     controls = '{controls},{next}'.format(controls=controls, next="{:.2f}".format(flt(total_base_tax_base, 2)))
     controls = '{controls},{next}'.format(controls=controls, next="{:.2f}".format(flt(total_base_tax_withheld, 2)))
+=======
+    controls = '{controls},{next}'.format(controls=controls, next=flt(total_base_tax_base, 2))
+    controls = '{controls},{next}'.format(controls=controls, next=flt(total_base_tax_withheld, 2))
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
 
     content = content + controls
     

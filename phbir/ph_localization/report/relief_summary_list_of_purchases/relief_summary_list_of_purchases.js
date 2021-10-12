@@ -31,6 +31,7 @@ frappe.query_reports["RELIEF Summary List of Purchases"] = {
             "reqd": 1
 		},
 	],
+<<<<<<< HEAD
     "onload": function(report) {
         report.page.remove_inner_button(__("Set Chart"));
         report.page.add_inner_button(__("Generate Data File (.DAT)"), function() {
@@ -86,4 +87,6 @@ frappe.query_reports["RELIEF Summary List of Purchases"] = {
             d.show();
         });
     }
+=======
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
 };

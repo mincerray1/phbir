@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
  "add_total_row": 1,
+=======
+ "add_total_row": 0,
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
  "columns": [],
  "creation": "2021-10-04 17:29:42.762962",
  "disable_prepared_report": 0,
@@ -10,7 +14,11 @@
  "idx": 0,
  "is_standard": "Yes",
  "letter_head": "BOA Letterhead",
+<<<<<<< HEAD
  "modified": "2021-10-12 12:26:22.158118",
+=======
+ "modified": "2021-10-04 17:29:42.762962",
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "RELIEF Summary List of Sales",

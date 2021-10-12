@@ -1,6 +1,7 @@
 # Copyright (c) 2013, SERVIO Technologies and contributors
 # For license information, please see license.txt
 
+<<<<<<< HEAD
 import frappe
 from frappe import _
 from frappe.utils import flt, getdate
@@ -298,3 +299,10 @@ def get_columns():
     ]
 
     return columns
+=======
+# import frappe
+
+def execute(filters=None):
+	columns, data = [], []
+	return columns, data
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342

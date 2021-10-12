@@ -34,7 +34,11 @@ def generate_sawt_data_file(company, year, month, sawt_form, response_type="down
     header = '{header},{next}'.format(header=header, next='H{}'.format(sawt_form)[:6])
     header = '{header},{next}'.format(header=header, next=company_information['tin'][:9])
     header = '{header},{next}'.format(header=header, next=company_information['tin'][9:12]) # branch code - 3 chars only
+<<<<<<< HEAD
     header = '{header},"{next}"'.format(header=header, next=company_information['company_name'].upper()[:50])
+=======
+    header = '{header},"{next}"'.format(header=header, next=company_information['company_name'][:50])
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
     header = '{header},"{next}"'.format(header=header, next='') # blank last, first, middle name? EN user will always be company
     header = '{header},"{next}"'.format(header=header, next='')
     header = '{header},"{next}"'.format(header=header, next='')
@@ -54,18 +58,32 @@ def generate_sawt_data_file(company, year, month, sawt_form, response_type="down
         details = '{details},{next}'.format(details=details, next=str(i)[:8]) # seq_num
         details = '{details},{next}'.format(details=details, next=entry['tin'][:9])
         details = '{details},{next}'.format(details=details, next=entry['branch_code'][:3])
+<<<<<<< HEAD
         details = '{details},"{next}"'.format(details=details, next=entry['registered_name'].upper()[:50])
         
         details = '{details},"{next}"'.format(details=details, next=(entry['contact_last_name'].upper()[:30] if entry['customer_type'] == 'Individual' else ''))
         details = '{details},"{next}"'.format(details=details, next=(entry['contact_first_name'].upper()[:30] if entry['customer_type'] == 'Individual' else ''))
         details = '{details},"{next}"'.format(details=details, next=(entry['contact_middle_name'].upper()[:30] if entry['customer_type'] == 'Individual' else ''))
+=======
+        details = '{details},"{next}"'.format(details=details, next=entry['registered_name'][:50])
+        
+        details = '{details},"{next}"'.format(details=details, next=(entry['contact_last_name'][:30] if entry['customer_type'] == 'Individual' else ''))
+        details = '{details},"{next}"'.format(details=details, next=(entry['contact_first_name'][:30] if entry['customer_type'] == 'Individual' else ''))
+        details = '{details},"{next}"'.format(details=details, next=(entry['contact_middle_name'][:30] if entry['customer_type'] == 'Individual' else ''))
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
 
         details = '{details},{next}'.format(details=details, next=return_period[:7])
         details = '{details},{next}'.format(details=details, next='') # nature of payment = blank. blank in bir alphalist
         details = '{details},{next}'.format(details=details, next=entry['atc'][:5])
+<<<<<<< HEAD
         details = '{details},{next}'.format(details=details, next="{:.2f}".format(flt(entry['atc_rate'], 2)))
         details = '{details},{next}'.format(details=details, next="{:.2f}".format(flt(entry['income_payment'], 2)))
         details = '{details},{next}'.format(details=details, next="{:.2f}".format(flt(entry['tax_withheld'], 2)))
+=======
+        details = '{details},{next}'.format(details=details, next=flt(entry['atc_rate'], 2))
+        details = '{details},{next}'.format(details=details, next=flt(entry['income_payment'], 2))
+        details = '{details},{next}'.format(details=details, next=flt(entry['tax_withheld'], 2))
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
 
         total_base_tax_base += entry['income_payment']
         total_base_tax_withheld += entry['tax_withheld']
@@ -79,8 +97,13 @@ def generate_sawt_data_file(company, year, month, sawt_form, response_type="down
     control = '{control},{next}'.format(control=control, next=company_information['tin'][:9])
     control = '{control},{next}'.format(control=control, next=company_information['branch_code'][:3])
     control = '{control},{next}'.format(control=control, next=return_period[:7])
+<<<<<<< HEAD
     control = '{control},{next}'.format(control=control, next="{:.2f}".format(flt(total_base_tax_base, 2)))
     control = '{control},{next}'.format(control=control, next="{:.2f}".format(flt(total_base_tax_withheld, 2)))
+=======
+    control = '{control},{next}'.format(control=control, next=flt(total_base_tax_base, 2))
+    control = '{control},{next}'.format(control=control, next=flt(total_base_tax_withheld, 2))
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
 
     content = content + control
 
@@ -119,16 +142,22 @@ def get_data(company, year, month):
                 `tabCustomer` as c
             ON
                 si.customer = c.name
+<<<<<<< HEAD
             INNER JOIN
                 `tabAccount` a
             ON
                 stac.account_head = a.name
+=======
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
             WHERE
                 si.docstatus = 1
                 and si.is_return = 0
                 and stac.base_tax_amount < 0 
                 and stac.atc IN (SELECT atc FROM `tabATC` WHERE tax_type_code IN ('WE', 'WB', 'WV'))
+<<<<<<< HEAD
                 and a.account_type = 'Tax'
+=======
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
             UNION ALL
             SELECT 
                 pe.company,
@@ -149,16 +178,22 @@ def get_data(company, year, month):
                 `tabCustomer` as c
             ON
                 pe.party = c.name
+<<<<<<< HEAD
             INNER JOIN
                 `tabAccount` a
             ON
                 atac.account_head = a.name
+=======
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
             WHERE
                 pe.docstatus = 1
                 and ((atac.base_tax_amount < 0 and atac.add_deduct_tax != 'Deduct') or (atac.base_tax_amount >= 0 and atac.add_deduct_tax = 'Deduct'))
                 and atac.atc IN (SELECT atc FROM `tabATC` WHERE tax_type_code IN ('WE', 'WB', 'WV'))
                 and pe.party_type = 'Customer'
+<<<<<<< HEAD
                 and a.account_type = 'Tax'
+=======
+>>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
             ) temp
         WHERE 
             temp.company = %s
