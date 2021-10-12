@@ -79,10 +79,15 @@ def get_data(company, year, month):
             `tabSales Taxes and Charges` stac
         ON
             si.name = stac.parent
+        INNER JOIN
+            `tabAccount` a
+        ON
+            atac.account_head = a.name
         WHERE
             si.docstatus = 1
-            AND si.company = %s
             AND stac.base_tax_amount >= 0
+            AND a.account_type = 'Tax'
+            AND si.company = %s
             AND YEAR(si.posting_date) = %s
             AND MONTH(si.posting_date) = %s
         """, (company, year, month), as_dict=1)

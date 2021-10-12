@@ -859,10 +859,15 @@ def bir_1601_fq_qap(company, year, quarter, response_type="download"):
                     `tabPurchase Taxes and Charges` ptac
                 ON
                     pi.name = ptac.parent
+                INNER JOIN
+                    `tabAccount` a
+                ON
+                    ptac.account_head = a.name
                 WHERE
                     pi.docstatus = 1
                     and pi.is_return = 0
                     and ((ptac.base_tax_amount < 0 and ptac.add_deduct_tax != 'Deduct') or (ptac.base_tax_amount >= 0 and ptac.add_deduct_tax = 'Deduct'))
+                    and a.account_type = 'Tax'
                     and pi.company = %s
                     and YEAR(pi.posting_date) = %s
                     and QUARTER(pi.posting_date) = %s
@@ -879,11 +884,16 @@ def bir_1601_fq_qap(company, year, quarter, response_type="download"):
                     `tabAdvance Taxes and Charges` atac
                 ON
                     pe.name = atac.parent
+                INNER JOIN
+                    `tabAccount` a
+                ON
+                    atac.account_head = a.name
                 WHERE
                     pe.docstatus = 1
                     and pe.payment_type = 'Pay'
                     and pe.party_type = 'Supplier'
                     and ((atac.base_tax_amount < 0 and atac.add_deduct_tax != 'Deduct') or (atac.base_tax_amount >= 0 and atac.add_deduct_tax = 'Deduct'))
+                    and a.account_type = 'Tax'
                     and pe.company = %s
                     and YEAR(pe.posting_date) = %s
                     and QUARTER(pe.posting_date) = %s

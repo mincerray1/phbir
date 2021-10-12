@@ -53,11 +53,16 @@ def get_data(company, supplier, doctype, purchase_invoice, payment_entry, from_d
                 `tabSupplier` as s
             ON
                 pi.supplier = s.name
+            INNER JOIN
+                `tabAccount` a
+            ON
+                ptac.account_head = a.name
             WHERE
                 pi.docstatus = 1
                 and pi.is_return = 0
                 and ((ptac.base_tax_amount < 0 and ptac.add_deduct_tax != 'Deduct') or (ptac.base_tax_amount >= 0 and ptac.add_deduct_tax = 'Deduct'))
                 and ptac.atc IN (SELECT atc FROM `tabATC` WHERE tax_type_code IN ('WE', 'WB', 'WV'))
+                and a.account_type = 'Tax'
                 and pi.supplier = %s
                 and pi.posting_date >= %s
                 and pi.posting_date <= %s
@@ -92,12 +97,17 @@ def get_data(company, supplier, doctype, purchase_invoice, payment_entry, from_d
                 `tabSupplier` as s
             ON
                 pe.party = s.name
+            INNER JOIN
+                `tabAccount` a
+            ON
+                atac.account_head = a.name
             WHERE
                 pe.docstatus = 1
                 and pe.payment_type = 'Pay'
                 and pe.party_type = 'Supplier'
                 and ((atac.base_tax_amount < 0 and atac.add_deduct_tax != 'Deduct') or (atac.base_tax_amount >= 0 and atac.add_deduct_tax = 'Deduct'))
                 and atac.atc IN (SELECT atc FROM `tabATC` WHERE tax_type_code IN ('WE', 'WB', 'WV'))
+                and a.account_type = 'Tax'
                 and pe.party = %s
                 and pe.posting_date >= %s
                 and pe.posting_date <= %s

@@ -119,11 +119,16 @@ def get_data(company, year, month):
                 `tabCustomer` as c
             ON
                 si.customer = c.name
+            INNER JOIN
+                `tabAccount` a
+            ON
+                stac.account_head = a.name
             WHERE
                 si.docstatus = 1
                 and si.is_return = 0
                 and stac.base_tax_amount < 0 
                 and stac.atc IN (SELECT atc FROM `tabATC` WHERE tax_type_code IN ('WE', 'WB', 'WV'))
+                and a.account_type = 'Tax'
             UNION ALL
             SELECT 
                 pe.company,
@@ -144,11 +149,16 @@ def get_data(company, year, month):
                 `tabCustomer` as c
             ON
                 pe.party = c.name
+            INNER JOIN
+                `tabAccount` a
+            ON
+                atac.account_head = a.name
             WHERE
                 pe.docstatus = 1
                 and ((atac.base_tax_amount < 0 and atac.add_deduct_tax != 'Deduct') or (atac.base_tax_amount >= 0 and atac.add_deduct_tax = 'Deduct'))
                 and atac.atc IN (SELECT atc FROM `tabATC` WHERE tax_type_code IN ('WE', 'WB', 'WV'))
                 and pe.party_type = 'Customer'
+                and a.account_type = 'Tax'
             ) temp
         WHERE 
             temp.company = %s
