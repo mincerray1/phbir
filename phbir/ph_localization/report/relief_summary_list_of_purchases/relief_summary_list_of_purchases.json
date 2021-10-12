@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
  "add_total_row": 1,
-=======
- "add_total_row": 0,
->>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
  "columns": [],
  "creation": "2021-10-04 17:30:21.954155",
  "disable_prepared_report": 0,
@@ -13,11 +9,7 @@
  "filters": [],
  "idx": 0,
  "is_standard": "Yes",
-<<<<<<< HEAD
  "modified": "2021-10-12 12:26:14.954471",
-=======
- "modified": "2021-10-04 17:30:34.490388",
->>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "RELIEF Summary List of Purchases",

@@ -11,7 +11,6 @@ function get_years() {
         }
     });
     return result;
-<<<<<<< HEAD
 }
 
 function remove_commas(str) {
@@ -20,6 +19,3 @@ function remove_commas(str) {
     }
     return str;
 };
-=======
-}
->>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342

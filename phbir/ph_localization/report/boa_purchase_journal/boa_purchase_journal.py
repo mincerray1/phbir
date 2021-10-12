@@ -63,14 +63,11 @@ def get_data(filters):
             WHERE
                 parent.docstatus = 1
                 and parent.is_return = 0*/
-<<<<<<< HEAD
             INNER JOIN
                 `tabAccount` a
             ON
                 ptac.account_head = a.name
             WHERE a.account_type = 'Tax'
-=======
->>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
             GROUP BY ptac.parent
         ) AS ptac_totals
     ON 
@@ -135,14 +132,11 @@ def get_data(filters):
             WHERE
                 parent.docstatus = 1
                 and parent.is_return = 0*/
-<<<<<<< HEAD
             INNER JOIN
                 `tabAccount` a
             ON
                 ptac.account_head = a.name
             WHERE a.account_type = 'Tax'
-=======
->>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
             GROUP BY ptac.parent
         ) AS ptac_totals
     ON 

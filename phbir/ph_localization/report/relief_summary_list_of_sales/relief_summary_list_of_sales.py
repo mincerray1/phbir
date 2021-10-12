@@ -6,11 +6,8 @@ from frappe import _
 from frappe.utils import flt, getdate
 from phbir.ph_localization.utils import get_company_information, get_customer_information
 from phbir.ph_localization.bir_forms import return_document
-<<<<<<< HEAD
 import json
 import calendar
-=======
->>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
 
 def execute(filters=None):
     columns, data = [], []
@@ -21,7 +18,6 @@ def execute(filters=None):
     return columns, data
 
 def get_data(company, year, month):
-<<<<<<< HEAD
     data = []
 
     tax_declaration_setup = frappe.get_doc('Tax Declaration Setup', 'Tax Declaration Setup')
@@ -227,11 +223,6 @@ def generate_sls_data_file(company, year, month, fiscal_month_end, response_type
     filename = "{tin}S{return_period}".format(tin=company_information['tin'][:9],return_period=return_period_no_slash)
 
     return_document(content, filename, file_extension, response_type)
-=======
-    result = []
-
-    return result
->>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
 
 def get_columns():
     columns = [
@@ -242,18 +233,13 @@ def get_columns():
             "width": 180
         },
         {
-<<<<<<< HEAD
             "fieldname": "customer",
-=======
-            "fieldname": "registered_name",
->>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
             "label": _("Registered Name"),
             "fieldtype": "Link",
             "options": "Customer",
             "width": 200
         },
         {
-<<<<<<< HEAD
             "fieldname": "total_sales",
             "label": _("Total Sales"),
             "fieldtype": "Currency",
@@ -288,37 +274,6 @@ def get_columns():
             "label": _("Output Tax"),
             "fieldtype": "Currency",
             "width": 150
-=======
-            "fieldname": "individual",
-            "label": _("Individual"),
-            "fieldtype": "Data",
-            "width": 220
-        },
-        {
-            "fieldname": "atc",
-            "label": _("ATC"),
-            "fieldtype": "Link",
-            "options": "ATC",
-            "width": 80
-        },
-        {
-            "fieldname": "income_payment",
-            "label": _("Income Payment"),
-            "fieldtype": "Currency",
-            "width": 200
-        },
-        {
-            "fieldname": "formatted_atc_rate",
-            "label": _("Tax Rate"),
-            "fieldtype": "Data",
-            "width": 80
-        },
-        {
-            "fieldname": "tax_withheld",
-            "label": _("Tax Withheld"),
-            "fieldtype": "Currency",
-            "width": 200
->>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
         },
     ]
 

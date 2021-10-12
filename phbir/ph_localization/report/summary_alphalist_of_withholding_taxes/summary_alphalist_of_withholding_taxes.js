@@ -60,13 +60,8 @@ frappe.query_reports["Summary Alphalist of Withholding Taxes"] = {
                     let context = Object.assign({}, filters, values);
                     let u = new URLSearchParams(context).toString();
                     
-<<<<<<< HEAD
                     var sawt_data_url = frappe.urllib.get_full_url('/api/method/phbir.ph_localization.report.summary_alphalist_of_withholding_taxes.summary_alphalist_of_withholding_taxes.generate_sawt_data_file?' + u + '&response_type=download');
                     let sawt_data = window.open(sawt_data_url);
-=======
-                    var bir_form_url = frappe.urllib.get_full_url('/api/method/phbir.ph_localization.report.summary_alphalist_of_withholding_taxes.summary_alphalist_of_withholding_taxes.generate_sawt_data_file?' + u + '&response_type=download');
-                    let bir_form = window.open(bir_form_url);
->>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
                 }
             });
             

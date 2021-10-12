@@ -40,16 +40,12 @@ def get_data(filters):
             SELECT stac.parent, SUM(stac.tax_amount) AS tax_amount, SUM(stac.base_tax_amount) AS base_tax_amount, 
                 SUM(stac.tax_amount_after_discount_amount) AS tax_amount_after_discount_amount, SUM(stac.base_tax_amount_after_discount_amount) AS base_tax_amount_after_discount_amount
             FROM `tabSales Taxes and Charges` stac
-<<<<<<< HEAD
             INNER JOIN
                 `tabAccount` a
             ON
                 stac.account_head = a.name
             WHERE stac.base_tax_amount >= 0
                 and a.account_type = 'Tax'
-=======
-            WHERE stac.base_tax_amount >= 0
->>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
             GROUP BY stac.parent
         ) stac_add
     ON
@@ -59,16 +55,12 @@ def get_data(filters):
             SELECT stac.parent, SUM(stac.tax_amount) AS tax_amount, SUM(stac.base_tax_amount) AS base_tax_amount, 
                 SUM(stac.tax_amount_after_discount_amount) AS tax_amount_after_discount_amount, SUM(stac.base_tax_amount_after_discount_amount) AS base_tax_amount_after_discount_amount
             FROM `tabSales Taxes and Charges` stac
-<<<<<<< HEAD
             INNER JOIN
                 `tabAccount` a
             ON
                 stac.account_head = a.name
             WHERE stac.base_tax_amount < 0
                 and a.account_type = 'Tax'
-=======
-            WHERE stac.base_tax_amount < 0
->>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
             GROUP BY stac.parent
         ) stac_deduct
     ON
@@ -112,16 +104,12 @@ def get_data(filters):
             SELECT stac.parent, SUM(stac.tax_amount) AS tax_amount, SUM(stac.base_tax_amount) AS base_tax_amount, 
                 SUM(stac.tax_amount_after_discount_amount) AS tax_amount_after_discount_amount, SUM(stac.base_tax_amount_after_discount_amount) AS base_tax_amount_after_discount_amount
             FROM `tabSales Taxes and Charges` stac
-<<<<<<< HEAD
             INNER JOIN
                 `tabAccount` a
             ON
                 stac.account_head = a.name
             WHERE stac.base_tax_amount < 0
                 and a.account_type = 'Tax'
-=======
-            WHERE stac.base_tax_amount < 0
->>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
             GROUP BY stac.parent
         ) stac_add
     ON
@@ -131,16 +119,12 @@ def get_data(filters):
             SELECT stac.parent, SUM(stac.tax_amount) AS tax_amount, SUM(stac.base_tax_amount) AS base_tax_amount, 
                 SUM(stac.tax_amount_after_discount_amount) AS tax_amount_after_discount_amount, SUM(stac.base_tax_amount_after_discount_amount) AS base_tax_amount_after_discount_amount
             FROM `tabSales Taxes and Charges` stac
-<<<<<<< HEAD
             INNER JOIN
                 `tabAccount` a
             ON
                 stac.account_head = a.name
             WHERE stac.base_tax_amount >= 0
                 and a.account_type = 'Tax'
-=======
-            WHERE stac.base_tax_amount >= 0
->>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
             GROUP BY stac.parent
         ) stac_deduct
     ON

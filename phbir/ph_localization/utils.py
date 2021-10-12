@@ -30,15 +30,10 @@ def get_custom_formatted_address(address):
 @frappe.whitelist()
 def get_company_information(company):
     company_doc = frappe.get_doc('Company', company)
-<<<<<<< HEAD
     company_address_doc = None
 
     company_address = ''
     company_address_text = ''
-=======
-
-    company_address = ''
->>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
     zipcode = ''
     phone = ''
     email_id = ''
@@ -59,16 +54,11 @@ def get_company_information(company):
         company_address = company_address_dynamic_link_doc.parent if company_address_dynamic_link_doc.parent else ''
     
     if company_address:
-<<<<<<< HEAD
         company_address_doc = frappe.get_doc('Address', company_address)
         company_address_text = get_custom_formatted_address(company_address)
 
     
     registered_name = frappe.db.get_single_value('PH Localization Setup', 'registered_name')
-=======
-        company_address = get_custom_formatted_address(company_address)
-    
->>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
     permit_no = frappe.db.get_single_value('PH Localization Setup', 'permit_no')
     permit_date_issued = frappe.db.get_single_value('PH Localization Setup', 'permit_date_issued')
     rdo_code = frappe.db.get_single_value('PH Localization Setup', 'rdo_code')
@@ -85,16 +75,12 @@ def get_company_information(company):
 
     result = {
         'company_name': company_doc.name,
-<<<<<<< HEAD
         'registered_name': registered_name if registered_name else company_doc.name,
         'address': company_address_text if company_address_text else '',
         'address_line1': company_address_doc.address_line1 if company_address_doc and company_address_doc.address_line1 else '',
         'address_line2': company_address_doc.address_line2 if company_address_doc and company_address_doc.address_line2 else '',
         'city': company_address_doc.city if company_address_doc and company_address_doc.city else '',
         'state': company_address_doc.state if company_address_doc and company_address_doc.state else '',
-=======
-        'address': company_address if company_address else '',
->>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
         'tin': preformat_tin(company_doc.tax_id if company_doc.tax_id else ''),
         'branch_code': preformat_tin(company_doc.tax_id if company_doc.tax_id else '')[9:12],
         'zipcode': zipcode,
@@ -167,13 +153,10 @@ def get_supplier_information(supplier):
         'contact_middle_name': contact_middle_name,
         'contact_last_name': contact_last_name,
         'address': supplier_address if supplier_address else '',
-<<<<<<< HEAD
         'address_line1': supplier_address_doc.address_line1 if supplier_address_doc and supplier_address_doc.address_line1 else '',
         'address_line2': supplier_address_doc.address_line2 if supplier_address_doc and supplier_address_doc.address_line2 else '',
         'city': supplier_address_doc.city if supplier_address_doc and supplier_address_doc.city else '',
         'state': supplier_address_doc.state if supplier_address_doc and supplier_address_doc.state else '',
-=======
->>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
         'tin': preformat_tin(supplier_doc.tax_id if supplier_doc.tax_id else ''),
         'tin_with_dash': preformat_tin_with_dash(supplier_doc.tax_id if supplier_doc.tax_id else ''),
         'branch_code': branch_code,
@@ -234,13 +217,10 @@ def get_customer_information(customer):
         'contact_middle_name': contact_middle_name,
         'contact_last_name': contact_last_name,
         'address': customer_address if customer_address else '',
-<<<<<<< HEAD
         'address_line1': customer_address_doc.address_line1 if customer_address_doc and customer_address_doc.address_line1 else '',
         'address_line2': customer_address_doc.address_line2 if customer_address_doc and customer_address_doc.address_line2 else '',
         'city': customer_address_doc.city if customer_address_doc and customer_address_doc.city else '',
         'state': customer_address_doc.state if customer_address_doc and customer_address_doc.state else '',
-=======
->>>>>>> 7c932d40d250f471c157f8f8aa277478ba591342
         'tin': preformat_tin(customer_doc.tax_id if customer_doc.tax_id else ''),
         'tin_with_dash': preformat_tin_with_dash(customer_doc.tax_id if customer_doc.tax_id else ''),
         'branch_code': branch_code,
