@@ -1,6 +1,8 @@
 // Copyright (c) 2018, Frappe Technologies Pvt. Ltd. and Contributors
 // License: GNU General Public License v3. See license.txt
 
+{% include 'phbir/public/js/utils.js' %}
+
 frappe.query_reports["BOA General Ledger"] = {
     "filters": [
         {
@@ -50,7 +52,8 @@ frappe.query_reports["BOA General Ledger"] = {
             "fieldtype": "Data",
             on_change: function() {
                 frappe.query_report.set_filter_value('group_by', "Group by Voucher (Consolidated)");
-            }
+            },
+            "hidden": 1
         },
         {
             "fieldtype": "Break",
@@ -63,7 +66,8 @@ frappe.query_reports["BOA General Ledger"] = {
             "default": "",
             on_change: function() {
                 frappe.query_report.set_filter_value('party', "");
-            }
+            },
+            "hidden": 1
         },
         {
             "fieldname":"party",
@@ -98,7 +102,8 @@ frappe.query_reports["BOA General Ledger"] = {
                         });
                     }
                 }
-            }
+            },
+            "hidden": 1
         },
         {
             "fieldname":"party_name",
@@ -129,7 +134,8 @@ frappe.query_reports["BOA General Ledger"] = {
                     value: "Group by Party",
                 },
             ],
-            "default": "Group by Voucher (Consolidated)"
+            "default": "Group by Account",
+            "hidden": 1
         },
         {
             "fieldname":"tax_id",
@@ -141,7 +147,8 @@ frappe.query_reports["BOA General Ledger"] = {
             "fieldname": "presentation_currency",
             "label": __("Currency"),
             "fieldtype": "Select",
-            "options": erpnext.get_presentation_currency_list()
+            "options": erpnext.get_presentation_currency_list(),
+            "hidden": 1
         },
         {
             "fieldname":"cost_center",
@@ -151,7 +158,8 @@ frappe.query_reports["BOA General Ledger"] = {
                 return frappe.db.get_link_options('Cost Center', txt, {
                     company: frappe.query_report.get_filter_value("company")
                 });
-            }
+            },
+            "hidden": 1
         },
         {
             "fieldname":"project",
@@ -161,33 +169,45 @@ frappe.query_reports["BOA General Ledger"] = {
                 return frappe.db.get_link_options('Project', txt, {
                     company: frappe.query_report.get_filter_value("company")
                 });
-            }
+            },
+            "hidden": 1
         },
         {
             "fieldname": "include_dimensions",
             "label": __("Consider Accounting Dimensions"),
             "fieldtype": "Check",
-            "default": 0
+            "default": 0,
+            "hidden": 1
         },
         {
             "fieldname": "show_opening_entries",
             "label": __("Show Opening Entries"),
-            "fieldtype": "Check"
+            "fieldtype": "Check",
+            "hidden": 1
         },
         {
             "fieldname": "include_default_book_entries",
             "label": __("Include Default Book Entries"),
-            "fieldtype": "Check"
+            "fieldtype": "Check",
+            "hidden": 1
         },
         {
             "fieldname": "show_cancelled_entries",
             "label": __("Show Cancelled Entries"),
-            "fieldtype": "Check"
+            "fieldtype": "Check",
+            "hidden": 1
         },
         {
             "fieldname": "show_net_values_in_party_account",
             "label": __("Show Net Values in Party Account"),
-            "fieldtype": "Check"
+            "fieldtype": "Check",
+            "hidden": 1
+        },
+        {
+            "fieldname": "include_details_as_remarks",
+            "label": __("Include Details as Remarks"),
+            "fieldtype": "Check",
+            "hidden": 1
         }
     ]
 }

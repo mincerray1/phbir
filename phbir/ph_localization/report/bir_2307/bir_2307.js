@@ -2,6 +2,8 @@
 // For license information, please see license.txt
 /* eslint-disable */
 
+{% include 'phbir/public/js/utils.js' %}
+
 frappe.query_reports["BIR 2307"] = {
 	"filters": [
 		{
@@ -119,21 +121,3 @@ frappe.query_reports["BIR 2307"] = {
         frappe.query_report.toggle_filter_display('payment_entry', filter_based_on != 'Payment Entry');
     },
 };
-
-function get_company_information(company){
-    let company_information = {};
-    frappe.call({
-        async: false,
-        method: "phbir.ph_localization.utils.get_company_information",
-        type: "GET",
-        args: {
-            'company': company
-        },
-        callback: function(r) {
-            if (!r.exc) {
-                company_information = r.message;
-            }
-        }
-    });
-    return company_information
-}

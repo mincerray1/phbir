@@ -2,6 +2,8 @@
 // For license information, please see license.txt
 /* eslint-disable */
 
+{% include 'phbir/public/js/utils.js' %}
+
 frappe.query_reports["BOA Purchase Journal"] = {
 	"filters": [
 		{
@@ -28,21 +30,3 @@ frappe.query_reports["BOA Purchase Journal"] = {
         }
     ]
 };
-
-function get_company_information(company){
-    let company_information = {};
-    frappe.call({
-        async: false,
-        method: "phbir.ph_localization.utils.get_company_information",
-        type: "GET",
-        args: {
-            'company': company
-        },
-        callback: function(r) {
-            if (!r.exc) {
-                company_information = r.message;
-            }
-        }
-    });
-    return company_information
-}

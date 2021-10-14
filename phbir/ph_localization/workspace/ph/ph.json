@@ -146,7 +146,7 @@
    "hidden": 0,
    "is_query_report": 1,
    "label": "General Ledger",
-   "link_to": "General Ledger",
+   "link_to": "BOA General Ledger",
    "link_type": "Report",
    "onboard": 0,
    "only_for": "Philippines",
@@ -261,7 +261,7 @@
    "type": "Link"
   }
  ],
- "modified": "2021-10-08 17:59:52.562202",
+ "modified": "2021-10-14 12:38:34.992461",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "PH",
