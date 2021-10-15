@@ -20,6 +20,12 @@
     width: 100%;
     position: absolute;
 }
+.bir-form-text-center {
+    font-size: 0.80em;
+    width: 7.6in;
+    position: absolute;
+    text-align: center;
+}
 .bir-form-amount {
     text-align: right;
 }
@@ -134,6 +140,11 @@ table.table-money-payments tr td {
         </tfoot>
     </table>
 </div>
+
+<div style="left: 0.50in; top: 10.90in;" class="bir-form-text-center">
+    <span>{{ payor.authorized_representative_1 }} {{ " / " + payor.title_1 if payor.title_1 }} {{ " / " +  preformat_tin_with_dash(payor.tin_of_signatory_1) if payor.tin_of_signatory_1}}</span>
+</div>
+
 <div>
     {% if is_local_dev() %}
         <img src="https://erpnextsandbox.serviotech.com/assets/phbir/img/forms/2307-1.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;">

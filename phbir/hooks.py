@@ -119,7 +119,9 @@ doc_events = {
 
 jenv = {
 	"methods": [
-		"is_local_dev:phbir.ph_localization.utils.is_local_dev"
+		"is_local_dev:phbir.ph_localization.utils.is_local_dev",
+		"preformat_tin:phbir.ph_localization.utils.preformat_tin",
+		"preformat_tin_with_dash:phbir.ph_localization.utils.preformat_tin_with_dash"
 	]
 }
 

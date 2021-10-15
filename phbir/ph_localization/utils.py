@@ -94,10 +94,10 @@ def get_company_information(company):
         'email_id': email_id if email_id else '',
         'authorized_representative_1': authorized_representative_1,
         'title_1': title_1,
-        'tin_of_signatory_1': tin_of_signatory_1,
+        'tin_of_signatory_1': preformat_tin(tin_of_signatory_1),
         'authorized_representative_2': authorized_representative_2,
         'title_2': title_2,
-        'tin_of_signatory_2': tin_of_signatory_2
+        'tin_of_signatory_2': preformat_tin(tin_of_signatory_2)
     }
 
     return result
