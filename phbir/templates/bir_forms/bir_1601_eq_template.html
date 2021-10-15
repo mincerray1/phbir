@@ -20,6 +20,11 @@
         width: 100%;
         position: absolute;
     }
+    .bir-form-text-footer {
+        font-size: 0.80em;
+        position: absolute;
+        text-align: center:
+    }
     .bir-form-amount {
         text-align: right;
     }
@@ -141,6 +146,11 @@
             </tr>
         </tfoot>
     </table>
+</div>
+
+<div style="left: 4.30in; top: 10.15in; width: 3.90in; text-align: center;" class="bir-form-text-footer">
+    <span>{{ company.authorized_representative_1 }}</span> <br />
+    <span>{{ company.title_1 if company.title_1 }}{{ " / " + preformat_tin_with_dash(company.tin_of_signatory_1) if company.tin_of_signatory_1 }}</span>
 </div>
 
 <div>

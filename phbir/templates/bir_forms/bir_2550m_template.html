@@ -20,6 +20,11 @@
         width: 100%;
         position: absolute;
     }
+    .bir-form-text-footer {
+        font-size: 0.80em;
+        position: absolute;
+        text-align: center:
+    }
     .bir-form-amount {
         text-align: right;
         width: 1.65in;
@@ -186,6 +191,31 @@
     <div style="left: 6.31in; top: 9.32in;" class="bir-form-text bir-form-amount">{{ "{:,.2f}".format(total_amount_payable) if total_amount_payable >= 0 else "({:,.2f})".format(-total_amount_payable) }}</div>
 
 </div>
+
+<div style="left: 1.00in; top: 9.72in; width: 3.85in; text-align: center;" class="bir-form-text-footer">
+    <span>{{ company.authorized_representative_1 }}</span>
+</div>
+
+<div style="left: 5.40in; top: 9.72in; width: 2.20in; text-align: center;" class="bir-form-text-footer">
+    <span>{{ company.authorized_representative_2 }}</span>
+</div>
+
+<div style="left: 1.00in; top: 10.28in; width: 1.50in; text-align: center;" class="bir-form-text-footer">
+    <span>{{ company.title_1 }}</span>
+</div>
+
+<div style="left: 2.80in; top: 10.28in; width: 2.10in; text-align: center;" class="bir-form-text-footer">
+    <span>{{ preformat_tin_with_dash(company.tin_of_signatory_1) }}</span>
+</div>
+
+<div style="left: 5.40in; top: 10.28in; width: 2.20in; text-align: center;" class="bir-form-text-footer">
+    <span>{{ company.title_2 }}</span>
+</div>
+
+<div style="left: 5.40in; top: 10.60in; width: 2.20in; text-align: center;" class="bir-form-text-footer">
+    <span>{{ preformat_tin_with_dash(company.tin_of_signatory_2) }}</span>
+</div>
+ 
 <div>
     {% if is_local_dev() %}
         <img src="https://erpnextsandbox.serviotech.com/assets/phbir/img/forms/bir2550m-1.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;">

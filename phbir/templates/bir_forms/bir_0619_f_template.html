@@ -1,31 +1,36 @@
 <style>
-.print-format {
-    font-family: monospace;
-    font-size: 0.80em;
-    width: 8.5in;
-    height: 11in;
-    
-    margin-top: 0mm;
-    margin-left: 0mm;
-    margin-right: 0mm;
-    margin-bottom: 0mm;
-    
-    padding-top: 0mm;
-    padding-left: 0mm;
-    padding-right: 0mm;
-    margin-bottom: 0mm;
-}
-.bir-form-text {
-    font-size: 0.80em;
-    width: 100%;
-    position: absolute;
-}
-.bir-form-amount {
-    text-align: right;
-}
-.bir-form-data {
-    font-size: 0.70em;
-}
+    .print-format {
+        font-family: monospace;
+        font-size: 0.80em;
+        width: 8.5in;
+        height: 11in;
+        
+        margin-top: 0mm;
+        margin-left: 0mm;
+        margin-right: 0mm;
+        margin-bottom: 0mm;
+        
+        padding-top: 0mm;
+        padding-left: 0mm;
+        padding-right: 0mm;
+        margin-bottom: 0mm;
+    }
+    .bir-form-text {
+        font-size: 0.80em;
+        width: 100%;
+        position: absolute;
+    }
+    .bir-form-text-footer {
+        font-size: 0.80em;
+        position: absolute;
+        text-align: center:
+    }
+    .bir-form-amount {
+        text-align: right;
+    }
+    .bir-form-data {
+        font-size: 0.70em;
+    }
 </style>
 
 <div style="left: 1.11in; top: 1.54in; letter-spacing: 0.1in;" class="bir-form-text">{{ year }}</div>
@@ -69,7 +74,11 @@
 
 <div style="left: 0.32in; top: 3.72in; letter-spacing: 0.11in;" class="bir-form-text">{{ company.email_id.upper() }}</div>
 
-<div style="left: 4.68in; top: 7.47in;" class="bir-form-text">{{ company.authorized_representative_1.upper() }}</div>
+<!-- <div style="left: 4.68in; top: 7.47in;" class="bir-form-text">{{ company.authorized_representative_1.upper() }}</div> -->
+
+<div style="left: 4.68in; top: 7.47in; width: 3.40in; text-align: center; font-size: 0.7em;" class="bir-form-text-footer">
+    <span>{{ company.authorized_representative_1 }}{{ " / " + company.title_1 if company.title_1 }}{{ " / " + preformat_tin_with_dash(company.tin_of_signatory_1) if company.tin_of_signatory_1 }}</span>
+</div>
 
 <div class="bir-form-data">
     <!-- remittance -->
