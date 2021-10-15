@@ -82,7 +82,7 @@ def get_company_information(company):
         'city': company_address_doc.city if company_address_doc and company_address_doc.city else '',
         'state': company_address_doc.state if company_address_doc and company_address_doc.state else '',
         'tin': preformat_tin(company_doc.tax_id if company_doc.tax_id else ''),
-        'branch_code': preformat_tin(company_doc.tax_id if company_doc.tax_id else '')[9:12],
+        'branch_code': preformat_tin(company_doc.tax_id if company_doc.tax_id else '')[9:13], # bir structure length = 3, alphalist validation module = 4
         'zipcode': zipcode,
         'erpnext_version': __version__,
         'permit_no': permit_no if permit_no else '',
@@ -144,7 +144,7 @@ def get_supplier_information(supplier):
     if supplier_address:
         supplier_address = get_custom_formatted_address(supplier_address)
     tin = preformat_tin(supplier_doc.tax_id if supplier_doc.tax_id else '')
-    branch_code = tin[9:12]
+    branch_code = tin[9:13] # bir structure length = 3, alphalist validation module = 4
 
     result = {
         'supplier_name': supplier_doc.supplier_name,
@@ -208,7 +208,7 @@ def get_customer_information(customer):
     if customer_address:
         customer_address = get_custom_formatted_address(customer_address)
     tin = preformat_tin(customer_doc.tax_id if customer_doc.tax_id else '')
-    branch_code = tin[9:12]
+    branch_code = tin[9:13] # bir structure length = 3, alphalist validation module = 4
 
     result = {
         'customer_name': customer_doc.customer_name,
@@ -223,7 +223,7 @@ def get_customer_information(customer):
         'state': customer_address_doc.state if customer_address_doc and customer_address_doc.state else '',
         'tin': preformat_tin(customer_doc.tax_id if customer_doc.tax_id else ''),
         'tin_with_dash': preformat_tin_with_dash(customer_doc.tax_id if customer_doc.tax_id else ''),
-        'branch_code': branch_code,
+        'branch_code': branch_code, # bir structure length = 3, alphalist validation module = 4
         'zipcode': zipcode,
         'phone': phone if phone else ''
     }

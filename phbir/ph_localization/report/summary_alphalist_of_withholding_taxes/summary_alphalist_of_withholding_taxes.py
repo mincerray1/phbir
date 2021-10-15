@@ -33,7 +33,7 @@ def generate_sawt_data_file(company, year, month, sawt_form, response_type="down
     header = '{next}'.format(header=header, next='HSAWT'[:5])
     header = '{header},{next}'.format(header=header, next='H{}'.format(sawt_form)[:6])
     header = '{header},{next}'.format(header=header, next=company_information['tin'][:9])
-    header = '{header},{next}'.format(header=header, next=company_information['tin'][9:12]) # branch code - 3 chars only
+    header = '{header},{next}'.format(header=header, next=company_information['branch_code'][:4]) # branch code - 3 chars only
     header = '{header},"{next}"'.format(header=header, next=company_information['company_name'].upper()[:50])
     header = '{header},"{next}"'.format(header=header, next='') # blank last, first, middle name? EN user will always be company
     header = '{header},"{next}"'.format(header=header, next='')
@@ -53,7 +53,7 @@ def generate_sawt_data_file(company, year, month, sawt_form, response_type="down
         details = '{details},{next}'.format(details=details, next='D{}'.format(sawt_form)[:6]) # type code
         details = '{details},{next}'.format(details=details, next=str(i)[:8]) # seq_num
         details = '{details},{next}'.format(details=details, next=entry['tin'][:9])
-        details = '{details},{next}'.format(details=details, next=entry['branch_code'][:3])
+        details = '{details},{next}'.format(details=details, next=entry['branch_code'][:4])
         details = '{details},"{next}"'.format(details=details, next=entry['registered_name'].upper()[:50])
         
         details = '{details},"{next}"'.format(details=details, next=(entry['contact_last_name'].upper()[:30] if entry['customer_type'] == 'Individual' else ''))
@@ -77,7 +77,7 @@ def generate_sawt_data_file(company, year, month, sawt_form, response_type="down
     control = '{next}'.format(control=control, next='CSAWT'[:5])
     control = '{control},{next}'.format(control=control, next='C{}'.format(sawt_form)[:6])
     control = '{control},{next}'.format(control=control, next=company_information['tin'][:9])
-    control = '{control},{next}'.format(control=control, next=company_information['branch_code'][:3])
+    control = '{control},{next}'.format(control=control, next=company_information['branch_code'][:4])
     control = '{control},{next}'.format(control=control, next=return_period[:7])
     control = '{control},{next}'.format(control=control, next="{:.2f}".format(flt(total_base_tax_base, 2)))
     control = '{control},{next}'.format(control=control, next="{:.2f}".format(flt(total_base_tax_withheld, 2)))
