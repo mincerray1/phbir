@@ -187,7 +187,7 @@ def get_data(filters):
         """.format(filters.company), (getdate(filters.from_date), getdate(filters.to_date), filters.company), as_dict=1)
 
     data.extend(data_je)
-    data = sorted(data, key=lambda row: (row.voucher_type, row.voucher_no, row.row_order))
+    data = sorted(data, key=lambda row: (row.posting_date, row.voucher_type, row.voucher_no, row.row_order))
     
     current_voucher_no = ''
     current_voucher_type = ''
