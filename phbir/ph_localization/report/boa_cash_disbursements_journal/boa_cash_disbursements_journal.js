@@ -31,6 +31,12 @@ frappe.query_reports["BOA Cash Disbursements Journal"] = {
             fieldtype: "Date",
             default: frappe.datetime.get_today(),
             reqd: 1
+        },
+        {
+            fieldname:"include_cash_and_bank_journal_entries",
+            label: __("Include Cash and Bank Journal Entries"),
+            fieldtype: "Check",
+            default: 0
         }
     ],
     
