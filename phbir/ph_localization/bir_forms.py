@@ -240,11 +240,19 @@ def bir_2550m(company, year, month, response_type="pdf"):
                     taxes_and_charges = item_net_amount.taxes_and_charges
                     
                     if tax_declaration_setup.item_capital_goods and item_tax_template == tax_declaration_setup.item_capital_goods:
-                        totals['capital_goods']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
-                        totals['capital_goods']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
+                        if flt(item_wise_tax_detail[item][1], 2) < 1000000:
+                            totals['capital_goods']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
+                            totals['capital_goods']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
+                        else:
+                            totals['capital_goods_exceeding_1m']['total_base_tax_base'] = flt(item_net_amount.base_net_amount, 2)
+                            totals['capital_goods_exceeding_1m']['total_base_tax_amount'] = flt(item_wise_tax_detail[item][1], 2)
                     elif tax_declaration_setup.capital_goods and taxes_and_charges == tax_declaration_setup.capital_goods:
-                        totals['capital_goods']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
-                        totals['capital_goods']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
+                        if flt(item_wise_tax_detail[item][1], 2) < 1000000:
+                            totals['capital_goods']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
+                            totals['capital_goods']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
+                        else:
+                            totals['capital_goods_exceeding_1m']['total_base_tax_base'] = flt(item_net_amount.base_net_amount, 2)
+                            totals['capital_goods_exceeding_1m']['total_base_tax_amount'] = flt(item_wise_tax_detail[item][1], 2)
                         
                     elif tax_declaration_setup.item_domestic_purchases_of_goods and item_tax_template == tax_declaration_setup.item_domestic_purchases_of_goods:
                         totals['domestic_purchases_of_goods']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
@@ -321,12 +329,12 @@ def bir_2550m(company, year, month, response_type="pdf"):
                     break
 
     # capital goods base exceeds 1m, move amounts
-    if totals['capital_goods']['total_base_tax_base'] > 1000000:
-        totals['capital_goods_exceeding_1m']['total_base_tax_base'] = totals['capital_goods']['total_base_tax_base']
-        totals['capital_goods_exceeding_1m']['total_base_tax_amount'] = totals['capital_goods']['total_base_tax_amount']
+    # if totals['capital_goods']['total_base_tax_base'] > 1000000:
+    #     totals['capital_goods_exceeding_1m']['total_base_tax_base'] = totals['capital_goods']['total_base_tax_base']
+    #     totals['capital_goods_exceeding_1m']['total_base_tax_amount'] = totals['capital_goods']['total_base_tax_amount']
 
-        totals['capital_goods']['total_base_tax_base'] = 0
-        totals['capital_goods']['total_base_tax_amount'] = 0
+    #     totals['capital_goods']['total_base_tax_base'] = 0
+    #     totals['capital_goods']['total_base_tax_amount'] = 0
 
     for tax_line in si_base_tax_amounts:
         item_wise_tax_detail = json.loads(tax_line.item_wise_tax_detail)
