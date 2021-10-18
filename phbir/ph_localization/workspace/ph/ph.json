@@ -174,6 +174,16 @@
   {
    "hidden": 0,
    "is_query_report": 1,
+   "label": "BIR 2306",
+   "link_to": "BIR 2306",
+   "link_type": "Report",
+   "onboard": 0,
+   "only_for": "Philippines",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
    "label": "BIR 2550M",
    "link_to": "BIR 2550M",
    "link_type": "Report",
@@ -261,7 +271,7 @@
    "type": "Link"
   }
  ],
- "modified": "2021-10-14 12:38:34.992461",
+ "modified": "2021-10-18 18:39:54.913491",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "PH",
