@@ -38,8 +38,10 @@ table.table-income-payments {
     width: 8in;
 }
 table.table-income-payments tr td {
-    height: 18px;
+    height: 0.20in;
     text-align: right;
+    vertical-align: top;
+    line-height: 0.20in;
 }
 
 table.table-money-payments {
@@ -50,6 +52,7 @@ table.table-money-payments {
 table.table-money-payments tr td {
     height: 18px;
     text-align: right;
+    vertical-align: top;
 }
 </style>
 <div style="left: 2.14in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">{{ from_date.strftime('%m') }}</div>
@@ -86,7 +89,7 @@ table.table-money-payments tr td {
         <tbody>
             {% for entry in data_ip %}
                 <tr>
-                    <td width="27%" style="text-align: center;">{{ entry.document_no }}</td>
+                    <td width="27%" style="text-align: center;">{{ entry.description }}</td>
                     <td width="7%" style="text-align: center;">{{ entry.atc }}</td>
                     <td width="12%" style="text-align: right;">{{ "{:,.2f}".format(entry.month_1) }}</td>
                     <td width="13%" style="text-align: right;">{{ "{:,.2f}".format(entry.month_2) }}</td>
@@ -115,7 +118,7 @@ table.table-money-payments tr td {
         <tbody>
             {% for entry in data_mp %}
                 <tr>
-                    <td width="27%" style="text-align: center;">{{ entry.document_no }}</td>
+                    <td width="27%" style="text-align: center;">{{ entry.description }}</td>
                     <td width="7%" style="text-align: center;">{{ entry.atc }}</td>
                     <td width="12%" style="text-align: right;">{{ "{:,.2f}".format(entry.month_1) }}</td>
                     <td width="13%" style="text-align: right;">{{ "{:,.2f}".format(entry.month_2) }}</td>
