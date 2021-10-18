@@ -95,6 +95,7 @@ def get_data(company, year, month):
         SELECT 
             temp.customer,
             temp.atc,
+            atc.description,
             temp.income_payment,
             temp.atc_rate,
             temp.tax_withheld
@@ -160,6 +161,10 @@ def get_data(company, year, month):
                 and pe.party_type = 'Customer'
                 and a.account_type = 'Tax'
             ) temp
+        LEFT JOIN
+            `tabATC` atc
+        ON
+            temp.atc = atc.name
         WHERE 
             temp.company = %s
             and YEAR(temp.posting_date) = %s
@@ -167,6 +172,7 @@ def get_data(company, year, month):
         GROUP BY
             temp.customer,
             temp.atc,
+            atc.description,
             temp.atc_rate
     """, (company, year, month), as_dict=1)
 
@@ -186,6 +192,7 @@ def get_data(company, year, month):
             'contact_middle_name': customer_information['contact_middle_name'],
             'customer_type': customer_information['customer_type'],
             'atc': entry.atc,
+            'description': entry.description,
             'income_payment': entry.income_payment,
             'formatted_atc_rate': "{:.0%}".format(entry.atc_rate / 100),
             'atc_rate': entry.atc_rate,
@@ -223,6 +230,12 @@ def get_columns():
             "fieldtype": "Link",
             "options": "ATC",
             "width": 80
+        },
+        {
+            "fieldname": "description",
+            "label": _("Nature of Income Payment"),
+            "fieldtype": "Data",
+            "width": 120
         },
         {
             "fieldname": "income_payment",
