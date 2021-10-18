@@ -82,6 +82,7 @@ def get_company_information(company):
         'city': company_address_doc.city if company_address_doc and company_address_doc.city else '',
         'state': company_address_doc.state if company_address_doc and company_address_doc.state else '',
         'tin': preformat_tin(company_doc.tax_id if company_doc.tax_id else ''),
+        'tin_with_dash': preformat_tin_with_dash(company_doc.tax_id if company_doc.tax_id else ''),
         'branch_code': preformat_tin(company_doc.tax_id if company_doc.tax_id else '')[9:13], # bir structure length = 3, alphalist validation module = 4
         'zipcode': zipcode,
         'erpnext_version': __version__,
@@ -182,7 +183,7 @@ def get_customer_information(customer):
 
     # if frappe.db.exists("Dynamic Link", {'link_doctype': 'Customer', 'link_name': customer, 'parenttype': 'Address'}):
     #     customer_address_dynamic_link_doc = frappe.get_last_doc('Dynamic Link', filters={'link_doctype': 'Customer', 'link_name': customer, 'parenttype': 'Address'})
-    if customer_doc.customer_primary_address and frappe.db.exists("Address", {'name': supplier_doc.customer_primary_address}):
+    if customer_doc.customer_primary_address and frappe.db.exists("Address", {'name': customer_doc.customer_primary_address}):
         customer_address_doc = frappe.get_doc('Address', customer_doc.customer_primary_address)
 
     if customer_doc.customer_primary_contact and frappe.db.exists("Contact", {'name': customer_doc.customer_primary_contact}):

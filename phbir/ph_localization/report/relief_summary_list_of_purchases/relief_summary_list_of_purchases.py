@@ -143,8 +143,12 @@ def get_data(company, year, month):
     return data
 
 @frappe.whitelist()
-def generate_slp_data_file(company, year, month, fiscal_month_end, non_creditable=0, response_type="download"):
+def generate_slp_data_file(company, year, month, non_creditable=0, response_type="download"):
     data = get_data(company, year, month)
+
+    fiscal_month_end = frappe.db.get_single_value('PH Localization Setup', 'fiscal_month_end')
+    fiscal_month_end = (fiscal_month_end if fiscal_month_end else 12)
+
     sum_exempt = sum(item['exempt'] for item in data)
     sum_zero_rated = sum(item['zero_rated'] for item in data)
     

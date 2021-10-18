@@ -44,13 +44,6 @@ frappe.query_reports["RELIEF Summary List of Purchases"] = {
                 title: 'Enter details',
                 fields: [
                     {
-                        label: 'Fiscal Month End',
-                        fieldname: 'fiscal_month_end',
-                        fieldtype: 'Select',
-                        options: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-                        default: '12'
-                    },
-                    {
                         label: 'Non-Creditable',
                         fieldname: 'non_creditable',
                         fieldtype: 'Currency',

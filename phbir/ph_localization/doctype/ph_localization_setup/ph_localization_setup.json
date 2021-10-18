@@ -13,6 +13,7 @@
   "column_break_4",
   "vat_industry",
   "withholding_agent_category",
+  "fiscal_month_end",
   "signatory_section",
   "authorized_representative_1",
   "title_1",
@@ -101,12 +102,20 @@
    "fieldname": "registered_name",
    "fieldtype": "Data",
    "label": "Registered Name"
+  },
+  {
+   "default": "12",
+   "fieldname": "fiscal_month_end",
+   "fieldtype": "Select",
+   "label": "Fiscal Month End",
+   "length": 2,
+   "options": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2021-10-12 14:24:03.559296",
+ "modified": "2021-10-18 22:28:45.555924",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "PH Localization Setup",

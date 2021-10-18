@@ -116,6 +116,7 @@ def get_data(company, year, month):
                             'contact_middle_name': customer_information['contact_middle_name'],
                             'contact_last_name': customer_information['contact_last_name'],
                             'address_line1': customer_information['address_line1'],
+                            'address_line2': customer_information['address_line2'],
                             'city': customer_information['city'],
                             'total_sales': 0,
                             'zero_rated': 0,
@@ -156,8 +157,12 @@ def get_data(company, year, month):
     return data
 
 @frappe.whitelist()
-def generate_sls_data_file(company, year, month, fiscal_month_end, response_type="download"):
+def generate_sls_data_file(company, year, month, response_type="download"):
     data = get_data(company, year, month)
+
+    fiscal_month_end = frappe.db.get_single_value('PH Localization Setup', 'fiscal_month_end')
+    fiscal_month_end = (fiscal_month_end if fiscal_month_end else 12)
+
     sum_exempt = sum(item['exempt'] for item in data)
     sum_zero_rated = sum(item['zero_rated'] for item in data)
     sum_taxable_net = sum(item['taxable_net'] for item in data)
