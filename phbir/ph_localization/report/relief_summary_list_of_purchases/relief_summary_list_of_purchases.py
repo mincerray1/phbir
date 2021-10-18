@@ -88,6 +88,7 @@ def get_data(company, year, month):
                             'contact_middle_name': supplier_information['contact_middle_name'],
                             'contact_last_name': supplier_information['contact_last_name'],
                             'address_line1': supplier_information['address_line1'],
+                            'address_line2': supplier_information['address_line2'],
                             'city': supplier_information['city'],
                             'zero_rated': 0,
                             'exempt': 0,
