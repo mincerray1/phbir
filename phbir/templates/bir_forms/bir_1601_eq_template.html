@@ -64,9 +64,18 @@
 
 <div style="left: 7.70in; top: 2.20in; letter-spacing: 0.12in;" class="bir-form-text">{{ company.rdo_code[:3] }}</div>
 
-<div style="left: 0.43in; top: 2.60in; letter-spacing: 0.12in" class="bir-form-text">{{ company.company_name.upper() }}</div>
+<div style="left: 0.34in; top: 2.60in; letter-spacing: 0.11in" class="bir-form-text">{{ company.company_name.upper()[:8] }}</div>
+<div style="left: 2.08in; top: 2.60in; letter-spacing: 0.11in" class="bir-form-text">{{ company.company_name.upper()[8:16] }}</div>
+<div style="left: 3.68in; top: 2.60in; letter-spacing: 0.11in" class="bir-form-text">{{ company.company_name.upper()[16:24] }}</div>
+<div style="left: 5.27in; top: 2.60in; letter-spacing: 0.13in" class="bir-form-text">{{ company.company_name.upper()[24:32] }}</div>
+<div style="left: 6.86in; top: 2.60in; letter-spacing: 0.12in" class="bir-form-text">{{ company.company_name.upper()[32:40] }}</div>
 
-<div style="left: 0.43in; top: 2.99in; letter-spacing: 0.11in;" class="bir-form-text">{{ company.address.upper() }}</div>
+<div style="left: 0.34in; top: 2.99in; letter-spacing: 0.11in" class="bir-form-text">{{ company.address.upper()[:8] }}</div>
+<div style="left: 2.08in; top: 2.99in; letter-spacing: 0.11in" class="bir-form-text">{{ company.address.upper()[8:16] }}</div>
+<div style="left: 3.68in; top: 2.99in; letter-spacing: 0.11in" class="bir-form-text">{{ company.address.upper()[16:24] }}</div>
+<div style="left: 5.27in; top: 2.99in; letter-spacing: 0.13in" class="bir-form-text">{{ company.address.upper()[24:32] }}</div>
+<div style="left: 6.86in; top: 2.99in; letter-spacing: 0.12in" class="bir-form-text">{{ company.address.upper()[32:40] }}</div>
+
 <div style="left: 7.48in; top: 3.28in; letter-spacing: 0.12in;" class="bir-form-text">{{ company.zipcode[:4] }}</div>
 
 <div style="left: 1.55in; top: 3.55in; letter-spacing: 0.11in;" class="bir-form-text">{{ company.phone }}</div>
