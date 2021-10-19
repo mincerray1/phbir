@@ -479,7 +479,7 @@ def bir_1601_eq(company, year, quarter, response_type="pdf"):
         ON
             temp.atc = a.name
         WHERE
-            a.tax_type_code IN ('WE', 'WB', 'WV')
+            a.tax_type_code IN ('WE', 'WB', 'WV') and a.form_type = '2307'
         """, (company, year, quarter, company, year, quarter), as_dict=1)
 
     for entry in data:
@@ -612,7 +612,7 @@ def bir_1601_eq_qap(company, year, quarter, response_type="download"):
         ON
             temp.atc = a.name
         WHERE 
-            a.tax_type_code IN ('WE', 'WB', 'WV')
+            a.tax_type_code IN ('WE', 'WB', 'WV') and a.form_type = '2307'
         """, (company, year, quarter, company, year, quarter), as_dict=1)
 
     for entry in data:
@@ -784,7 +784,7 @@ def bir_1601_fq(company, year, quarter, response_type="pdf"):
         ON
             temp.atc = a.name
         WHERE
-            a.tax_type_code IN ('WF')
+            a.form_type = '2306'
         """, (company, year, quarter, company, year, quarter), as_dict=1)
 
     for entry in data:
@@ -917,7 +917,7 @@ def bir_1601_fq_qap(company, year, quarter, response_type="download"):
         ON
             temp.atc = a.name
         WHERE 
-            a.tax_type_code IN ('WF')
+            a.form_type = '2306'
         """, (company, year, quarter, company, year, quarter), as_dict=1)
 
     for entry in data:
