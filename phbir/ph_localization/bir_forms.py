@@ -82,7 +82,13 @@ def bir_2307(company, supplier, doctype, purchase_invoice, payment_entry, from_d
     return_pdf_document(html, filename, options, response_type)
 
 @frappe.whitelist()
-def bir_2550m(company, year, month, response_type="pdf"):
+def bir_2550m(company, year, month, 
+    input_tax_carried_over_from_previous_period, input_tax_deferred_on_capital_goods_exceeding_1m_from_previous_period,
+    transitional_input_tax, presumptive_input_tax, allowable_input_tax_others,
+    input_tax_deferred_on_capital_goods_from_previous_period_1m_up, input_tax_on_sale_to_government_closed_to_expense,
+    input_tax_directly_attributable_to_exempt_sales, vat_refund_tcc_claimed, less_deductions_from_input_tax_others,
+    surcharge, compromise, interest,
+    response_type="pdf"):
     precision = cint(frappe.db.get_default("currency_precision")) or 2
     report_is_permitted('BIR 2550M')
 
@@ -105,6 +111,16 @@ def bir_2550m(company, year, month, response_type="pdf"):
             'total_base_tax_base': 0,
             'total_base_tax_amount': 0
         },
+        'total_sales_receipts': 0,
+        'total_output_tax_due': 0,
+        'less_allowable_input_tax': {
+            'input_tax_carried_over_from_previous_period': flt(input_tax_carried_over_from_previous_period, 2),
+            'input_tax_deferred_on_capital_goods_exceeding_1m_from_previous_period': flt(input_tax_deferred_on_capital_goods_exceeding_1m_from_previous_period, 2),
+            'transitional_input_tax': flt(transitional_input_tax, 2),
+            'presumptive_input_tax': flt(presumptive_input_tax, 2),
+            'allowable_input_tax_others': flt(allowable_input_tax_others, 2),
+        },
+        'total_other_allowable_input_tax': 0, 
         'capital_goods': {
             'total_base_tax_base': 0,
             'total_base_tax_amount': 0
@@ -137,14 +153,38 @@ def bir_2550m(company, year, month, response_type="pdf"):
             'total_base_tax_base': 0,
             'total_base_tax_amount': 0
         },
-        'directly_attributable_to_exempt_sales': {
-            'total_base_tax_base': 0,
-            'total_base_tax_amount': 0
+        'total_current_purchases': 0,
+        'total_available_input_tax': 0,
+        'less_deductions_from_input_tax': {
+            'input_tax_deferred_on_capital_goods_from_previous_period_1m_up': flt(input_tax_deferred_on_capital_goods_from_previous_period_1m_up, 2),
+            'input_tax_on_sale_to_government_closed_to_expense': flt(input_tax_on_sale_to_government_closed_to_expense, 2),
+            'input_tax_directly_attributable_to_exempt_sales': flt(input_tax_directly_attributable_to_exempt_sales, 2),
+            'amount_of_input_tax_not_directly_attributable': 0,
+            'input_tax_allocable_to_exempt_sales': 0,
+            'vat_refund_tcc_claimed': flt(vat_refund_tcc_claimed, 2),
+            'less_deductions_from_input_tax_others': flt(less_deductions_from_input_tax_others, 2),
         },
-        'directly_attributable_to_sale_to_government': {
-            'total_base_tax_base': 0,
-            'total_base_tax_amount': 0
-        }
+        'ratable_portion_of_input_tax_not_directly_attributable': 0,
+        'total_deductions_from_input_tax': 0,
+        'total_allowable_input_tax': 0,
+        'net_vat_payable': 0,
+        'total_tax_credit_payments': 0,
+        'tax_still_payable': 0,
+        'penalties': {
+            'surcharge': flt(surcharge, 2),
+            'interest': flt(interest, 2),
+            'compromise': flt(compromise, 2),
+            'total': flt(surcharge, 2) + flt(interest, 2) + flt(compromise, 2)
+        },
+        'total_amount_payable': 0,
+        # 'directly_attributable_to_exempt_sales': {
+        #     'total_base_tax_base': 0,
+        #     'total_base_tax_amount': 0
+        # },
+        # 'directly_attributable_to_sale_to_government': {
+        #     'total_base_tax_base': 0,
+        #     'total_base_tax_amount': 0
+        # }
     }
 
     pi_base_net_amounts = frappe.db.sql("""
@@ -375,7 +415,44 @@ def bir_2550m(company, year, month, response_type="pdf"):
 
                     # net amount row is found, exit loop
                     break
+                
+    totals['total_sales_receipts'] = totals['vat_sales']['total_base_tax_base'] + totals['sales_to_government']['total_base_tax_base'] \
+        + totals['zero_rated_sales']['total_base_tax_base'] + totals['exempt_sales']['total_base_tax_base']
 
+    totals['total_output_tax_due'] = totals['vat_sales']['total_base_tax_amount'] + totals['sales_to_government']['total_base_tax_amount']
+
+    totals['total_other_allowable_input_tax'] = totals['less_allowable_input_tax']['input_tax_carried_over_from_previous_period'] \
+        + totals['less_allowable_input_tax']['input_tax_deferred_on_capital_goods_exceeding_1m_from_previous_period'] \
+        + totals['less_allowable_input_tax']['transitional_input_tax'] + totals['less_allowable_input_tax']['presumptive_input_tax'] \
+        + totals['less_allowable_input_tax']['allowable_input_tax_others']
+
+    totals['total_current_purchases'] = totals['capital_goods']['total_base_tax_base'] + totals['capital_goods_exceeding_1m']['total_base_tax_base'] \
+        + totals['domestic_purchases_of_goods']['total_base_tax_base'] + totals['importation_of_goods']['total_base_tax_base'] \
+        + totals['domestic_purchase_of_services']['total_base_tax_base'] + totals['services_rendered_by_non_residents']['total_base_tax_base'] \
+        + totals['purchases_not_qualified_for_input_tax']['total_base_tax_base'] + totals['others']['total_base_tax_base']
+
+    totals['total_available_input_tax'] = totals['total_other_allowable_input_tax'] + totals['capital_goods']['total_base_tax_amount'] + totals['capital_goods_exceeding_1m']['total_base_tax_amount'] \
+        + totals['domestic_purchases_of_goods']['total_base_tax_amount'] + totals['importation_of_goods']['total_base_tax_amount'] + totals['domestic_purchase_of_services']['total_base_tax_amount'] \
+        + totals['services_rendered_by_non_residents']['total_base_tax_amount'] + totals['others']['total_base_tax_amount']
+    
+    totals['less_deductions_from_input_tax']['amount_of_input_tax_not_directly_attributable'] = totals['total_available_input_tax'] - totals['less_deductions_from_input_tax']['input_tax_directly_attributable_to_exempt_sales']
+
+    if totals['total_sales_receipts'] > 0:
+        totals['ratable_portion_of_input_tax_not_directly_attributable'] = (flt((totals['exempt_sales']['total_base_tax_base'] / totals['total_sales_receipts']) * totals['less_deductions_from_input_tax']['amount_of_input_tax_not_directly_attributable'], 2))
+        totals['less_deductions_from_input_tax']['input_tax_allocable_to_exempt_sales'] = totals['less_deductions_from_input_tax']['input_tax_directly_attributable_to_exempt_sales'] \
+            + totals['ratable_portion_of_input_tax_not_directly_attributable']
+    else:
+        totals['ratable_portion_of_input_tax_not_directly_attributable'] = 0
+        totals['less_deductions_from_input_tax']['input_tax_allocable_to_exempt_sales'] = totals['less_deductions_from_input_tax']['input_tax_directly_attributable_to_exempt_sales']
+
+    totals['total_deductions_from_input_tax'] = totals['less_deductions_from_input_tax']['input_tax_deferred_on_capital_goods_from_previous_period_1m_up'] \
+        + totals['less_deductions_from_input_tax']['input_tax_on_sale_to_government_closed_to_expense'] + totals['less_deductions_from_input_tax']['input_tax_allocable_to_exempt_sales'] \
+        + totals['less_deductions_from_input_tax']['vat_refund_tcc_claimed'] + totals['less_deductions_from_input_tax']['less_deductions_from_input_tax_others']
+
+    totals['total_allowable_input_tax'] = totals['total_available_input_tax'] - totals['total_deductions_from_input_tax']
+    totals['net_vat_payable'] = totals['total_output_tax_due'] - totals['total_allowable_input_tax']
+    totals['tax_still_payable'] = totals['net_vat_payable'] - totals['total_tax_credit_payments']
+    totals['total_amount_payable'] = totals['tax_still_payable'] + totals['penalties']['total']
 
     context = {
         'company': get_company_information(company),
