@@ -194,6 +194,16 @@
   {
    "hidden": 0,
    "is_query_report": 1,
+   "label": "BIR 2550Q",
+   "link_to": "BIR 2550Q",
+   "link_type": "Report",
+   "onboard": 0,
+   "only_for": "Philippines",
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
    "label": "BIR 1601-EQ",
    "link_to": "BIR 1601-EQ",
    "link_type": "Report",
@@ -271,7 +281,7 @@
    "type": "Link"
   }
  ],
- "modified": "2021-10-18 18:39:54.913491",
+ "modified": "2021-10-20 11:57:12.983838",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "PH",
