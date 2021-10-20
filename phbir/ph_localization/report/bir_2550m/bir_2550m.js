@@ -89,12 +89,6 @@ frappe.query_reports["BIR 2550M"] = {
                         default: 0
                     },
                     {
-                        label: 'Input Tax on Sale to Government Closed to Expense',
-                        fieldname: 'input_tax_on_sale_to_government_closed_to_expense',
-                        fieldtype: 'Currency',
-                        default: 0
-                    },
-                    {
                         label: 'Input Tax on Directly Attributable to Exempt Sales',
                         fieldname: 'input_tax_directly_attributable_to_exempt_sales',
                         fieldtype: 'Currency',

@@ -85,7 +85,7 @@ def bir_2307(company, supplier, doctype, purchase_invoice, payment_entry, from_d
 def bir_2550m(company, year, month, 
     input_tax_carried_over_from_previous_period, input_tax_deferred_on_capital_goods_exceeding_1m_from_previous_period,
     transitional_input_tax, presumptive_input_tax, allowable_input_tax_others,
-    input_tax_deferred_on_capital_goods_from_previous_period_1m_up, input_tax_on_sale_to_government_closed_to_expense,
+    input_tax_deferred_on_capital_goods_from_previous_period_1m_up,
     input_tax_directly_attributable_to_exempt_sales, vat_refund_tcc_claimed, less_deductions_from_input_tax_others,
     surcharge, compromise, interest,
     response_type="pdf"):
@@ -157,7 +157,6 @@ def bir_2550m(company, year, month,
         'total_available_input_tax': 0,
         'less_deductions_from_input_tax': {
             'input_tax_deferred_on_capital_goods_from_previous_period_1m_up': flt(input_tax_deferred_on_capital_goods_from_previous_period_1m_up, 2),
-            'input_tax_on_sale_to_government_closed_to_expense': flt(input_tax_on_sale_to_government_closed_to_expense, 2),
             'input_tax_directly_attributable_to_exempt_sales': flt(input_tax_directly_attributable_to_exempt_sales, 2),
             'amount_of_input_tax_not_directly_attributable': 0,
             'input_tax_allocable_to_exempt_sales': 0,
@@ -446,8 +445,8 @@ def bir_2550m(company, year, month,
         totals['less_deductions_from_input_tax']['input_tax_allocable_to_exempt_sales'] = totals['less_deductions_from_input_tax']['input_tax_directly_attributable_to_exempt_sales']
 
     totals['total_deductions_from_input_tax'] = totals['less_deductions_from_input_tax']['input_tax_deferred_on_capital_goods_from_previous_period_1m_up'] \
-        + totals['less_deductions_from_input_tax']['input_tax_on_sale_to_government_closed_to_expense'] + totals['less_deductions_from_input_tax']['input_tax_allocable_to_exempt_sales'] \
-        + totals['less_deductions_from_input_tax']['vat_refund_tcc_claimed'] + totals['less_deductions_from_input_tax']['less_deductions_from_input_tax_others']
+        + totals['less_deductions_from_input_tax']['input_tax_allocable_to_exempt_sales'] + totals['less_deductions_from_input_tax']['vat_refund_tcc_claimed'] \
+        + totals['less_deductions_from_input_tax']['less_deductions_from_input_tax_others']
 
     totals['total_allowable_input_tax'] = totals['total_available_input_tax'] - totals['total_deductions_from_input_tax']
     totals['net_vat_payable'] = totals['total_output_tax_due'] - totals['total_allowable_input_tax']
