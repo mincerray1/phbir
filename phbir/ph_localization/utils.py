@@ -71,7 +71,9 @@ def get_company_information(company):
     authorized_representative_2 = frappe.db.get_single_value('PH Localization Setup', 'authorized_representative_2')
     title_2 = frappe.db.get_single_value('PH Localization Setup', 'title_2')
     tin_of_signatory_2 = frappe.db.get_single_value('PH Localization Setup', 'tin_of_signatory_2')
-
+    
+    fiscal_month_end = frappe.db.get_single_value('PH Localization Setup', 'fiscal_month_end')
+    fiscal_month_end = (fiscal_month_end if fiscal_month_end else 12)
 
     result = {
         'company_name': company_doc.name,
@@ -98,7 +100,8 @@ def get_company_information(company):
         'tin_of_signatory_1': preformat_tin(tin_of_signatory_1),
         'authorized_representative_2': authorized_representative_2,
         'title_2': title_2,
-        'tin_of_signatory_2': preformat_tin(tin_of_signatory_2)
+        'tin_of_signatory_2': preformat_tin(tin_of_signatory_2),
+        'fiscal_month_end': fiscal_month_end
     }
 
     return result

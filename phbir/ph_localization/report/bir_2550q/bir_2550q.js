@@ -23,11 +23,10 @@ frappe.query_reports["BIR 2550Q"] = {
             "reqd": 1
 		},
 		{
-			"fieldname":"month",
-			"label": __("Month"),
+			"fieldname":"quarter",
+			"label": __("Quarter"),
 			"fieldtype": "Select",
-			"options": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-            "default": moment(frappe.datetime.get_today()).month(),
+			"options": [1, 2, 3, 4],
             "reqd": 1
 		},
 	],
@@ -154,7 +153,7 @@ frappe.query_reports["BIR 2550Q"] = {
                     let filters = {
                         'company': frappe.query_report.get_filter_value('company'),
                         'year': frappe.query_report.get_filter_value('year'),
-                        'month': frappe.query_report.get_filter_value('month'),
+                        'quarter': frappe.query_report.get_filter_value('quarter'),
                     };
                     let context = Object.assign({}, filters, values);
                     let u = new URLSearchParams(context).toString();

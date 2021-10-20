@@ -5,9 +5,11 @@ import frappe
 from frappe.utils import getdate, flt, cint
 from datetime import datetime
 from phbir.ph_localization.utils import get_company_information, get_supplier_information, report_is_permitted
-from phbir.ph_localization.bir_forms import return_pdf_document
+from phbir.ph_localization.bir_forms import return_pdf_document, first_month_in_quarter
 from frappe import _
 import json
+import calendar
+from dateutil.relativedelta import relativedelta
 
 options = {
     "margin-left": "0mm",
@@ -44,7 +46,7 @@ def get_columns():
     return columns
 
 @frappe.whitelist()
-def bir_2550q(company, year, month, 
+def bir_2550q(company, year, quarter, 
     input_tax_carried_over_from_previous_period, input_tax_deferred_on_capital_goods_exceeding_1m_from_previous_period,
     transitional_input_tax, presumptive_input_tax, allowable_input_tax_others,
     input_tax_deferred_on_capital_goods_from_previous_period_1m_up,
@@ -53,6 +55,13 @@ def bir_2550q(company, year, month,
     response_type="pdf"):
     precision = cint(frappe.db.get_default("currency_precision")) or 2
     report_is_permitted('BIR 2550Q')
+
+    year = int(year)
+    quarter = int(quarter)
+    first_month = first_month_in_quarter(quarter)
+
+    from_date = getdate(datetime(year, first_month, 1))
+    to_date = getdate(datetime(year, first_month + 2, calendar.monthrange(year, first_month + 2)[1]))
 
     tax_declaration_setup = frappe.get_doc('Tax Declaration Setup', 'Tax Declaration Setup')
 
@@ -158,12 +167,12 @@ def bir_2550q(company, year, month,
         ON
             pii.parent = pi.name
         WHERE
-            pi.company = %s
-            AND pi.docstatus = 1
-            AND YEAR(pi.posting_date) = %s
-            AND MONTH(pi.posting_date) = %s
+            pi.docstatus = 1
+            AND pi.company = %s
+            AND pi.posting_date >= %s
+            AND pi.posting_date <= %s
         GROUP BY pi.name, item_code, pii.item_tax_template, pi.taxes_and_charges;
-        """, (company, year, month), as_dict=1)
+        """, (company, from_date, to_date), as_dict=1)
 
     pi_base_tax_amounts = frappe.db.sql("""
         SELECT
@@ -185,9 +194,9 @@ def bir_2550q(company, year, month,
             AND a.account_type = 'Tax'
             AND ptac.base_tax_amount >= 0
             AND pi.company = %s
-            AND YEAR(pi.posting_date) = %s
-            AND MONTH(pi.posting_date) = %s
-        """, (company, year, month), as_dict=1)
+            AND pi.posting_date >= %s
+            AND pi.posting_date <= %s
+        """, (company, from_date, to_date), as_dict=1)
     
     si_base_net_amounts = frappe.db.sql("""
         SELECT 
@@ -199,12 +208,12 @@ def bir_2550q(company, year, month,
         ON
             sii.parent = si.name
         WHERE
-            si.company = %s
-            AND si.docstatus = 1
-            AND YEAR(si.posting_date) = %s
-            AND MONTH(si.posting_date) = %s
+            si.docstatus = 1
+            AND si.company = %s
+            AND si.posting_date >= %s
+            AND si.posting_date <= %s
         GROUP BY si.name, item_code, sii.item_tax_template, si.taxes_and_charges;
-        """, (company, year, month), as_dict=1)
+        """, (company, from_date, to_date), as_dict=1)
 
     si_base_tax_amounts = frappe.db.sql("""
         SELECT
@@ -226,9 +235,9 @@ def bir_2550q(company, year, month,
             AND a.account_type = 'Tax'
             AND stac.base_tax_amount >= 0
             AND si.company = %s
-            AND YEAR(si.posting_date) = %s
-            AND MONTH(si.posting_date) = %s
-        """, (company, year, month), as_dict=1)
+            AND si.posting_date >= %s
+            AND si.posting_date <= %s
+        """, (company, from_date, to_date), as_dict=1)
     
     # item_wise_tax_detail looks like {"FF01":[5.0,599.0506],"1234":[12.0,146.20896],"Item 8":[12.0,60.006594]} 
     for tax_line in pi_base_tax_amounts:
@@ -418,11 +427,13 @@ def bir_2550q(company, year, month,
     context = {
         'company': get_company_information(company),
         'year': year,
-        'month': month,
+        'quarter': quarter,
+        'from_date': from_date,
+        'to_date': to_date,
         'totals': totals
     }
 
-    filename = "BIR 2550Q {} {} {}".format(company, year, month)
+    filename = "BIR 2550Q {} {} {}".format(company, year, quarter)
     
     context["build_version"] = frappe.utils.get_build_version()
     html = frappe.render_template("templates/bir_forms/bir_2550q_template.html", context)
