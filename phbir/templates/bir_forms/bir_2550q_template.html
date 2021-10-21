@@ -59,6 +59,19 @@
 <!-- cover the circles! -->
 <!-- <div style="left: 2.52in; top: 1.62in; width: 0.41in; height: 0.16in; z-index: 1; background-color: white;" class="bir-form-text"></div> -->
 
+{% if quarter == 1 %}
+    <div style="left: 3.28in; top: 1.18in; letter-spacing: 0.11in;" class="bir-form-text">✗</div>
+{% elif quarter == 2 %}
+    <div style="left: 3.70in; top: 1.18in; letter-spacing: 0.11in;" class="bir-form-text">✗</div>
+{% elif quarter == 3 %}
+    <div style="left: 3.28in; top: 1.36in; letter-spacing: 0.11in;" class="bir-form-text">✗</div>
+{% elif quarter == 4 %}
+    <div style="left: 3.70in; top: 1.36in; letter-spacing: 0.11in;" class="bir-form-text">✗</div>
+{% endif %}
+
+<div style="left: 5.02in; top: 1.18in; letter-spacing: 0.11in;" class="bir-form-text">{{ from_date.strftime("%m%d%y") }}</div>
+<div style="left: 5.02in; top: 1.38in; letter-spacing: 0.11in;" class="bir-form-text">{{ to_date.strftime("%m%d%y") }}</div>
+
 
 <div style="left: 0.96in; top: 1.62in; letter-spacing: 0.07in;" class="bir-form-text">{{ company.tin[:3] }}</div>
 <div style="left: 1.48in; top: 1.62in; letter-spacing: 0.07in;" class="bir-form-text">{{ company.tin[3:6] }}</div>
