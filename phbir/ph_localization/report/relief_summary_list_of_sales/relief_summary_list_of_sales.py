@@ -32,7 +32,7 @@ def get_data(company, year, month):
     #         AND si.docstatus = 1
     #         AND YEAR(si.posting_date) = %s
     #         AND MONTH(si.posting_date) = %s
-    #     GROUP BY si.name, item_code, sii.item_tax_template, si.taxes_and_charges;
+    #     GROUP BY si.name, item_name, sii.item_tax_template, si.taxes_and_charges;
     #     """, (company, year, month), as_dict=1)
 
     # for row in si_customers:
@@ -52,7 +52,7 @@ def get_data(company, year, month):
 
     si_base_net_amounts = frappe.db.sql("""
         SELECT 
-            si.name, si.customer, sii.item_code, sii.item_tax_template, si.taxes_and_charges, SUM(base_net_amount) AS base_net_amount 
+            si.name, si.customer, sii.item_name, sii.item_tax_template, si.taxes_and_charges, SUM(base_net_amount) AS base_net_amount 
         FROM
             `tabSales Invoice Item` sii
         LEFT JOIN
@@ -64,7 +64,7 @@ def get_data(company, year, month):
             AND si.company = %s
             AND YEAR(si.posting_date) = %s
             AND MONTH(si.posting_date) = %s
-        GROUP BY si.name, si.customer, item_code, sii.item_tax_template, si.taxes_and_charges;
+        GROUP BY si.name, si.customer, item_name, sii.item_tax_template, si.taxes_and_charges;
         """, (company, year, month), as_dict=1)
 
     si_base_tax_amounts = frappe.db.sql("""
@@ -97,7 +97,7 @@ def get_data(company, year, month):
         for item in item_wise_tax_detail.keys():
             # loop to find net amount
             for item_net_amount in si_base_net_amounts:                
-                if item_net_amount.name == tax_line.name and item_net_amount.item_code == item:
+                if item_net_amount.name == tax_line.name and item_net_amount.item_name == item:
                     item_tax_template = item_net_amount.item_tax_template
                     taxes_and_charges = item_net_amount.taxes_and_charges
                     

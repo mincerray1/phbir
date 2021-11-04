@@ -24,7 +24,7 @@ def get_data(company, year, month):
 
     pi_base_net_amounts = frappe.db.sql("""
         SELECT 
-            pi.name, pi.supplier, pii.item_code, pii.item_tax_template, pi.taxes_and_charges, SUM(base_net_amount) AS base_net_amount 
+            pi.name, pi.supplier, pii.item_name, pii.item_tax_template, pi.taxes_and_charges, SUM(base_net_amount) AS base_net_amount 
         FROM
             `tabPurchase Invoice Item` pii
         LEFT JOIN
@@ -36,7 +36,7 @@ def get_data(company, year, month):
             AND pi.company = %s
             AND YEAR(pi.posting_date) = %s
             AND MONTH(pi.posting_date) = %s
-        GROUP BY pi.name, pi.supplier, item_code, pii.item_tax_template, pi.taxes_and_charges;
+        GROUP BY pi.name, pi.supplier, item_name, pii.item_tax_template, pi.taxes_and_charges;
         """, (company, year, month), as_dict=1)
 
     pi_base_tax_amounts = frappe.db.sql("""
@@ -69,7 +69,7 @@ def get_data(company, year, month):
         for item in item_wise_tax_detail.keys():
             # loop to find net amount
             for item_net_amount in pi_base_net_amounts:                
-                if item_net_amount.name == tax_line.name and item_net_amount.item_code == item:
+                if item_net_amount.name == tax_line.name and item_net_amount.item_name == item:
                     item_tax_template = item_net_amount.item_tax_template
                     taxes_and_charges = item_net_amount.taxes_and_charges
                     
