@@ -20,7 +20,11 @@ def execute(filters=None):
 def get_data(company, year, month):
     data = []
 
-    tax_declaration_setup = frappe.get_doc('Tax Declaration Setup', 'Tax Declaration Setup')
+    tax_declaration_company_setup = None
+    try:
+        tax_declaration_company_setup = frappe.get_doc('Tax Declaration Company Setup', company)
+    except:
+        frappe.throw("Please create a Tax Declaration Company Setup record for {0}".format(company))
 
     # si_customers = frappe.db.sql("""
     #     SELECT 
@@ -130,21 +134,21 @@ def get_data(company, year, month):
 
                     # taxable_net, zero_rated, exempt
                     # total_sales, gross_taxable, output_tax
-                    if tax_declaration_setup.item_vat_sales and item_tax_template == tax_declaration_setup.item_vat_sales:
+                    if tax_declaration_company_setup.item_vat_sales and item_tax_template == tax_declaration_company_setup.item_vat_sales:
                         customer_row['taxable_net'] += flt(item_net_amount.base_net_amount, 2)
                         customer_row['output_tax'] += flt(item_wise_tax_detail[item][1], 2)
-                    elif tax_declaration_setup.vat_sales and taxes_and_charges == tax_declaration_setup.vat_sales:
+                    elif tax_declaration_company_setup.vat_sales and taxes_and_charges == tax_declaration_company_setup.vat_sales:
                         customer_row['taxable_net'] += flt(item_net_amount.base_net_amount, 2)
                         customer_row['output_tax'] += flt(item_wise_tax_detail[item][1], 2)
                         
-                    if tax_declaration_setup.item_zero_rated_sales and item_tax_template == tax_declaration_setup.item_zero_rated_sales:
+                    if tax_declaration_company_setup.item_zero_rated_sales and item_tax_template == tax_declaration_company_setup.item_zero_rated_sales:
                         customer_row['zero_rated'] += flt(item_net_amount.base_net_amount, 2)
-                    elif tax_declaration_setup.zero_rated_sales and taxes_and_charges == tax_declaration_setup.zero_rated_sales:
+                    elif tax_declaration_company_setup.zero_rated_sales and taxes_and_charges == tax_declaration_company_setup.zero_rated_sales:
                         customer_row['zero_rated'] += flt(item_net_amount.base_net_amount, 2)
                         
-                    if tax_declaration_setup.item_exempt_sales and item_tax_template == tax_declaration_setup.item_exempt_sales:
+                    if tax_declaration_company_setup.item_exempt_sales and item_tax_template == tax_declaration_company_setup.item_exempt_sales:
                         customer_row['exempt'] += flt(item_net_amount.base_net_amount, 2)
-                    elif tax_declaration_setup.exempt_sales and taxes_and_charges == tax_declaration_setup.exempt_sales:
+                    elif tax_declaration_company_setup.exempt_sales and taxes_and_charges == tax_declaration_company_setup.exempt_sales:
                         customer_row['exempt'] += flt(item_net_amount.base_net_amount, 2)
 
                     # net amount row is found, exit loop
@@ -158,9 +162,14 @@ def get_data(company, year, month):
 
 @frappe.whitelist()
 def generate_sls_data_file(company, year, month, response_type="download"):
-    data = get_data(company, year, month)
+    fiscal_month_end = None
+    try:
+        fiscal_month_end = frappe.db.get_value('PH Localization Company Setup', company, 'fiscal_month_end')
+    except:
+        frappe.throw("Please create a PH Localization Company Setup record for {0}".format(company))
 
-    fiscal_month_end = frappe.db.get_single_value('PH Localization Setup', 'fiscal_month_end')
+    data = get_data(company, year, month)    
+    
     fiscal_month_end = (fiscal_month_end if fiscal_month_end else 12)
 
     sum_exempt = sum(item['exempt'] for item in data)

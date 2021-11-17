@@ -57,22 +57,27 @@ def get_company_information(company):
         company_address_doc = frappe.get_doc('Address', company_address)
         company_address_text = get_custom_formatted_address(company_address)
 
+    ph_localization_company_setup = None
+    try:
+        ph_localization_company_setup = frappe.get_doc('PH Localization Company Setup', company)
+    except:
+        frappe.throw("Please create a PH Localization Company Setup record for {0}".format(company))
     
-    registered_name = frappe.db.get_single_value('PH Localization Setup', 'registered_name')
-    permit_no = frappe.db.get_single_value('PH Localization Setup', 'permit_no')
-    permit_date_issued = frappe.db.get_single_value('PH Localization Setup', 'permit_date_issued')
-    rdo_code = frappe.db.get_single_value('PH Localization Setup', 'rdo_code')
-    vat_industry = frappe.db.get_single_value('PH Localization Setup', 'vat_industry')
-    withholding_agent_category = frappe.db.get_single_value('PH Localization Setup', 'withholding_agent_category')
+    registered_name = ph_localization_company_setup.registered_name
+    permit_no = ph_localization_company_setup.permit_no
+    permit_date_issued = ph_localization_company_setup.permit_date_issued
+    rdo_code = ph_localization_company_setup.rdo_code
+    vat_industry = ph_localization_company_setup.vat_industry
+    withholding_agent_category = ph_localization_company_setup.withholding_agent_category
 
-    authorized_representative_1 = frappe.db.get_single_value('PH Localization Setup', 'authorized_representative_1')
-    title_1 = frappe.db.get_single_value('PH Localization Setup', 'title_1')
-    tin_of_signatory_1 = frappe.db.get_single_value('PH Localization Setup', 'tin_of_signatory_1')
-    authorized_representative_2 = frappe.db.get_single_value('PH Localization Setup', 'authorized_representative_2')
-    title_2 = frappe.db.get_single_value('PH Localization Setup', 'title_2')
-    tin_of_signatory_2 = frappe.db.get_single_value('PH Localization Setup', 'tin_of_signatory_2')
+    authorized_representative_1 = ph_localization_company_setup.authorized_representative_1
+    title_1 = ph_localization_company_setup.title_1
+    tin_of_signatory_1 = ph_localization_company_setup.tin_of_signatory_1
+    authorized_representative_2 = ph_localization_company_setup.authorized_representative_2
+    title_2 = ph_localization_company_setup.title_2
+    tin_of_signatory_2 = ph_localization_company_setup.tin_of_signatory_2
     
-    fiscal_month_end = frappe.db.get_single_value('PH Localization Setup', 'fiscal_month_end')
+    fiscal_month_end = ph_localization_company_setup.fiscal_month_end
     fiscal_month_end = (fiscal_month_end if fiscal_month_end else 12)
 
     result = {
@@ -284,9 +289,8 @@ def is_local_dev():
     # erpnextsandbox.serviotech.com (no local port = False)
     return len(frappe.utils.get_host_name().split(':')) == 2
 
-#### migrate methods, move out as needed
 @frappe.whitelist()
-def generate_tax_templates():
+def generate_company_tax_templates(company):
     n = 0
 
     sales_tax_templates = {
@@ -328,8 +332,6 @@ def generate_tax_templates():
         # 'Directly Attributable to Exempt Sales':'',
         # 'Directly Attributable to Sale to Government':''
     }
-
-    company = frappe.db.get_default("Company")
 
     for t in sales_tax_templates:
         if not frappe.db.exists('Sales Taxes and Charges Template', {'company': company, 'title': t}):
@@ -387,41 +389,50 @@ def generate_tax_templates():
         else:
             item_purchase_tax_templates[t] = frappe.get_value('Item Tax Template', {'company': company, 'title': t}, 'name')
     
-    tax_declaration_setup = frappe.get_doc('Tax Declaration Setup', 'Tax Declaration Setup')
+    tax_declaration_company_setup = None
+    if frappe.db.exists("Tax Declaration Company Setup", {'name': company}):
+        tax_declaration_company_setup = frappe.get_doc('Tax Declaration Company Setup', company)
+    else:
+        tax_declaration_company_setup = frappe.get_doc({
+            'doctype': 'Tax Declaration Company Setup',
+            'company': company
+            })
+        tax_declaration_company_setup.insert()
+        tax_declaration_company_setup.reload()
     
-    tax_declaration_setup.vat_sales = sales_tax_templates['VAT Sales']
-    tax_declaration_setup.sales_to_government = tax_declaration_setup.sales_to_government or sales_tax_templates['Sales to Government']
-    tax_declaration_setup.zero_rated_sales = tax_declaration_setup.zero_rated_sales or sales_tax_templates['Zero Rated Sales']
-    tax_declaration_setup.exempt_sales = tax_declaration_setup.exempt_sales or sales_tax_templates['Exempt Sales']
+    tax_declaration_company_setup.vat_sales = sales_tax_templates['VAT Sales']
+    tax_declaration_company_setup.sales_to_government = tax_declaration_company_setup.sales_to_government or sales_tax_templates['Sales to Government']
+    tax_declaration_company_setup.zero_rated_sales = tax_declaration_company_setup.zero_rated_sales or sales_tax_templates['Zero Rated Sales']
+    tax_declaration_company_setup.exempt_sales = tax_declaration_company_setup.exempt_sales or sales_tax_templates['Exempt Sales']
 
-    tax_declaration_setup.item_vat_sales = tax_declaration_setup.item_vat_sales or item_sales_tax_templates['VAT Sales']
-    tax_declaration_setup.item_sales_to_government = tax_declaration_setup.item_sales_to_government or item_sales_tax_templates['Sales to Government']
-    tax_declaration_setup.item_zero_rated_sales = tax_declaration_setup.item_zero_rated_sales or item_sales_tax_templates['Zero Rated Sales']
-    tax_declaration_setup.item_exempt_sales = tax_declaration_setup.item_exempt_sales or item_sales_tax_templates['Exempt Sales']
+    tax_declaration_company_setup.item_vat_sales = tax_declaration_company_setup.item_vat_sales or item_sales_tax_templates['VAT Sales']
+    tax_declaration_company_setup.item_sales_to_government = tax_declaration_company_setup.item_sales_to_government or item_sales_tax_templates['Sales to Government']
+    tax_declaration_company_setup.item_zero_rated_sales = tax_declaration_company_setup.item_zero_rated_sales or item_sales_tax_templates['Zero Rated Sales']
+    tax_declaration_company_setup.item_exempt_sales = tax_declaration_company_setup.item_exempt_sales or item_sales_tax_templates['Exempt Sales']
 
-    tax_declaration_setup.capital_goods = tax_declaration_setup.capital_goods or purchase_tax_templates['Capital Goods']
-    tax_declaration_setup.domestic_purchases_of_goods = tax_declaration_setup.domestic_purchases_of_goods or purchase_tax_templates['Domestic Purchases of Goods']
-    tax_declaration_setup.importation_of_goods = tax_declaration_setup.importation_of_goods or purchase_tax_templates['Importation of Goods']
-    tax_declaration_setup.domestic_purchase_of_services = tax_declaration_setup.domestic_purchase_of_services or purchase_tax_templates['Domestic Purchase of Services']
-    tax_declaration_setup.services_rendered_by_non_residents = tax_declaration_setup.services_rendered_by_non_residents or purchase_tax_templates['Services Rendered by Non-residents']
-    tax_declaration_setup.zero_rated_purchase = tax_declaration_setup.zero_rated_purchase or purchase_tax_templates['Zero Rated Purchase']
-    tax_declaration_setup.exempt_purchase = tax_declaration_setup.exempt_purchase or purchase_tax_templates['Exempt Purchase']
-    tax_declaration_setup.others = tax_declaration_setup.others or purchase_tax_templates['Others']
-    # tax_declaration_setup.directly_attributable_to_exempt_sales = tax_declaration_setup.directly_attributable_to_exempt_sales or purchase_tax_templates['Directly Attributable to Exempt Sales']
-    # tax_declaration_setup.directly_attributable_to_sale_to_government = tax_declaration_setup.directly_attributable_to_sale_to_government or purchase_tax_templates['Directly Attributable to Sale to Government']
+    tax_declaration_company_setup.capital_goods = tax_declaration_company_setup.capital_goods or purchase_tax_templates['Capital Goods']
+    tax_declaration_company_setup.domestic_purchases_of_goods = tax_declaration_company_setup.domestic_purchases_of_goods or purchase_tax_templates['Domestic Purchases of Goods']
+    tax_declaration_company_setup.importation_of_goods = tax_declaration_company_setup.importation_of_goods or purchase_tax_templates['Importation of Goods']
+    tax_declaration_company_setup.domestic_purchase_of_services = tax_declaration_company_setup.domestic_purchase_of_services or purchase_tax_templates['Domestic Purchase of Services']
+    tax_declaration_company_setup.services_rendered_by_non_residents = tax_declaration_company_setup.services_rendered_by_non_residents or purchase_tax_templates['Services Rendered by Non-residents']
+    tax_declaration_company_setup.zero_rated_purchase = tax_declaration_company_setup.zero_rated_purchase or purchase_tax_templates['Zero Rated Purchase']
+    tax_declaration_company_setup.exempt_purchase = tax_declaration_company_setup.exempt_purchase or purchase_tax_templates['Exempt Purchase']
+    tax_declaration_company_setup.others = tax_declaration_company_setup.others or purchase_tax_templates['Others']
+    # tax_declaration_company_setup.directly_attributable_to_exempt_sales = tax_declaration_company_setup.directly_attributable_to_exempt_sales or purchase_tax_templates['Directly Attributable to Exempt Sales']
+    # tax_declaration_company_setup.directly_attributable_to_sale_to_government = tax_declaration_company_setup.directly_attributable_to_sale_to_government or purchase_tax_templates['Directly Attributable to Sale to Government']
     
-    tax_declaration_setup.item_capital_goods = tax_declaration_setup.item_capital_goods or item_purchase_tax_templates['Capital Goods']
-    tax_declaration_setup.item_domestic_purchases_of_goods = tax_declaration_setup.item_domestic_purchases_of_goods or item_purchase_tax_templates['Domestic Purchases of Goods']
-    tax_declaration_setup.item_importation_of_goods = tax_declaration_setup.item_importation_of_goods or item_purchase_tax_templates['Importation of Goods']
-    tax_declaration_setup.item_domestic_purchase_of_services = tax_declaration_setup.item_domestic_purchase_of_services or item_purchase_tax_templates['Domestic Purchase of Services']
-    tax_declaration_setup.item_services_rendered_by_non_residents = tax_declaration_setup.item_services_rendered_by_non_residents or item_purchase_tax_templates['Services Rendered by Non-residents']
-    tax_declaration_setup.item_zero_rated_purchase = tax_declaration_setup.item_zero_rated_purchase or purchase_tax_templates['Zero Rated Purchase']
-    tax_declaration_setup.item_exempt_purchase = tax_declaration_setup.item_exempt_purchase or purchase_tax_templates['Exempt Purchase']
-    tax_declaration_setup.item_others = tax_declaration_setup.item_others or item_purchase_tax_templates['Others']
-    # tax_declaration_setup.item_directly_attributable_to_exempt_sales = tax_declaration_setup.item_directly_attributable_to_exempt_sales or item_purchase_tax_templates['Directly Attributable to Exempt Sales']
-    # tax_declaration_setup.item_directly_attributable_to_sale_to_government = tax_declaration_setup.item_directly_attributable_to_sale_to_government or item_purchase_tax_templates['Directly Attributable to Sale to Government']
+    tax_declaration_company_setup.item_capital_goods = tax_declaration_company_setup.item_capital_goods or item_purchase_tax_templates['Capital Goods']
+    tax_declaration_company_setup.item_domestic_purchases_of_goods = tax_declaration_company_setup.item_domestic_purchases_of_goods or item_purchase_tax_templates['Domestic Purchases of Goods']
+    tax_declaration_company_setup.item_importation_of_goods = tax_declaration_company_setup.item_importation_of_goods or item_purchase_tax_templates['Importation of Goods']
+    tax_declaration_company_setup.item_domestic_purchase_of_services = tax_declaration_company_setup.item_domestic_purchase_of_services or item_purchase_tax_templates['Domestic Purchase of Services']
+    tax_declaration_company_setup.item_services_rendered_by_non_residents = tax_declaration_company_setup.item_services_rendered_by_non_residents or item_purchase_tax_templates['Services Rendered by Non-residents']
+    tax_declaration_company_setup.item_zero_rated_purchase = tax_declaration_company_setup.item_zero_rated_purchase or purchase_tax_templates['Zero Rated Purchase']
+    tax_declaration_company_setup.item_exempt_purchase = tax_declaration_company_setup.item_exempt_purchase or purchase_tax_templates['Exempt Purchase']
+    tax_declaration_company_setup.item_others = tax_declaration_company_setup.item_others or item_purchase_tax_templates['Others']
+    # tax_declaration_company_setup.item_directly_attributable_to_exempt_sales = tax_declaration_company_setup.item_directly_attributable_to_exempt_sales or item_purchase_tax_templates['Directly Attributable to Exempt Sales']
+    # tax_declaration_company_setup.item_directly_attributable_to_sale_to_government = tax_declaration_company_setup.item_directly_attributable_to_sale_to_government or item_purchase_tax_templates['Directly Attributable to Sale to Government']
 
-    tax_declaration_setup.save()
+    tax_declaration_company_setup.save()
     
     frappe.msgprint(_('Tax template(s) successfully created: <strong>{0}</strong>'.format(n)))
 

@@ -4,5 +4,5 @@
 # import frappe
 import unittest
 
-class TestTaxDeclarationSetup(unittest.TestCase):
+class TestTaxDeclarationCompanySetup(unittest.TestCase):
 	pass

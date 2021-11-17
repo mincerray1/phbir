@@ -19,6 +19,14 @@ options = {
 }
 
 def execute(filters=None):
+    company = filters.company
+    tax_declaration_company_setup = frappe.get_doc('Tax Declaration Company Setup', company)
+    tax_declaration_company_setup = None
+    try:
+        tax_declaration_company_setup = frappe.get_doc('Tax Declaration Company Setup', company)
+    except:
+        frappe.throw("Please create a Tax Declaration Company Setup record for {0}".format(company))
+
     columns, data = [], []
     data = get_data(filters)
     columns = get_columns()
@@ -63,7 +71,12 @@ def bir_2550q(company, year, quarter,
     from_date = getdate(datetime(year, first_month, 1))
     to_date = getdate(datetime(year, first_month + 2, calendar.monthrange(year, first_month + 2)[1]))
 
-    tax_declaration_setup = frappe.get_doc('Tax Declaration Setup', 'Tax Declaration Setup')
+    tax_declaration_company_setup = frappe.get_doc('Tax Declaration Company Setup', company)
+    tax_declaration_company_setup = None
+    try:
+        tax_declaration_company_setup = frappe.get_doc('Tax Declaration Company Setup', company)
+    except:
+        frappe.throw("Please create a Tax Declaration Company Setup record for {0}".format(company))
 
     totals = {
         'vat_sales': {
@@ -249,14 +262,14 @@ def bir_2550q(company, year, quarter,
                     item_tax_template = item_net_amount.item_tax_template
                     taxes_and_charges = item_net_amount.taxes_and_charges
                     
-                    if tax_declaration_setup.item_capital_goods and item_tax_template == tax_declaration_setup.item_capital_goods:
+                    if tax_declaration_company_setup.item_capital_goods and item_tax_template == tax_declaration_company_setup.item_capital_goods:
                         if flt(item_wise_tax_detail[item][1], 2) < 1000000:
                             totals['capital_goods']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                             totals['capital_goods']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
                         else:
                             totals['capital_goods_exceeding_1m']['total_base_tax_base'] = flt(item_net_amount.base_net_amount, 2)
                             totals['capital_goods_exceeding_1m']['total_base_tax_amount'] = flt(item_wise_tax_detail[item][1], 2)
-                    elif tax_declaration_setup.capital_goods and taxes_and_charges == tax_declaration_setup.capital_goods:
+                    elif tax_declaration_company_setup.capital_goods and taxes_and_charges == tax_declaration_company_setup.capital_goods:
                         if flt(item_wise_tax_detail[item][1], 2) < 1000000:
                             totals['capital_goods']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                             totals['capital_goods']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
@@ -264,54 +277,54 @@ def bir_2550q(company, year, quarter,
                             totals['capital_goods_exceeding_1m']['total_base_tax_base'] = flt(item_net_amount.base_net_amount, 2)
                             totals['capital_goods_exceeding_1m']['total_base_tax_amount'] = flt(item_wise_tax_detail[item][1], 2)
                         
-                    elif tax_declaration_setup.item_domestic_purchases_of_goods and item_tax_template == tax_declaration_setup.item_domestic_purchases_of_goods:
+                    elif tax_declaration_company_setup.item_domestic_purchases_of_goods and item_tax_template == tax_declaration_company_setup.item_domestic_purchases_of_goods:
                         totals['domestic_purchases_of_goods']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['domestic_purchases_of_goods']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
-                    elif tax_declaration_setup.domestic_purchases_of_goods and taxes_and_charges == tax_declaration_setup.domestic_purchases_of_goods:
+                    elif tax_declaration_company_setup.domestic_purchases_of_goods and taxes_and_charges == tax_declaration_company_setup.domestic_purchases_of_goods:
                         totals['domestic_purchases_of_goods']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['domestic_purchases_of_goods']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
                         
-                    elif tax_declaration_setup.item_importation_of_goods and item_tax_template == tax_declaration_setup.item_importation_of_goods:
+                    elif tax_declaration_company_setup.item_importation_of_goods and item_tax_template == tax_declaration_company_setup.item_importation_of_goods:
                         totals['importation_of_goods']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['importation_of_goods']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
-                    elif tax_declaration_setup.importation_of_goods and taxes_and_charges == tax_declaration_setup.importation_of_goods:
+                    elif tax_declaration_company_setup.importation_of_goods and taxes_and_charges == tax_declaration_company_setup.importation_of_goods:
                         totals['importation_of_goods']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['importation_of_goods']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
                         
-                    elif tax_declaration_setup.item_domestic_purchase_of_services and item_tax_template == tax_declaration_setup.item_domestic_purchase_of_services:
+                    elif tax_declaration_company_setup.item_domestic_purchase_of_services and item_tax_template == tax_declaration_company_setup.item_domestic_purchase_of_services:
                         totals['domestic_purchase_of_services']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['domestic_purchase_of_services']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
-                    elif tax_declaration_setup.domestic_purchase_of_services and taxes_and_charges == tax_declaration_setup.domestic_purchase_of_services:
+                    elif tax_declaration_company_setup.domestic_purchase_of_services and taxes_and_charges == tax_declaration_company_setup.domestic_purchase_of_services:
                         totals['domestic_purchase_of_services']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['domestic_purchase_of_services']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
                         
-                    elif tax_declaration_setup.item_services_rendered_by_non_residents and item_tax_template == tax_declaration_setup.item_services_rendered_by_non_residents:
+                    elif tax_declaration_company_setup.item_services_rendered_by_non_residents and item_tax_template == tax_declaration_company_setup.item_services_rendered_by_non_residents:
                         totals['services_rendered_by_non_residents']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['services_rendered_by_non_residents']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
-                    elif tax_declaration_setup.services_rendered_by_non_residents and taxes_and_charges == tax_declaration_setup.services_rendered_by_non_residents:
+                    elif tax_declaration_company_setup.services_rendered_by_non_residents and taxes_and_charges == tax_declaration_company_setup.services_rendered_by_non_residents:
                         totals['services_rendered_by_non_residents']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['services_rendered_by_non_residents']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
                         
                     # not qualified for input tax (zero rated and exempt)
-                    elif tax_declaration_setup.item_zero_rated_purchase and item_tax_template == tax_declaration_setup.item_zero_rated_purchase:
+                    elif tax_declaration_company_setup.item_zero_rated_purchase and item_tax_template == tax_declaration_company_setup.item_zero_rated_purchase:
                         totals['purchases_not_qualified_for_input_tax']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['purchases_not_qualified_for_input_tax']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
-                    elif tax_declaration_setup.zero_rated_purchase and taxes_and_charges == tax_declaration_setup.zero_rated_purchase:
+                    elif tax_declaration_company_setup.zero_rated_purchase and taxes_and_charges == tax_declaration_company_setup.zero_rated_purchase:
                         totals['purchases_not_qualified_for_input_tax']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['purchases_not_qualified_for_input_tax']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
                         
-                    elif tax_declaration_setup.item_exempt_purchase and item_tax_template == tax_declaration_setup.item_exempt_purchase:
+                    elif tax_declaration_company_setup.item_exempt_purchase and item_tax_template == tax_declaration_company_setup.item_exempt_purchase:
                         totals['purchases_not_qualified_for_input_tax']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['purchases_not_qualified_for_input_tax']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
-                    elif tax_declaration_setup.exempt_purchase and taxes_and_charges == tax_declaration_setup.exempt_purchase:
+                    elif tax_declaration_company_setup.exempt_purchase and taxes_and_charges == tax_declaration_company_setup.exempt_purchase:
                         totals['purchases_not_qualified_for_input_tax']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['purchases_not_qualified_for_input_tax']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
                     # end - not qualified for input tax 
                         
-                    elif tax_declaration_setup.item_others and item_tax_template == tax_declaration_setup.item_others:
+                    elif tax_declaration_company_setup.item_others and item_tax_template == tax_declaration_company_setup.item_others:
                         totals['others']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['others']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
-                    elif tax_declaration_setup.others and taxes_and_charges == tax_declaration_setup.others:
+                    elif tax_declaration_company_setup.others and taxes_and_charges == tax_declaration_company_setup.others:
                         totals['others']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['others']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
                     
@@ -321,17 +334,17 @@ def bir_2550q(company, year, quarter,
                         totals['others']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
                     
                     # TODO: exempt / government
-                    # elif tax_declaration_setup.item_directly_attributable_to_exempt_sales and item_tax_template == tax_declaration_setup.item_directly_attributable_to_exempt_sales:
+                    # elif tax_declaration_company_setup.item_directly_attributable_to_exempt_sales and item_tax_template == tax_declaration_company_setup.item_directly_attributable_to_exempt_sales:
                     #     totals['directly_attributable_to_exempt_sales']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                     #     totals['directly_attributable_to_exempt_sales']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
-                    # elif tax_declaration_setup.directly_attributable_to_exempt_sales and taxes_and_charges == tax_declaration_setup.directly_attributable_to_exempt_sales:
+                    # elif tax_declaration_company_setup.directly_attributable_to_exempt_sales and taxes_and_charges == tax_declaration_company_setup.directly_attributable_to_exempt_sales:
                     #     totals['directly_attributable_to_exempt_sales']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                     #     totals['directly_attributable_to_exempt_sales']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
                         
-                    # elif tax_declaration_setup.item_directly_attributable_to_sale_to_government and item_tax_template == tax_declaration_setup.item_directly_attributable_to_sale_to_government:
+                    # elif tax_declaration_company_setup.item_directly_attributable_to_sale_to_government and item_tax_template == tax_declaration_company_setup.item_directly_attributable_to_sale_to_government:
                     #     totals['directly_attributable_to_sale_to_government']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                     #     totals['directly_attributable_to_sale_to_government']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
-                    # elif tax_declaration_setup.directly_attributable_to_sale_to_government and taxes_and_charges == tax_declaration_setup.directly_attributable_to_sale_to_government:
+                    # elif tax_declaration_company_setup.directly_attributable_to_sale_to_government and taxes_and_charges == tax_declaration_company_setup.directly_attributable_to_sale_to_government:
                     #     totals['directly_attributable_to_sale_to_government']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                     #     totals['directly_attributable_to_sale_to_government']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
 
@@ -355,31 +368,31 @@ def bir_2550q(company, year, quarter,
                     item_tax_template = item_net_amount.item_tax_template
                     taxes_and_charges = item_net_amount.taxes_and_charges
 
-                    if tax_declaration_setup.item_vat_sales and item_tax_template == tax_declaration_setup.item_vat_sales:
+                    if tax_declaration_company_setup.item_vat_sales and item_tax_template == tax_declaration_company_setup.item_vat_sales:
                         totals['vat_sales']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['vat_sales']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
-                    elif tax_declaration_setup.vat_sales and taxes_and_charges == tax_declaration_setup.vat_sales:
+                    elif tax_declaration_company_setup.vat_sales and taxes_and_charges == tax_declaration_company_setup.vat_sales:
                         totals['vat_sales']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['vat_sales']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
                         
-                    if tax_declaration_setup.item_sales_to_government and item_tax_template == tax_declaration_setup.item_sales_to_government:
+                    if tax_declaration_company_setup.item_sales_to_government and item_tax_template == tax_declaration_company_setup.item_sales_to_government:
                         totals['sales_to_government']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['sales_to_government']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
-                    elif tax_declaration_setup.sales_to_government and taxes_and_charges == tax_declaration_setup.sales_to_government:
+                    elif tax_declaration_company_setup.sales_to_government and taxes_and_charges == tax_declaration_company_setup.sales_to_government:
                         totals['sales_to_government']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['sales_to_government']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
                         
-                    if tax_declaration_setup.item_zero_rated_sales and item_tax_template == tax_declaration_setup.item_zero_rated_sales:
+                    if tax_declaration_company_setup.item_zero_rated_sales and item_tax_template == tax_declaration_company_setup.item_zero_rated_sales:
                         totals['zero_rated_sales']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['zero_rated_sales']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
-                    elif tax_declaration_setup.zero_rated_sales and taxes_and_charges == tax_declaration_setup.zero_rated_sales:
+                    elif tax_declaration_company_setup.zero_rated_sales and taxes_and_charges == tax_declaration_company_setup.zero_rated_sales:
                         totals['zero_rated_sales']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['zero_rated_sales']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
                         
-                    if tax_declaration_setup.item_exempt_sales and item_tax_template == tax_declaration_setup.item_exempt_sales:
+                    if tax_declaration_company_setup.item_exempt_sales and item_tax_template == tax_declaration_company_setup.item_exempt_sales:
                         totals['exempt_sales']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['exempt_sales']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
-                    elif tax_declaration_setup.exempt_sales and taxes_and_charges == tax_declaration_setup.exempt_sales:
+                    elif tax_declaration_company_setup.exempt_sales and taxes_and_charges == tax_declaration_company_setup.exempt_sales:
                         totals['exempt_sales']['total_base_tax_base'] += flt(item_net_amount.base_net_amount, 2)
                         totals['exempt_sales']['total_base_tax_amount'] += flt(item_wise_tax_detail[item][1], 2)
 

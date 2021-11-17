@@ -4,5 +4,5 @@
 # import frappe
 import unittest
 
-class TestPHLocalizationSetup(unittest.TestCase):
+class TestPHLocalizationCompanySetup(unittest.TestCase):
 	pass

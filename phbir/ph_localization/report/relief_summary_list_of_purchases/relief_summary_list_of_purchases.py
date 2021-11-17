@@ -20,7 +20,11 @@ def execute(filters=None):
 def get_data(company, year, month):
     data = []
 
-    tax_declaration_setup = frappe.get_doc('Tax Declaration Setup', 'Tax Declaration Setup')
+    tax_declaration_company_setup = None
+    try:
+        tax_declaration_company_setup = frappe.get_doc('Tax Declaration Company Setup', company)
+    except:
+        frappe.throw("Please create a Tax Declaration Company Setup record for {0}".format(company))
 
     pi_base_net_amounts = frappe.db.sql("""
         SELECT 
@@ -102,34 +106,34 @@ def get_data(company, year, month):
 
                         data.append(supplier_row)
                         
-                    if tax_declaration_setup.item_zero_rated_purchase and item_tax_template == tax_declaration_setup.item_zero_rated_purchase:
+                    if tax_declaration_company_setup.item_zero_rated_purchase and item_tax_template == tax_declaration_company_setup.item_zero_rated_purchase:
                         supplier_row['zero_rated'] += flt(item_net_amount.base_net_amount, 2)
-                    elif tax_declaration_setup.zero_rated_purchase and taxes_and_charges == tax_declaration_setup.zero_rated_purchase:
+                    elif tax_declaration_company_setup.zero_rated_purchase and taxes_and_charges == tax_declaration_company_setup.zero_rated_purchase:
                         supplier_row['zero_rated'] += flt(item_net_amount.base_net_amount, 2)
                         
-                    if tax_declaration_setup.item_exempt_purchase and item_tax_template == tax_declaration_setup.item_exempt_purchase:
+                    if tax_declaration_company_setup.item_exempt_purchase and item_tax_template == tax_declaration_company_setup.item_exempt_purchase:
                         supplier_row['exempt'] += flt(item_net_amount.base_net_amount, 2)
-                    elif tax_declaration_setup.exempt_purchase and taxes_and_charges == tax_declaration_setup.exempt_purchase:
+                    elif tax_declaration_company_setup.exempt_purchase and taxes_and_charges == tax_declaration_company_setup.exempt_purchase:
                         supplier_row['exempt'] += flt(item_net_amount.base_net_amount, 2)
 
-                    if tax_declaration_setup.item_domestic_purchase_of_services and item_tax_template == tax_declaration_setup.item_domestic_purchase_of_services:
+                    if tax_declaration_company_setup.item_domestic_purchase_of_services and item_tax_template == tax_declaration_company_setup.item_domestic_purchase_of_services:
                         supplier_row['services'] += flt(item_net_amount.base_net_amount, 2)
                         supplier_row['input_tax'] += flt(item_wise_tax_detail[item][1], 2)
-                    elif tax_declaration_setup.domestic_purchase_of_services and taxes_and_charges == tax_declaration_setup.domestic_purchase_of_services:
+                    elif tax_declaration_company_setup.domestic_purchase_of_services and taxes_and_charges == tax_declaration_company_setup.domestic_purchase_of_services:
                         supplier_row['services'] += flt(item_net_amount.base_net_amount, 2)
                         supplier_row['input_tax'] += flt(item_wise_tax_detail[item][1], 2)
                         
-                    if tax_declaration_setup.item_domestic_purchases_of_goods and item_tax_template == tax_declaration_setup.item_domestic_purchases_of_goods:
+                    if tax_declaration_company_setup.item_domestic_purchases_of_goods and item_tax_template == tax_declaration_company_setup.item_domestic_purchases_of_goods:
                         supplier_row['other_than_capital_goods'] += flt(item_net_amount.base_net_amount, 2)
                         supplier_row['input_tax'] += flt(item_wise_tax_detail[item][1], 2)
-                    elif tax_declaration_setup.domestic_purchases_of_goods and taxes_and_charges == tax_declaration_setup.domestic_purchases_of_goods:
+                    elif tax_declaration_company_setup.domestic_purchases_of_goods and taxes_and_charges == tax_declaration_company_setup.domestic_purchases_of_goods:
                         supplier_row['other_than_capital_goods'] += flt(item_net_amount.base_net_amount, 2)
                         supplier_row['input_tax'] += flt(item_wise_tax_detail[item][1], 2)
                         
-                    if tax_declaration_setup.item_capital_goods and item_tax_template == tax_declaration_setup.item_capital_goods:
+                    if tax_declaration_company_setup.item_capital_goods and item_tax_template == tax_declaration_company_setup.item_capital_goods:
                         supplier_row['capital_goods'] += flt(item_net_amount.base_net_amount, 2)
                         supplier_row['input_tax'] += flt(item_wise_tax_detail[item][1], 2)
-                    elif tax_declaration_setup.capital_goods and taxes_and_charges == tax_declaration_setup.capital_goods:
+                    elif tax_declaration_company_setup.capital_goods and taxes_and_charges == tax_declaration_company_setup.capital_goods:
                         supplier_row['capital_goods'] += flt(item_net_amount.base_net_amount, 2)
                         supplier_row['input_tax'] += flt(item_wise_tax_detail[item][1], 2)
 
@@ -145,9 +149,14 @@ def get_data(company, year, month):
 
 @frappe.whitelist()
 def generate_slp_data_file(company, year, month, non_creditable=0, response_type="download"):
+    fiscal_month_end = None
+    try:
+        fiscal_month_end = frappe.db.get_value('PH Localization Company Setup', company, 'fiscal_month_end')
+    except:
+        frappe.throw("Please create a PH Localization Company Setup record for {0}".format(company))
+
     data = get_data(company, year, month)
 
-    fiscal_month_end = frappe.db.get_single_value('PH Localization Setup', 'fiscal_month_end')
     fiscal_month_end = (fiscal_month_end if fiscal_month_end else 12)
 
     sum_exempt = sum(item['exempt'] for item in data)

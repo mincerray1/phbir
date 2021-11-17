@@ -1,11 +1,13 @@
 {
  "actions": [],
- "creation": "2021-08-15 20:46:01.199443",
- "description": "PH Localization Setup",
+ "autoname": "field:company",
+ "creation": "2021-11-18 01:09:22.826042",
+ "description": "PH Localization Company Setup",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "company",
   "registered_name",
   "permit_no",
   "permit_date_issued",
@@ -25,6 +27,21 @@
  ],
  "fields": [
   {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1,
+   "set_only_once": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "registered_name",
+   "fieldtype": "Data",
+   "label": "Registered Name"
+  },
+  {
    "fieldname": "permit_no",
    "fieldtype": "Data",
    "label": "Permit No"
@@ -33,12 +50,6 @@
    "fieldname": "permit_date_issued",
    "fieldtype": "Date",
    "label": "Permit Date Issued"
-  },
-  {
-   "fieldname": "vat_industry",
-   "fieldtype": "Link",
-   "label": "VAT Industry",
-   "options": "VAT Industry"
   },
   {
    "fieldname": "rdo_code",
@@ -51,11 +62,25 @@
    "fieldtype": "Column Break"
   },
   {
+   "fieldname": "vat_industry",
+   "fieldtype": "Link",
+   "label": "VAT Industry",
+   "options": "VAT Industry"
+  },
+  {
    "default": "Private",
    "fieldname": "withholding_agent_category",
    "fieldtype": "Select",
    "label": "Withholding Agent Category",
    "options": "Private\nGovernment"
+  },
+  {
+   "default": "12",
+   "fieldname": "fiscal_month_end",
+   "fieldtype": "Select",
+   "label": "Fiscal Month End",
+   "length": 2,
+   "options": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12"
   },
   {
    "fieldname": "signatory_section",
@@ -97,28 +122,14 @@
    "fieldtype": "Data",
    "label": "TIN of Signatory",
    "length": 14
-  },
-  {
-   "fieldname": "registered_name",
-   "fieldtype": "Data",
-   "label": "Registered Name"
-  },
-  {
-   "default": "12",
-   "fieldname": "fiscal_month_end",
-   "fieldtype": "Select",
-   "label": "Fiscal Month End",
-   "length": 2,
-   "options": "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12"
   }
  ],
  "index_web_pages_for_search": 1,
- "issingle": 1,
  "links": [],
- "modified": "2021-10-18 22:28:45.555924",
+ "modified": "2021-11-18 02:06:52.474264",
  "modified_by": "Administrator",
  "module": "PH Localization",
- "name": "PH Localization Setup",
+ "name": "PH Localization Company Setup",
  "owner": "Administrator",
  "permissions": [
   {
@@ -128,11 +139,13 @@
    "print": 1,
    "read": 1,
    "role": "System Manager",
+   "select": 1,
    "share": 1,
    "write": 1
   }
  ],
  "sort_field": "modified",
  "sort_order": "DESC",
+ "title_field": "company",
  "track_changes": 1
 }

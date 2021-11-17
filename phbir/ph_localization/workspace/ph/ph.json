@@ -26,21 +26,19 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "PH Localization Setup",
-   "link_to": "PH Localization Setup",
+   "label": "PH Localization Company Setup",
+   "link_to": "PH Localization Company Setup",
    "link_type": "DocType",
    "onboard": 0,
-   "only_for": "Philippines",
    "type": "Link"
   },
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Tax Declaration Setup",
-   "link_to": "Tax Declaration Setup",
+   "label": "Tax Declaration Company Setup",
+   "link_to": "Tax Declaration Company Setup",
    "link_type": "DocType",
    "onboard": 0,
-   "only_for": "Philippines",
    "type": "Link"
   },
   {
@@ -281,7 +279,7 @@
    "type": "Link"
   }
  ],
- "modified": "2021-10-20 11:57:12.983838",
+ "modified": "2021-11-18 02:23:35.543706",
  "modified_by": "Administrator",
  "module": "PH Localization",
  "name": "PH",

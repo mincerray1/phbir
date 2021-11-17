@@ -6,6 +6,14 @@ from frappe.utils import (getdate)
 from frappe import _
 
 def execute(filters=None):
+    company = filters.company
+    tax_declaration_company_setup = frappe.get_doc('Tax Declaration Company Setup', company)
+    tax_declaration_company_setup = None
+    try:
+        tax_declaration_company_setup = frappe.get_doc('Tax Declaration Company Setup', company)
+    except:
+        frappe.throw("Please create a Tax Declaration Company Setup record for {0}".format(company))
+
     columns, data = [], []
     data = get_data(filters)
     columns = get_columns()

@@ -1,0 +1,1 @@
+phbir.patches.v1.remove_old_setup_tables
