@@ -111,6 +111,7 @@ def get_data(company, year, month):
                     if not customer_row:
                         customer_information = get_customer_information(item_net_amount.customer)
                         customer_row = {
+                            'month': month,
                             'customer': item_net_amount.customer,
                             'customer_type': customer_information['customer_type'],
                             'tin': customer_information['tin'],
