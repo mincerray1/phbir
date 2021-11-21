@@ -84,18 +84,14 @@ frappe.query_reports["BIR 2307"] = {
             label: __("From Date"),
             fieldtype: "Date",
             default: moment(frappe.datetime.get_today()).startOf('quarter'),
-            reqd: 1, 
-			on_change: function() {
-				frappe.query_report.set_filter_value("to_date", frappe.datetime.add_days(frappe.datetime.add_months(frappe.query_report.get_filter_value('from_date'), 3), -1));
-				frappe.query_report.refresh();
-			}
+            reqd: 1
 
         },
         {
             fieldname:"to_date",
             label: __("To Date"),
             fieldtype: "Date",
-            default: frappe.datetime.get_today(),
+            default: moment(frappe.datetime.get_today()).endOf('quarter'),
             reqd: 1
         }
     ],
