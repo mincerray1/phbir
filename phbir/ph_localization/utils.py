@@ -118,6 +118,7 @@ def get_supplier_information(supplier):
     zipcode = ''
     phone = ''
     supplier_address_dynamic_link_doc = None
+    supplier_contact_dynamic_link_doc = None
     supplier_address_doc = None
     contact_doc = None
     contact_first_name = ''
@@ -133,11 +134,16 @@ def get_supplier_information(supplier):
     else:
         if frappe.db.exists("Dynamic Link", {'link_doctype': 'Supplier', 'link_name': supplier, 'parenttype': 'Address'}):
             supplier_address_dynamic_link_doc = frappe.get_last_doc('Dynamic Link', filters={'link_doctype': 'Supplier', 'link_name': supplier, 'parenttype': 'Address'})
-            supplier_address_doc = supplier_address_dynamic_link_doc.parent
+            supplier_address_doc = frappe.get_doc('Address', supplier_address_dynamic_link_doc.parent)
 
+    if hasattr(supplier_doc, 'supplier_primary_contact'):
+        if supplier_doc.supplier_primary_contact and frappe.db.exists("Contact", {'name': supplier_doc.supplier_primary_contact}):
+            contact_doc = frappe.get_doc('Contact', supplier_doc.supplier_primary_contact)
+    else:
+        supplier_contact_dynamic_link_doc = frappe.get_last_doc('Dynamic Link', filters={'link_doctype': 'Supplier', 'link_name': supplier, 'parenttype': 'Contact'})
+        contact_doc = frappe.get_doc('Contact', supplier_contact_dynamic_link_doc.parent)
 
-    if supplier_doc.supplier_primary_contact and frappe.db.exists("Contact", {'name': supplier_doc.supplier_primary_contact}):
-        contact_doc = frappe.get_doc('Contact', supplier_doc.supplier_primary_contact)
+    if contact_doc:
         contact_first_name = contact_doc.first_name if contact_doc.first_name else ''
         contact_middle_name = contact_doc.middle_name if contact_doc.middle_name else ''
         contact_last_name = contact_doc.last_name if contact_doc.last_name else ''
