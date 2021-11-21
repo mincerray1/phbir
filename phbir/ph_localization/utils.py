@@ -127,8 +127,14 @@ def get_supplier_information(supplier):
 
     # if frappe.db.exists("Dynamic Link", {'link_doctype': 'Supplier', 'link_name': supplier, 'parenttype': 'Address'}):
     #     supplier_address_dynamic_link_doc = frappe.get_last_doc('Dynamic Link', filters={'link_doctype': 'Supplier', 'link_name': supplier, 'parenttype': 'Address'})
-    if supplier_doc.supplier_primary_address and frappe.db.exists("Address", {'name': supplier_doc.supplier_primary_address}):
-        supplier_address_doc = frappe.get_doc('Address', supplier_doc.supplier_primary_address)
+    if hasattr(supplier_doc, 'supplier_primary_address'):
+        if supplier_doc.supplier_primary_address and frappe.db.exists("Address", {'name': supplier_doc.supplier_primary_address}):
+            supplier_address_doc = frappe.get_doc('Address', supplier_doc.supplier_primary_address)
+    else:
+        if frappe.db.exists("Dynamic Link", {'link_doctype': 'Supplier', 'link_name': supplier, 'parenttype': 'Address'}):
+            supplier_address_dynamic_link_doc = frappe.get_last_doc('Dynamic Link', filters={'link_doctype': 'Supplier', 'link_name': supplier, 'parenttype': 'Address'})
+            supplier_address_doc = supplier_address_dynamic_link_doc.parent
+
 
     if supplier_doc.supplier_primary_contact and frappe.db.exists("Contact", {'name': supplier_doc.supplier_primary_contact}):
         contact_doc = frappe.get_doc('Contact', supplier_doc.supplier_primary_contact)
