@@ -132,9 +132,9 @@ def get_supplier_information(supplier):
 
     if supplier_doc.supplier_primary_contact and frappe.db.exists("Contact", {'name': supplier_doc.supplier_primary_contact}):
         contact_doc = frappe.get_doc('Contact', supplier_doc.supplier_primary_contact)
-        contact_first_name = contact_doc.first_name
-        contact_middle_name = contact_doc.middle_name
-        contact_last_name = contact_doc.last_name
+        contact_first_name = contact_doc.first_name if contact_doc.first_name else ''
+        contact_middle_name = contact_doc.middle_name if contact_doc.middle_name else ''
+        contact_last_name = contact_doc.last_name if contact_doc.last_name else ''
 
     # if supplier_address_dynamic_link_doc:
     #     zipcode = frappe.db.get_value('Address', supplier_address_dynamic_link_doc.parent, 'pincode')
@@ -146,8 +146,8 @@ def get_supplier_information(supplier):
     #     supplier_address = supplier_address_dynamic_link_doc.parent if supplier_address_dynamic_link_doc.parent else ''
     
     if supplier_address_doc:
-        zipcode = supplier_address_doc.pincode
-        phone = supplier_address_doc.phone        
+        zipcode = supplier_address_doc.pincode if supplier_address_doc.pincode else ''
+        phone = supplier_address_doc.phone if supplier_address_doc.phone else ''
         supplier_address = supplier_address_doc.name
     
     if supplier_address:
@@ -196,9 +196,9 @@ def get_customer_information(customer):
 
     if customer_doc.customer_primary_contact and frappe.db.exists("Contact", {'name': customer_doc.customer_primary_contact}):
         contact_doc = frappe.get_doc('Contact', customer_doc.customer_primary_contact)
-        contact_first_name = contact_doc.first_name
-        contact_middle_name = contact_doc.middle_name
-        contact_last_name = contact_doc.last_name
+        contact_first_name = contact_doc.first_name if contact_doc.first_name else ''
+        contact_middle_name = contact_doc.middle_name if contact_doc.middle_name else ''
+        contact_last_name = contact_doc.last_name if contact_doc.last_name else ''
 
     # if customer_address_dynamic_link_doc:
     #     zipcode = frappe.db.get_value('Address', customer_address_dynamic_link_doc.parent, 'pincode')
@@ -210,8 +210,8 @@ def get_customer_information(customer):
     #     customer_address = customer_address_dynamic_link_doc.parent if customer_address_dynamic_link_doc.parent else ''
     
     if customer_address_doc:
-        zipcode = customer_address_doc.pincode
-        phone = customer_address_doc.phone        
+        zipcode = customer_address_doc.pincode if customer_address_doc.pincode else ''
+        phone = customer_address_doc.phone if customer_address_doc.phone else ''
         customer_address = customer_address_doc.name
     
     if customer_address:
