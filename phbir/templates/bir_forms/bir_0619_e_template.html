@@ -136,17 +136,23 @@
     <div style="left: 2.70in; top: 8.90in; letter-spacing: 0.14in;" class="bir-form-text">{{ check_number.upper() }}</div>
     <div style="left: 2.70in; top: 9.15in; letter-spacing: 0.14in;" class="bir-form-text">{{ tax_debit_memo_number.upper() }}</div>
 
-    <div style="left: 3.90in; top: 8.65in; letter-spacing: 0.14in;" class="bir-form-text">{{ cash_date.strftime('%m') }}</div>
-    <div style="left: 4.31in; top: 8.65in; letter-spacing: 0.14in;" class="bir-form-text">{{ cash_date.strftime('%d') }}</div>
-    <div style="left: 4.72in; top: 8.65in; letter-spacing: 0.14in;" class="bir-form-text">{{ cash_date.strftime('%Y') }}</div>
+    {% if cash_date %}
+        <div style="left: 3.90in; top: 8.65in; letter-spacing: 0.14in;" class="bir-form-text">{{ cash_date.strftime('%m') }}</div>
+        <div style="left: 4.31in; top: 8.65in; letter-spacing: 0.14in;" class="bir-form-text">{{ cash_date.strftime('%d') }}</div>
+        <div style="left: 4.72in; top: 8.65in; letter-spacing: 0.14in;" class="bir-form-text">{{ cash_date.strftime('%Y') }}</div>
+    {% endif %}
 
-    <div style="left: 3.90in; top: 8.90in; letter-spacing: 0.14in;" class="bir-form-text">{{ check_date.strftime('%m') }}</div>
-    <div style="left: 4.31in; top: 8.90in; letter-spacing: 0.14in;" class="bir-form-text">{{ check_date.strftime('%d') }}</div>
-    <div style="left: 4.72in; top: 8.90in; letter-spacing: 0.14in;" class="bir-form-text">{{ check_date.strftime('%Y') }}</div>
+    {% if check_date %}
+        <div style="left: 3.90in; top: 8.90in; letter-spacing: 0.14in;" class="bir-form-text">{{ check_date.strftime('%m') }}</div>
+        <div style="left: 4.31in; top: 8.90in; letter-spacing: 0.14in;" class="bir-form-text">{{ check_date.strftime('%d') }}</div>
+        <div style="left: 4.72in; top: 8.90in; letter-spacing: 0.14in;" class="bir-form-text">{{ check_date.strftime('%Y') }}</div>
+    {% endif %}
 
-    <div style="left: 3.90in; top: 9.15in; letter-spacing: 0.14in;" class="bir-form-text">{{ tax_debit_memo_date.strftime('%m') }}</div>
-    <div style="left: 4.31in; top: 9.15in; letter-spacing: 0.14in;" class="bir-form-text">{{ tax_debit_memo_date.strftime('%d') }}</div>
-    <div style="left: 4.72in; top: 9.15in; letter-spacing: 0.14in;" class="bir-form-text">{{ tax_debit_memo_date.strftime('%Y') }}</div>
+    {% if tax_debit_memo_date %}
+        <div style="left: 3.90in; top: 9.15in; letter-spacing: 0.14in;" class="bir-form-text">{{ tax_debit_memo_date.strftime('%m') }}</div>
+        <div style="left: 4.31in; top: 9.15in; letter-spacing: 0.14in;" class="bir-form-text">{{ tax_debit_memo_date.strftime('%d') }}</div>
+        <div style="left: 4.72in; top: 9.15in; letter-spacing: 0.14in;" class="bir-form-text">{{ tax_debit_memo_date.strftime('%Y') }}</div>
+    {% endif %}
 
     <!-- payment details amount, these are put inside table to allow right align -->
     <table class="bir-form-text table-data" style ="width: 2.90in; left: 5.44in; top: 8.57in;" cell-spacing="0">
@@ -173,9 +179,11 @@
     <div style="left: 1.70in; top: 9.55in; letter-spacing: 0.14in;" class="bir-form-text">{{ others_drawee_bank.upper() }}</div>
     <div style="left: 2.70in; top: 9.55in; letter-spacing: 0.14in;" class="bir-form-text">{{ others_number.upper() }}</div>
 
-    <div style="left: 3.90in; top: 9.55in; letter-spacing: 0.14in;" class="bir-form-text">{{ others_date.strftime('%m') }}</div>
-    <div style="left: 4.31in; top: 9.55in; letter-spacing: 0.14in;" class="bir-form-text">{{ others_date.strftime('%d') }}</div>
-    <div style="left: 4.72in; top: 9.55in; letter-spacing: 0.14in;" class="bir-form-text">{{ others_date.strftime('%Y') }}</div>
+    {% if others_date %}
+        <div style="left: 3.90in; top: 9.55in; letter-spacing: 0.14in;" class="bir-form-text">{{ others_date.strftime('%m') }}</div>
+        <div style="left: 4.31in; top: 9.55in; letter-spacing: 0.14in;" class="bir-form-text">{{ others_date.strftime('%d') }}</div>
+        <div style="left: 4.72in; top: 9.55in; letter-spacing: 0.14in;" class="bir-form-text">{{ others_date.strftime('%Y') }}</div>
+    {% endif %}
     <!-- payment details amount, these are put inside table to allow right align -->
     <table class="bir-form-text table-data" style ="width: 2.90in; left: 5.44in; top: 9.49in;" cell-spacing="0">
         <tbody>
