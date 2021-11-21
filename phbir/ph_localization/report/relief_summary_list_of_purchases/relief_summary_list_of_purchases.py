@@ -4,7 +4,7 @@
 import frappe
 from frappe import _
 from frappe.utils import flt, getdate
-from phbir.ph_localization.utils import get_company_information, get_supplier_information
+from phbir.ph_localization.utils import get_company_information, get_supplier_information, get_formatted_full_name
 from phbir.ph_localization.bir_forms import return_document
 import json
 import calendar
@@ -68,6 +68,8 @@ def get_data(company, year, month):
             AND MONTH(pi.posting_date) = %s
         """, (company, year, month), as_dict=1)
 
+    last_day_of_the_month = '{MM}/{DD}/{YYYY}'.format(MM=('0' + str(month))[-2:],DD=calendar.monthrange(int(year), int(month))[1], YYYY=year)
+
     for tax_line in pi_base_tax_amounts:
         item_wise_tax_detail = json.loads(tax_line.item_wise_tax_detail)
         for item in item_wise_tax_detail.keys():
@@ -83,7 +85,10 @@ def get_data(company, year, month):
                     if not supplier_row:
                         supplier_information = get_supplier_information(item_net_amount.supplier)
                         supplier_row = {
+                            'taxable_month': last_day_of_the_month,
                             'supplier': item_net_amount.supplier,
+                            'full_name': get_formatted_full_name(supplier_information['contact_last_name'], 
+                                supplier_information['contact_first_name'], supplier_information['contact_middle_name']),
                             'supplier_type': supplier_information['supplier_type'],
                             'tin': supplier_information['tin'],
                             'branch_code': supplier_information['branch_code'],
@@ -94,6 +99,9 @@ def get_data(company, year, month):
                             'address_line1': supplier_information['address_line1'],
                             'address_line2': supplier_information['address_line2'],
                             'city': supplier_information['city'],
+                            'address': supplier_information['address_line1']
+                                 + (" {0}".format(supplier_information['address_line2']) if supplier_information['address_line2'] else "")
+                                 + (" {0}".format(supplier_information['city']) if supplier_information['city'] else ""),
                             'zero_rated': 0,
                             'exempt': 0,
                             'gross_taxable': 0,
@@ -243,6 +251,12 @@ def generate_slp_data_file(company, year, month, non_creditable=0, response_type
 def get_columns():
     columns = [
         {
+            "fieldname": "taxable_month",
+            "label": _("Taxable Month"),
+            "fieldtype": "Date",
+            "width": 180
+        },
+        {
             "fieldname": "tin_with_dash",
             "label": _("TIN"),
             "fieldtype": "Data",
@@ -253,6 +267,18 @@ def get_columns():
             "label": _("Registered Name"),
             "fieldtype": "Link",
             "options": "Supplier",
+            "width": 200
+        },
+        {
+            "fieldname": "full_name",
+            "label": _("Name of Customer"),
+            "fieldtype": "Data",
+            "width": 200
+        },
+        {
+            "fieldname": "address",
+            "label": _("Supplier's Address"),
+            "fieldtype": "Data",
             "width": 200
         },
         {
@@ -274,8 +300,8 @@ def get_columns():
             "width": 150
         },
         {
-            "fieldname": "gross_taxable",
-            "label": _("Gross Taxable"),
+            "fieldname": "taxable_net",
+            "label": _("Taxable Net"),
             "fieldtype": "Currency",
             "width": 150
         },
@@ -286,26 +312,26 @@ def get_columns():
             "width": 150
         },
         {
-            "fieldname": "other_than_capital_goods",
-            "label": _("Other Than Capital Goods"),
-            "fieldtype": "Currency",
-            "width": 150
-        },
-        {
             "fieldname": "capital_goods",
             "label": _("Capital Goods"),
             "fieldtype": "Currency",
             "width": 150
         },
         {
-            "fieldname": "taxable_net",
-            "label": _("Taxable Net"),
+            "fieldname": "other_than_capital_goods",
+            "label": _("Other Than Capital Goods"),
             "fieldtype": "Currency",
             "width": 150
         },
         {
             "fieldname": "input_tax",
             "label": _("Input Tax"),
+            "fieldtype": "Currency",
+            "width": 150
+        },
+        {
+            "fieldname": "gross_taxable",
+            "label": _("Gross Taxable"),
             "fieldtype": "Currency",
             "width": 150
         },

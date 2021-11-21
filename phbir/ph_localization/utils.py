@@ -437,3 +437,7 @@ def generate_company_tax_templates(company):
     frappe.msgprint(_('Tax template(s) successfully created: <strong>{0}</strong>'.format(n)))
 
     return n
+
+@frappe.whitelist()
+def get_formatted_full_name(last_name, first_name, middle_name):
+    return "{0}, {1}".format(last_name, first_name) + " {0}".format(middle_name) if middle_name else ""
