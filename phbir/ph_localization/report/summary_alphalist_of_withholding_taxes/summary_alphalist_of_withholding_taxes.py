@@ -107,7 +107,7 @@ def get_data(company, year, month):
                 si.customer,
                 stac.atc AS atc,
                 si.name AS document_no,
-                si.base_total as income_payment,
+                si.base_net_total as income_payment,
                 stac.atc_rate,
                 ABS(stac.base_tax_amount) as tax_withheld
             FROM 
@@ -137,7 +137,7 @@ def get_data(company, year, month):
                 pe.party,
                 atac.atc AS atc,
                 pe.name AS document_no,
-                pe.paid_amount as income_payment,
+                (pe.base_paid_amount_after_tax - pe.base_total_taxes_and_charges) as income_payment,
                 atac.atc_rate,
                 ABS(atac.base_tax_amount) as tax_withheld
             FROM 

@@ -47,7 +47,7 @@ def get_data(company, supplier, doctype, purchase_invoice, payment_entry, from_d
                 SELECT 
                     ptac.atc AS atc,
                     atc.description AS description,
-                    pi.base_total AS total,
+                    pi.base_net_total AS total,
                     ABS(ptac.base_tax_amount) AS tax_withheld
                 FROM 
                     `tabPurchase Invoice` pi
@@ -97,7 +97,7 @@ def get_data(company, supplier, doctype, purchase_invoice, payment_entry, from_d
                 SELECT 
                     atac.atc AS atc,
                     atc.description AS description,
-                    pe.base_paid_amount AS total,
+                    (pe.base_paid_amount_after_tax - pe.base_total_taxes_and_charges) AS total,
                     ABS(atac.base_tax_amount) AS tax_withheld
                 FROM 
                     `tabPayment Entry` pe

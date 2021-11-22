@@ -50,10 +50,10 @@ def get_data(company, supplier, doctype, purchase_invoice, payment_entry, from_d
                     ptac.atc AS atc,
                     atc.description AS description,
                     pi.name AS document_no,
-                    (CASE WHEN MONTH(pi.posting_date) IN (1, 4, 7, 10) THEN pi.base_total ELSE 0 END) AS month_1,
-                    (CASE WHEN MONTH(pi.posting_date) IN (2, 5, 8, 11) THEN pi.base_total ELSE 0 END) AS month_2,
-                    (CASE WHEN MONTH(pi.posting_date) IN (3, 6, 9, 12) THEN pi.base_total ELSE 0 END) AS month_3,
-                    pi.base_total AS total,
+                    (CASE WHEN MONTH(pi.posting_date) IN (1, 4, 7, 10) THEN pi.base_net_total ELSE 0 END) AS month_1,
+                    (CASE WHEN MONTH(pi.posting_date) IN (2, 5, 8, 11) THEN pi.base_net_total ELSE 0 END) AS month_2,
+                    (CASE WHEN MONTH(pi.posting_date) IN (3, 6, 9, 12) THEN pi.base_net_total ELSE 0 END) AS month_3,
+                    pi.base_net_total AS total,
                     ABS(ptac.base_tax_amount) AS tax_withheld_for_the_quarter
                 FROM 
                     `tabPurchase Invoice` pi
@@ -115,10 +115,10 @@ def get_data(company, supplier, doctype, purchase_invoice, payment_entry, from_d
                     atac.atc AS atc,
                     atc.description AS description,
                     pe.name AS document_no,
-                    (CASE WHEN MONTH(pe.posting_date) IN (1, 4, 7, 10) THEN pe.base_paid_amount ELSE 0 END) AS month_1,
-                    (CASE WHEN MONTH(pe.posting_date) IN (2, 5, 8, 11) THEN pe.base_paid_amount ELSE 0 END) AS month_2,
-                    (CASE WHEN MONTH(pe.posting_date) IN (3, 6, 9, 12) THEN pe.base_paid_amount ELSE 0 END) AS month_3,
-                    pe.base_paid_amount AS total,
+                    (CASE WHEN MONTH(pe.posting_date) IN (1, 4, 7, 10) THEN (pe.base_paid_amount_after_tax - pe.base_total_taxes_and_charges) ELSE 0 END) AS month_1,
+                    (CASE WHEN MONTH(pe.posting_date) IN (2, 5, 8, 11) THEN (pe.base_paid_amount_after_tax - pe.base_total_taxes_and_charges) ELSE 0 END) AS month_2,
+                    (CASE WHEN MONTH(pe.posting_date) IN (3, 6, 9, 12) THEN (pe.base_paid_amount_after_tax - pe.base_total_taxes_and_charges) ELSE 0 END) AS month_3,
+                    (pe.base_paid_amount_after_tax - pe.base_total_taxes_and_charges) AS total,
                     ABS(atac.base_tax_amount) AS tax_withheld_for_the_quarter
                 FROM 
                     `tabPayment Entry` pe
