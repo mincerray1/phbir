@@ -89,7 +89,7 @@ def get_data(company, year, month):
             stac.account_head = a.name
         WHERE
             si.docstatus = 1
-            AND stac.base_tax_amount >= 0 AND stac.add_deduct_tax = 'Add'
+            AND stac.base_tax_amount >= 0
             AND a.account_type = 'Tax'
             AND si.company = %s
             AND YEAR(si.posting_date) = %s

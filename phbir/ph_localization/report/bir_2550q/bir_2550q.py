@@ -246,7 +246,7 @@ def bir_2550q(company, year, quarter,
         WHERE
             si.docstatus = 1
             AND a.account_type = 'Tax'
-            AND stac.base_tax_amount >= 0 AND stac.add_deduct_tax = 'Add'
+            AND stac.base_tax_amount >= 0
             AND si.company = %s
             AND si.posting_date >= %s
             AND si.posting_date <= %s
