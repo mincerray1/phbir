@@ -226,7 +226,7 @@ def bir_2550m(company, year, month,
         WHERE
             pi.docstatus = 1
             AND a.account_type = 'Tax'
-            AND ptac.base_tax_amount >= 0
+            AND ptac.base_tax_amount >= 0 AND ptac.add_deduct_tax = 'Add'
             AND pi.company = %s
             AND YEAR(pi.posting_date) = %s
             AND MONTH(pi.posting_date) = %s
@@ -267,7 +267,7 @@ def bir_2550m(company, year, month,
         WHERE
             si.docstatus = 1
             AND a.account_type = 'Tax'
-            AND stac.base_tax_amount >= 0
+            AND stac.base_tax_amount >= 0 AND stac.add_deduct_tax = 'Add'
             AND si.company = %s
             AND YEAR(si.posting_date) = %s
             AND MONTH(si.posting_date) = %s
