@@ -19,7 +19,7 @@ def get_data(filters):
     precision = cint(frappe.db.get_default("currency_precision")) or 2
     result = frappe.db.sql("""
     SELECT 
-        sle.posting_date,
+        sle.posting_date as max_posting_date,
         sle.item_code,
         i.name,
         i.item_name,
