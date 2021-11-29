@@ -19,33 +19,30 @@ def get_data(filters):
     precision = cint(frappe.db.get_default("currency_precision")) or 2
     result = frappe.db.sql("""
     SELECT 
-        sle.max_posting_date,
+        sle.posting_date,
         sle.item_code,
         i.name,
         i.item_name,
-        ROUND(sle.actual_qty, {precision}) AS actual_qty,
-        (CASE WHEN sle.actual_qty = 0 THEN 0 ELSE ROUND((sle.amount / sle.actual_qty), {precision}) END) AS price_per_unit,
-        ROUND(sle.amount, {precision}) AS amount
+        ROUND(sle.qty_after_transaction, {precision}) AS actual_qty,
+        (CASE WHEN sle.qty_after_transaction = 0 THEN 0 ELSE ROUND(sle.valuation_rate, {precision}) END) AS price_per_unit,
+        ROUND(sle.stock_value, {precision}) AS amount
     FROM 
         `tabItem` i
-    INNER JOIN
-        ( 
-            SELECT 
-                item_code,
-                SUM(actual_qty) AS actual_qty,
-                SUM(stock_value_difference) AS amount,
-                MAX(posting_date) AS max_posting_date
-            FROM
-                `tabStock Ledger Entry`
-            WHERE 
-                is_cancelled = 0
-                and posting_date <= %s
-                and company = %s
-            GROUP BY 
-                item_code
-        ) sle
-    ON
-        sle.item_code = i.name
+    INNER JOIN 
+        `tabStock Ledger Entry` sle
+    ON sle.name = 
+        (SELECT 
+            name 
+        FROM 
+            `tabStock Ledger Entry` 
+        WHERE 
+            is_cancelled = 0
+            and posting_date <= %s
+            and company = %s
+            and item_code = i.name
+        ORDER BY 
+            posting_date DESC
+        LIMIT 1)
     WHERE
         i.disabled = 0
         and i.is_stock_item = 1
