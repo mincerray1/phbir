@@ -276,7 +276,7 @@ def get_columns():
         },
         {
             "fieldname": "full_name",
-            "label": _("Name of Customer"),
+            "label": _("Name of Supplier"),
             "fieldtype": "Data",
             "width": 200
         },
