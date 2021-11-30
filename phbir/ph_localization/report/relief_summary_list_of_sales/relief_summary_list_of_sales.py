@@ -56,7 +56,12 @@ def get_data(company, year, month):
 
     si_base_net_amounts = frappe.db.sql("""
         SELECT 
-            si.name, si.customer, sii.item_name, sii.item_tax_template, si.taxes_and_charges, SUM(base_net_amount) AS base_net_amount 
+            si.name, 
+            si.customer, 
+            (CASE WHEN sii.item_code = '' THEN sii.item_name ELSE sii.item_code END) AS item_name, 
+            sii.item_tax_template, 
+            si.taxes_and_charges, 
+            SUM(base_net_amount) AS base_net_amount 
         FROM
             `tabSales Invoice Item` sii
         LEFT JOIN
@@ -68,7 +73,7 @@ def get_data(company, year, month):
             AND si.company = %s
             AND YEAR(si.posting_date) = %s
             AND MONTH(si.posting_date) = %s
-        GROUP BY si.name, si.customer, item_name, sii.item_tax_template, si.taxes_and_charges;
+        GROUP BY si.name, si.customer, (CASE WHEN sii.item_code = '' THEN sii.item_name ELSE sii.item_code END), sii.item_tax_template, si.taxes_and_charges;
         """, (company, year, month), as_dict=1)
 
     si_base_tax_amounts = frappe.db.sql("""
