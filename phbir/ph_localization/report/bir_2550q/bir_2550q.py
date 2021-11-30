@@ -173,7 +173,7 @@ def bir_2550q(company, year, quarter,
     pi_base_net_amounts = frappe.db.sql("""
         SELECT 
             pi.name, 
-            (CASE WHEN pii.item_code = '' THEN pii.item_name ELSE pii.item_code END) AS item_name, 
+            (CASE WHEN pii.item_code IS NULL THEN pii.item_name ELSE pii.item_code END) AS item_name, 
             pii.item_tax_template, 
             pi.taxes_and_charges, 
             SUM(base_net_amount) AS base_net_amount 
@@ -188,7 +188,7 @@ def bir_2550q(company, year, quarter,
             AND pi.company = %s
             AND pi.posting_date >= %s
             AND pi.posting_date <= %s
-        GROUP BY pi.name, (CASE WHEN pii.item_code = '' THEN pii.item_name ELSE pii.item_code END), pii.item_tax_template, pi.taxes_and_charges;
+        GROUP BY pi.name, (CASE WHEN pii.item_code IS NULL THEN pii.item_name ELSE pii.item_code END), pii.item_tax_template, pi.taxes_and_charges;
         """, (company, from_date, to_date), as_dict=1)
 
     pi_base_tax_amounts = frappe.db.sql("""
@@ -218,7 +218,7 @@ def bir_2550q(company, year, quarter,
     si_base_net_amounts = frappe.db.sql("""
         SELECT 
             si.name, 
-            (CASE WHEN sii.item_code = '' THEN sii.item_name ELSE sii.item_code END) AS item_name,  
+            (CASE WHEN sii.item_code IS NULL THEN sii.item_name ELSE sii.item_code END) AS item_name,  
             sii.item_tax_template, 
             si.taxes_and_charges, 
             SUM(base_net_amount) AS base_net_amount 
@@ -233,7 +233,7 @@ def bir_2550q(company, year, quarter,
             AND si.company = %s
             AND si.posting_date >= %s
             AND si.posting_date <= %s
-        GROUP BY si.name, (CASE WHEN sii.item_code = '' THEN sii.item_name ELSE sii.item_code END), sii.item_tax_template, si.taxes_and_charges;
+        GROUP BY si.name, (CASE WHEN sii.item_code IS NULL THEN sii.item_name ELSE sii.item_code END), sii.item_tax_template, si.taxes_and_charges;
         """, (company, from_date, to_date), as_dict=1)
 
     si_base_tax_amounts = frappe.db.sql("""

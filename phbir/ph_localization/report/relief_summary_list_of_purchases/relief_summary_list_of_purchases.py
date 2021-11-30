@@ -30,7 +30,7 @@ def get_data(company, year, month):
         SELECT 
             pi.name, 
             pi.supplier,
-            (CASE WHEN pii.item_code = '' THEN pii.item_name ELSE pii.item_code END) AS item_name, 
+            (CASE WHEN pii.item_code IS NULL THEN pii.item_name ELSE pii.item_code END) AS item_name, 
             pii.item_tax_template, 
             pi.taxes_and_charges, 
             SUM(base_net_amount) AS base_net_amount 
@@ -45,7 +45,7 @@ def get_data(company, year, month):
             AND pi.company = %s
             AND YEAR(pi.posting_date) = %s
             AND MONTH(pi.posting_date) = %s
-        GROUP BY pi.name, pi.supplier, (CASE WHEN pii.item_code = '' THEN pii.item_name ELSE pii.item_code END), pii.item_tax_template, pi.taxes_and_charges;
+        GROUP BY pi.name, pi.supplier, (CASE WHEN pii.item_code IS NULL THEN pii.item_name ELSE pii.item_code END), pii.item_tax_template, pi.taxes_and_charges;
         """, (company, year, month), as_dict=1)
 
     pi_base_tax_amounts = frappe.db.sql("""
