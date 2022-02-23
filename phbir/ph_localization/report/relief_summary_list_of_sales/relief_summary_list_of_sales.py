@@ -112,12 +112,13 @@ def get_data(company, year, month):
                     item_tax_template = item_net_amount.item_tax_template
                     taxes_and_charges = item_net_amount.taxes_and_charges
                     
-                    customer_row = None
-                    customer_row = next((row for row in data if row.get('customer') == item_net_amount.customer), None)
-                    # customer_row = (row for row in data if row.get('customer') == item_net_amount.customer)
-                    if not customer_row:
+                    document_row = None
+                    document_row = next((row for row in data if row.get('sales_invoice') == item_net_amount.name), None)
+                    # document_row = (row for row in data if row.get('customer') == item_net_amount.customer)
+                    if not document_row:
                         customer_information = get_customer_information(item_net_amount.customer)
-                        customer_row = {
+                        document_row = {
+                            'sales_invoice': item_net_amount.name,
                             'taxable_month': last_day_of_the_month,
                             'customer': item_net_amount.customer,
                             'full_name': get_formatted_full_name(customer_information['contact_last_name'], 
@@ -143,26 +144,26 @@ def get_data(company, year, month):
                             'output_tax': 0,
                         }
 
-                        data.append(customer_row)
+                        data.append(document_row)
 
                     # taxable_net, zero_rated, exempt
                     # total_sales, gross_taxable, output_tax
                     if tax_declaration_company_setup.item_vat_sales and item_tax_template == tax_declaration_company_setup.item_vat_sales:
-                        customer_row['taxable_net'] += flt(item_net_amount.base_net_amount, 2)
-                        customer_row['output_tax'] += flt(item_wise_tax_detail[item][1], 2)
+                        document_row['taxable_net'] += flt(item_net_amount.base_net_amount, 2)
+                        document_row['output_tax'] += flt(item_wise_tax_detail[item][1], 2)
                     elif tax_declaration_company_setup.vat_sales and taxes_and_charges == tax_declaration_company_setup.vat_sales:
-                        customer_row['taxable_net'] += flt(item_net_amount.base_net_amount, 2)
-                        customer_row['output_tax'] += flt(item_wise_tax_detail[item][1], 2)
+                        document_row['taxable_net'] += flt(item_net_amount.base_net_amount, 2)
+                        document_row['output_tax'] += flt(item_wise_tax_detail[item][1], 2)
                         
                     if tax_declaration_company_setup.item_zero_rated_sales and item_tax_template == tax_declaration_company_setup.item_zero_rated_sales:
-                        customer_row['zero_rated'] += flt(item_net_amount.base_net_amount, 2)
+                        document_row['zero_rated'] += flt(item_net_amount.base_net_amount, 2)
                     elif tax_declaration_company_setup.zero_rated_sales and taxes_and_charges == tax_declaration_company_setup.zero_rated_sales:
-                        customer_row['zero_rated'] += flt(item_net_amount.base_net_amount, 2)
+                        document_row['zero_rated'] += flt(item_net_amount.base_net_amount, 2)
                         
                     if tax_declaration_company_setup.item_exempt_sales and item_tax_template == tax_declaration_company_setup.item_exempt_sales:
-                        customer_row['exempt'] += flt(item_net_amount.base_net_amount, 2)
+                        document_row['exempt'] += flt(item_net_amount.base_net_amount, 2)
                     elif tax_declaration_company_setup.exempt_sales and taxes_and_charges == tax_declaration_company_setup.exempt_sales:
-                        customer_row['exempt'] += flt(item_net_amount.base_net_amount, 2)
+                        document_row['exempt'] += flt(item_net_amount.base_net_amount, 2)
 
                     # net amount row is found, exit loop
                     break
