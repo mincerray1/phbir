@@ -58,7 +58,7 @@ def get_data(company, year, month):
         SELECT 
             si.name, 
             si.customer, 
-            (CASE WHEN sii.item_code IS NULL THEN sii.item_name ELSE sii.item_code END) AS item_name, 
+            (COALESCE(NULLIF(sii.item_code, ''), sii.item_name)) AS item_name, 
             sii.item_tax_template, 
             si.taxes_and_charges, 
             SUM(base_net_amount) AS base_net_amount 
@@ -73,7 +73,7 @@ def get_data(company, year, month):
             AND si.company = %s
             AND YEAR(si.posting_date) = %s
             AND MONTH(si.posting_date) = %s
-        GROUP BY si.name, si.customer, (CASE WHEN sii.item_code IS NULL THEN sii.item_name ELSE sii.item_code END), sii.item_tax_template, si.taxes_and_charges;
+        GROUP BY si.name, si.customer, (COALESCE(NULLIF(sii.item_code, ''), sii.item_name)), sii.item_tax_template, si.taxes_and_charges;
         """, (company, year, month), as_dict=1)
 
     si_base_tax_amounts = frappe.db.sql("""

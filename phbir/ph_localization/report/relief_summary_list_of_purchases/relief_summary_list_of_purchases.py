@@ -30,7 +30,7 @@ def get_data(company, year, month):
         SELECT 
             pi.name, 
             pi.supplier,
-            (CASE WHEN pii.item_code IS NULL THEN pii.item_name ELSE pii.item_code END) AS item_name, 
+            (COALESCE(NULLIF(pii.item_code, ''), pii.item_name)) AS item_name, 
             pii.item_tax_template, 
             pi.taxes_and_charges, 
             SUM(base_net_amount) AS base_net_amount 
@@ -45,7 +45,7 @@ def get_data(company, year, month):
             AND pi.company = %s
             AND YEAR(pi.posting_date) = %s
             AND MONTH(pi.posting_date) = %s
-        GROUP BY pi.name, pi.supplier, (CASE WHEN pii.item_code IS NULL THEN pii.item_name ELSE pii.item_code END), pii.item_tax_template, pi.taxes_and_charges;
+        GROUP BY pi.name, pi.supplier, (COALESCE(NULLIF(pii.item_code, ''), pii.item_name)), pii.item_tax_template, pi.taxes_and_charges;
         """, (company, year, month), as_dict=1)
 
     pi_base_tax_amounts = frappe.db.sql("""
@@ -79,7 +79,7 @@ def get_data(company, year, month):
         item_wise_tax_detail = json.loads(tax_line.item_wise_tax_detail)
         for item in item_wise_tax_detail.keys():
             # loop to find net amount
-            for item_net_amount in pi_base_net_amounts:                
+            for item_net_amount in pi_base_net_amounts:
                 if item_net_amount.name == tax_line.name and item_net_amount.item_name == item:
                     item_tax_template = item_net_amount.item_tax_template
                     taxes_and_charges = item_net_amount.taxes_and_charges
