@@ -80,7 +80,7 @@ def get_columns():
         },
         {
             "fieldname": "price_per_unit",
-            "label": _("Pricer per Unit"),
+            "label": _("Price per Unit"),
             "fieldtype": "Currency",
             "width": 150
         },
