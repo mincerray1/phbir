@@ -1,5 +1,21 @@
 [
  {
+  "atc": "W1202",
+  "atc_class": "Individual",
+  "description": "Cash dividend payment by domestic corporation to citizens ans residents aliens/NRFCs",
+  "docstatus": 0,
+  "doctype": "ATC",
+  "f1600": null,
+  "form_type": null,
+  "modified": "2021-08-21 11:29:58.713437",
+  "name": "W1202",
+  "parent": null,
+  "parentfield": null,
+  "parenttype": null,
+  "rate": 10.0,
+  "tax_type_code": "WF"
+ },
+ {
   "atc": "WI010",
   "atc_class": "Individual",
   "description": "Professional fees (Lawyers, CPA's, Engineers, etc.)\n - if the gross income for the current year did not exceed P3M",
