@@ -95,7 +95,7 @@ def get_data(company, year, month):
         WHERE
             si.docstatus = 1
             AND stac.base_tax_amount >= 0
-            AND a.account_type = 'Tax'
+            AND (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
             AND si.company = %s
             AND YEAR(si.posting_date) = %s
             AND MONTH(si.posting_date) = %s

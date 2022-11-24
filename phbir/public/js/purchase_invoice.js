@@ -101,6 +101,10 @@ frappe.ui.form.on('Purchase Taxes and Charges', {
 
 $.extend(phbir.purchase_invoice, {
     calculate_custom_tax_amount: function(frm, cdt, cdn) {
+        if (frm.doc.docstatus != 0) {
+            return;
+        }
+
         let row = locals[cdt][cdn];
     
         if (row.charge_type != 'Actual') {

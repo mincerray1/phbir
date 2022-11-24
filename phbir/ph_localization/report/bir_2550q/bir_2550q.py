@@ -208,7 +208,7 @@ def bir_2550q(company, year, quarter,
             ptac.account_head = a.name
         WHERE
             pi.docstatus = 1
-            AND a.account_type = 'Tax'
+            AND (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
             AND ptac.base_tax_amount >= 0 AND ptac.add_deduct_tax = 'Add'
             AND pi.company = %s
             AND pi.posting_date >= %s
@@ -253,7 +253,7 @@ def bir_2550q(company, year, quarter,
             stac.account_head = a.name
         WHERE
             si.docstatus = 1
-            AND a.account_type = 'Tax'
+            AND (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
             AND stac.base_tax_amount >= 0
             AND si.company = %s
             AND si.posting_date >= %s

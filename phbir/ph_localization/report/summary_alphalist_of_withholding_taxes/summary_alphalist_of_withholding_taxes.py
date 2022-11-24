@@ -129,7 +129,7 @@ def get_data(company, year, month):
                 and si.is_return = 0
                 and stac.base_tax_amount < 0 
                 and stac.atc IN (SELECT atc FROM `tabATC` WHERE tax_type_code IN ('WE', 'WB', 'WV'))
-                and a.account_type = 'Tax'
+                and (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
             UNION ALL
             SELECT 
                 pe.company,
@@ -159,7 +159,7 @@ def get_data(company, year, month):
                 and ((atac.base_tax_amount < 0 and atac.add_deduct_tax != 'Deduct') or (atac.base_tax_amount >= 0 and atac.add_deduct_tax = 'Deduct'))
                 and atac.atc IN (SELECT atc FROM `tabATC` WHERE tax_type_code IN ('WE', 'WB', 'WV'))
                 and pe.party_type = 'Customer'
-                and a.account_type = 'Tax'
+                and (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
             ) temp
         LEFT JOIN
             `tabATC` atc

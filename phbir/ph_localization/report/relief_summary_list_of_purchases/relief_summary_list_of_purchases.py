@@ -67,7 +67,7 @@ def get_data(company, year, month):
         WHERE
             pi.docstatus = 1
             AND ptac.base_tax_amount >= 0 AND ptac.add_deduct_tax = 'Add'
-            AND a.account_type = 'Tax'
+            AND (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
             AND pi.company = %s
             AND YEAR(pi.posting_date) = %s
             AND MONTH(pi.posting_date) = %s

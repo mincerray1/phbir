@@ -229,7 +229,7 @@ def bir_2550m(company, year, month,
             ptac.account_head = a.name
         WHERE
             pi.docstatus = 1
-            AND a.account_type = 'Tax'
+            AND (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
             AND ptac.base_tax_amount >= 0 AND ptac.add_deduct_tax = 'Add'
             AND pi.company = %s
             AND YEAR(pi.posting_date) = %s
@@ -274,7 +274,7 @@ def bir_2550m(company, year, month,
             stac.account_head = a.name
         WHERE
             si.docstatus = 1
-            AND a.account_type = 'Tax'
+            AND (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
             AND stac.base_tax_amount >= 0
             AND si.company = %s
             AND YEAR(si.posting_date) = %s
@@ -531,7 +531,7 @@ def bir_1601_eq(company, year, quarter, response_type="pdf"):
                     pi.docstatus = 1
                     and pi.is_return = 0
                     and ((ptac.base_tax_amount < 0 and ptac.add_deduct_tax != 'Deduct') or (ptac.base_tax_amount >= 0 and ptac.add_deduct_tax = 'Deduct'))
-                    and a.account_type = 'Tax'
+                    and (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
                     and pi.company = %s
                     and YEAR(pi.posting_date) = %s
                     and QUARTER(pi.posting_date) = %s
@@ -555,7 +555,7 @@ def bir_1601_eq(company, year, quarter, response_type="pdf"):
                     and pe.payment_type = 'Pay'
                     and pe.party_type = 'Supplier'
                     and ((atac.base_tax_amount < 0 and atac.add_deduct_tax != 'Deduct') or (atac.base_tax_amount >= 0 and atac.add_deduct_tax = 'Deduct'))
-                    and a.account_type = 'Tax'
+                    and (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
                     and pe.company = %s
                     and YEAR(pe.posting_date) = %s
                     and QUARTER(pe.posting_date) = %s
@@ -659,7 +659,7 @@ def bir_1601_eq_qap(company, year, quarter, response_type="download"):
                     pi.docstatus = 1
                     and pi.is_return = 0
                     and ((ptac.base_tax_amount < 0 and ptac.add_deduct_tax != 'Deduct') or (ptac.base_tax_amount >= 0 and ptac.add_deduct_tax = 'Deduct'))
-                    and a.account_type = 'Tax'
+                    and (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
                     and pi.company = %s
                     and YEAR(pi.posting_date) = %s
                     and QUARTER(pi.posting_date) = %s
@@ -685,7 +685,7 @@ def bir_1601_eq_qap(company, year, quarter, response_type="download"):
                     and pe.payment_type = 'Pay'
                     and pe.party_type = 'Supplier'
                     and ((atac.base_tax_amount < 0 and atac.add_deduct_tax != 'Deduct') or (atac.base_tax_amount >= 0 and atac.add_deduct_tax = 'Deduct'))
-                    and a.account_type = 'Tax'
+                    and (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
                     and pe.company = %s
                     and YEAR(pe.posting_date) = %s
                     and QUARTER(pe.posting_date) = %s
@@ -836,7 +836,7 @@ def bir_1601_fq(company, year, quarter, response_type="pdf"):
                     pi.docstatus = 1
                     and pi.is_return = 0
                     and ((ptac.base_tax_amount < 0 and ptac.add_deduct_tax != 'Deduct') or (ptac.base_tax_amount >= 0 and ptac.add_deduct_tax = 'Deduct'))
-                    and a.account_type = 'Tax'
+                    and (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
                     and pi.company = %s
                     and YEAR(pi.posting_date) = %s
                     and QUARTER(pi.posting_date) = %s
@@ -860,7 +860,7 @@ def bir_1601_fq(company, year, quarter, response_type="pdf"):
                     and pe.payment_type = 'Pay'
                     and pe.party_type = 'Supplier'
                     and ((atac.base_tax_amount < 0 and atac.add_deduct_tax != 'Deduct') or (atac.base_tax_amount >= 0 and atac.add_deduct_tax = 'Deduct'))
-                    and a.account_type = 'Tax'
+                    and (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
                     and pe.company = %s
                     and YEAR(pe.posting_date) = %s
                     and QUARTER(pe.posting_date) = %s
@@ -964,7 +964,7 @@ def bir_1601_fq_qap(company, year, quarter, response_type="download"):
                     pi.docstatus = 1
                     and pi.is_return = 0
                     and ((ptac.base_tax_amount < 0 and ptac.add_deduct_tax != 'Deduct') or (ptac.base_tax_amount >= 0 and ptac.add_deduct_tax = 'Deduct'))
-                    and a.account_type = 'Tax'
+                    and (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
                     and pi.company = %s
                     and YEAR(pi.posting_date) = %s
                     and QUARTER(pi.posting_date) = %s
@@ -990,7 +990,7 @@ def bir_1601_fq_qap(company, year, quarter, response_type="download"):
                     and pe.payment_type = 'Pay'
                     and pe.party_type = 'Supplier'
                     and ((atac.base_tax_amount < 0 and atac.add_deduct_tax != 'Deduct') or (atac.base_tax_amount >= 0 and atac.add_deduct_tax = 'Deduct'))
-                    and a.account_type = 'Tax'
+                    and (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
                     and pe.company = %s
                     and YEAR(pe.posting_date) = %s
                     and QUARTER(pe.posting_date) = %s

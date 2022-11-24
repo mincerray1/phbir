@@ -67,7 +67,7 @@ def get_data(filters):
                 `tabAccount` a
             ON
                 ptac.account_head = a.name
-            WHERE a.account_type = 'Tax'
+            WHERE (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
             GROUP BY ptac.parent
         ) AS ptac_totals
     ON 
@@ -136,7 +136,7 @@ def get_data(filters):
                 `tabAccount` a
             ON
                 ptac.account_head = a.name
-            WHERE a.account_type = 'Tax'
+            WHERE (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
             GROUP BY ptac.parent
         ) AS ptac_totals
     ON 

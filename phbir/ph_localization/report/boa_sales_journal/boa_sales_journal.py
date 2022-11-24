@@ -45,7 +45,7 @@ def get_data(filters):
             ON
                 stac.account_head = a.name
             WHERE stac.base_tax_amount >= 0
-                and a.account_type = 'Tax'
+                and (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
             GROUP BY stac.parent
         ) stac_add
     ON
@@ -60,7 +60,7 @@ def get_data(filters):
             ON
                 stac.account_head = a.name
             WHERE stac.base_tax_amount < 0
-                and a.account_type = 'Tax'
+                and (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
             GROUP BY stac.parent
         ) stac_deduct
     ON
@@ -109,7 +109,7 @@ def get_data(filters):
             ON
                 stac.account_head = a.name
             WHERE stac.base_tax_amount < 0
-                and a.account_type = 'Tax'
+                and (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
             GROUP BY stac.parent
         ) stac_add
     ON
@@ -124,7 +124,7 @@ def get_data(filters):
             ON
                 stac.account_head = a.name
             WHERE stac.base_tax_amount >= 0
-                and a.account_type = 'Tax'
+                and (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
             GROUP BY stac.parent
         ) stac_deduct
     ON
