@@ -138,8 +138,20 @@ def get_data(filters):
                 ge.posting_date,
                 ge.voucher_type,
                 ge.voucher_no,
-                '' as party,
-                '' as party_name,
+                (
+                    CASE WHEN ge.party_type = 'Customer' THEN c.name
+                    WHEN ge.party_type = 'Supplier' THEN s.name
+                    WHEN ge.party_type = 'Student' THEN stud.name
+                    END
+                )
+                as party,
+                (
+                    CASE WHEN ge.party_type = 'Customer' THEN c.customer_name
+                    WHEN ge.party_type = 'Supplier' THEN s.supplier_name
+                    WHEN ge.party_type = 'Student' THEN stud.student_name
+                    END
+                )                
+                as party_name,
                 (CASE WHEN UPPER(ge.remarks) = 'NO REMARKS' THEN '' ELSE ge.remarks END) AS remarks,
                 a.account_number,
                 a.account_name,
@@ -171,7 +183,9 @@ def get_data(filters):
                         a.account_type in ('Cash', 'Bank')
                         AND je.voucher_type in ('Cash Entry', 'Bank Entry')
                         AND je.docstatus in (1, 2)
-                        AND je.company = '{0}'
+                        AND je.posting_date >= %s
+                        AND je.posting_date <= %s
+                        AND je.company = %s
                     GROUP BY 
                         je.name
                     HAVING 
@@ -180,12 +194,24 @@ def get_data(filters):
             ON
                 je_temp.name = ge.voucher_no
                 AND ge.voucher_type = 'Journal Entry'
+            LEFT JOIN `tabCustomer` c
+            ON 
+                c.name = ge.party
+                AND ge.party_type = 'Customer'
+            LEFT JOIN `tabSupplier` s
+            ON 
+                c.name = ge.party
+                AND ge.party_type = 'Supplier'
+            LEFT JOIN `tabStudent` stud
+            ON 
+                c.name = ge.party
+                AND ge.party_type = 'Student'
             WHERE
                 ge.docstatus = 1
                 and ge.posting_date >= %s
                 and ge.posting_date <= %s
                 and ge.company = %s
-        """.format(filters.company), (getdate(filters.from_date), getdate(filters.to_date), filters.company), as_dict=1)
+        """, (getdate(filters.from_date), getdate(filters.to_date), filters.company, getdate(filters.from_date), getdate(filters.to_date), filters.company), as_dict=1)
 
     data.extend(data_je)
     data = sorted(data, key=lambda row: (row.posting_date, row.voucher_type, row.voucher_no, row.row_order))
