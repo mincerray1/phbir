@@ -125,6 +125,15 @@ jenv = {
 	]
 }
 
+#v14
+jinja = {
+	"methods": [
+		"phbir.ph_localization.utils.is_local_dev",
+		"phbir.ph_localization.utils.preformat_tin",
+		"phbir.ph_localization.utils.preformat_tin_with_dash"
+	]
+}
+
 
 # Scheduled Tasks
 # ---------------
