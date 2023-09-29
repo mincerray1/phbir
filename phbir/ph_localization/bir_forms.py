@@ -3,7 +3,7 @@ from frappe import _
 from frappe.utils.pdf import get_pdf
 from frappe.utils import getdate, flt, cint, add_days, add_months, cstr, get_datetime, nowdate, today
 from datetime import datetime
-from phbir.ph_localization.utils import get_company_information, get_supplier_information, report_is_permitted
+from phbir.ph_localization.utils import get_company_information, get_supplier_information, get_employee_information, report_is_permitted
 import pytz
 import json
 
@@ -15,11 +15,11 @@ options = {
 }
 
 @frappe.whitelist()
-def bir_2307(company, supplier, doctype, purchase_invoice, payment_entry, from_date, to_date, response_type="pdf"):
+def bir_2307(company, supplier, employee, doctype, purchase_invoice, payment_entry, expense_claim, from_date, to_date, response_type="pdf"):
     report_is_permitted('BIR 2307')
 
     from phbir.ph_localization.report.bir_2307.bir_2307 import get_data as get_data_bir_2307
-    data = get_data_bir_2307(company, supplier, doctype, purchase_invoice, payment_entry, from_date, to_date)
+    data = get_data_bir_2307(company, supplier, employee, doctype, purchase_invoice, payment_entry, expense_claim, from_date, to_date)
 
     data_ip = []
     data_mp = []
@@ -54,11 +54,34 @@ def bir_2307(company, supplier, doctype, purchase_invoice, payment_entry, from_d
 
             data_mp.append(entry)
 
+    
+    payee_information = {
+        'employee_name': "",
+        'employee_type': "",
+        'contact_first_name': "",
+        'contact_middle_name': "",
+        'contact_last_name': "",
+        'address': "",
+        'address_line1': "",
+        'address_line2': '',
+        'city': '',
+        'state': '',
+        'tin': '',
+        'tin_with_dash': '',
+        'branch_code': '',
+        'zipcode': "",
+        'phone': "",
+    }
+    if employee:
+        payee_information = get_employee_information(employee)
+    else:
+        payee_information = get_supplier_information(supplier)
+
     context = {
         'from_date': getdate(from_date),
         'to_date': getdate(to_date),
         'payor': get_company_information(company),
-        'payee': get_supplier_information(supplier),
+        'payee': payee_information,
         'data_ip': data_ip,
         'ip_month_1_total': ip_month_1_total,
         'ip_month_2_total': ip_month_2_total,

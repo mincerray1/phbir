@@ -3,6 +3,7 @@ from frappe.utils import flt, rounded, getdate
 from frappe import _
 from erpnext import __version__
 import json
+import re
 
 @frappe.whitelist()
 def get_custom_formatted_address(address):
@@ -70,12 +71,12 @@ def get_company_information(company):
     vat_industry = ph_localization_company_setup.vat_industry
     withholding_agent_category = ph_localization_company_setup.withholding_agent_category
 
-    authorized_representative_1 = ph_localization_company_setup.authorized_representative_1
-    title_1 = ph_localization_company_setup.title_1
-    tin_of_signatory_1 = ph_localization_company_setup.tin_of_signatory_1
-    authorized_representative_2 = ph_localization_company_setup.authorized_representative_2
-    title_2 = ph_localization_company_setup.title_2
-    tin_of_signatory_2 = ph_localization_company_setup.tin_of_signatory_2
+    authorized_representative_1 = ph_localization_company_setup.authorized_representative_1 or ""
+    title_1 = ph_localization_company_setup.title_1 or ""
+    tin_of_signatory_1 = ph_localization_company_setup.tin_of_signatory_1 or ""
+    authorized_representative_2 = ph_localization_company_setup.authorized_representative_2 or ""
+    title_2 = ph_localization_company_setup.title_2 or ""
+    tin_of_signatory_2 = ph_localization_company_setup.tin_of_signatory_2 or ""
     
     fiscal_month_end = ph_localization_company_setup.fiscal_month_end
     fiscal_month_end = (fiscal_month_end if fiscal_month_end else 12)
@@ -107,6 +108,78 @@ def get_company_information(company):
         'title_2': title_2,
         'tin_of_signatory_2': preformat_tin(tin_of_signatory_2),
         'fiscal_month_end': fiscal_month_end
+    }
+
+    return result
+
+@frappe.whitelist()
+def get_employee_information(employee):
+    employee_doc = frappe.get_doc('Employee', employee)
+    employee_address = ''
+    zipcode = ''
+    phone = ''
+    employee_address_dynamic_link_doc = None
+    employee_contact_dynamic_link_doc = None
+    employee_address_doc = None
+    contact_doc = None
+    contact_first_name = ''
+    contact_middle_name = ''
+    contact_last_name = ''
+    employment_type = employee_doc.employment_type
+
+    # if frappe.db.exists("Dynamic Link", {'link_doctype': 'employee', 'link_name': employee, 'parenttype': 'Address'}):
+    #     employee_address_dynamic_link_doc = frappe.get_last_doc('Dynamic Link', filters={'link_doctype': 'employee', 'link_name': employee, 'parenttype': 'Address'})
+    # if hasattr(employee_doc, 'employee_primary_address'):
+    #     if employee_doc.employee_primary_address and frappe.db.exists("Address", {'name': employee_doc.employee_primary_address}):
+    #         employee_address_doc = frappe.get_doc('Address', employee_doc.employee_primary_address)
+    # else:
+    #     if frappe.db.exists("Dynamic Link", {'link_doctype': 'employee', 'link_name': employee, 'parenttype': 'Address'}):
+    #         employee_address_dynamic_link_doc = frappe.get_last_doc('Dynamic Link', filters={'link_doctype': 'employee', 'link_name': employee, 'parenttype': 'Address'})
+    #         employee_address_doc = frappe.get_doc('Address', employee_address_dynamic_link_doc.parent)
+
+    # if hasattr(employee_doc, 'employee_primary_contact'):
+    #     if employee_doc.employee_primary_contact and frappe.db.exists("Contact", {'name': employee_doc.employee_primary_contact}):
+    #         contact_doc = frappe.get_doc('Contact', employee_doc.employee_primary_contact)
+    # else:
+    #     employee_contact_dynamic_link_doc = frappe.get_last_doc('Dynamic Link', filters={'link_doctype': 'employee', 'link_name': employee, 'parenttype': 'Contact'})
+    #     contact_doc = frappe.get_doc('Contact', employee_contact_dynamic_link_doc.parent)
+
+    # if contact_doc:
+    #     contact_first_name = contact_doc.first_name if contact_doc.first_name else ''
+    #     contact_middle_name = contact_doc.middle_name if contact_doc.middle_name else ''
+    #     contact_last_name = contact_doc.last_name if contact_doc.last_name else ''
+    
+    # if employee_address_doc:
+    #     zipcode = employee_address_doc.pincode if employee_address_doc.pincode else ''
+    #     phone = employee_address_doc.phone if employee_address_doc.phone else ''
+    #     employee_address = employee_address_doc.name
+    
+    # if employee_address:
+    #     employee_address = get_custom_formatted_address(employee_address)
+    # tin = preformat_tin(employee_doc.tax_id if employee_doc.tax_id else '')
+    # branch_code = tin[9:13] # bir structure length = 3, alphalist validation module = 4
+
+    # todo: branch_code and tin
+    result = {
+        'employee_name': employee_doc.employee_name,
+        'employment_type': employment_type,
+        'contact_first_name': employee_doc.first_name,
+        'contact_middle_name': employee_doc.middle_name,
+        'contact_last_name': employee_doc.last_name,
+        'address': employee_doc.current_address,
+        'address_line1': employee_doc.current_address,
+        'address_line2': '',
+        'city': '',
+        'state': '',
+        # 'city': employee_address_doc.city if employee_address_doc and employee_address_doc.city else '',
+        # 'state': employee_address_doc.state if employee_address_doc and employee_address_doc.state else '',
+        # 'tin': preformat_tin(employee_doc.tax_id if employee_doc.tax_id else ''),
+        # 'tin_with_dash': preformat_tin_with_dash(employee_doc.tax_id if employee_doc.tax_id else ''),
+        'tin': '',
+        'tin_with_dash': '',
+        'branch_code': '',
+        'zipcode': zipcode,
+        'phone': employee_doc.cell_number or ''
     }
 
     return result
@@ -253,6 +326,7 @@ def get_customer_information(customer):
 
 @frappe.whitelist()
 def preformat_tin(tin):
+    tin = re.sub("[^0-9]", "", tin)
     result = "{0}000000000000".format(tin)
     # tin is 12 or 13? digits
     return result[:13]
@@ -260,6 +334,7 @@ def preformat_tin(tin):
     
 @frappe.whitelist()
 def preformat_tin_with_dash(tin):
+    tin = re.sub("[^0-9]", "", tin)
     result = "{0}000000000000".format(tin)
     # tin is 12 or 13? digits
     result = "{0}-{1}-{2}-{3}".format(result[:3], result[3:6], result[6:9], result[9:13])

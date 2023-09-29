@@ -7,13 +7,13 @@ from frappe import _
 
 def execute(filters=None):
     columns, data = [], []
-    data = get_data(filters.company, filters.supplier, filters.doctype, filters.purchase_invoice, filters.payment_entry, filters.from_date, filters.to_date)
+    data = get_data(filters.company, filters.supplier, filters.employee, filters.doctype, filters.purchase_invoice, filters.payment_entry, filters.expense_claim, filters.from_date, filters.to_date)
     columns = get_columns()
     return columns, data
 
 # works on net total only
 # TODO: custom tax base
-def get_data(company, supplier, doctype, purchase_invoice, payment_entry, from_date, to_date):
+def get_data(company, supplier, employee, doctype, purchase_invoice, payment_entry, expense_claim, from_date, to_date):
     result = []
     data_pi = []
     data_pe = []
@@ -26,8 +26,11 @@ def get_data(company, supplier, doctype, purchase_invoice, payment_entry, from_d
     if doctype == "Payment Entry" and payment_entry:
         pe_condition += ' AND pe.name = %s' % frappe.db.escape(payment_entry)
 
+    if doctype == "Expense Claim" and expense_claim:
+        pe_condition += ' AND ec.name = %s' % frappe.db.escape(expense_claim)
 
-    if not payment_entry:
+
+    if doctype == "Purchase Invoice":
         data_pi = frappe.db.sql("""
             SELECT
                 temp.payment_type,
@@ -78,7 +81,7 @@ def get_data(company, supplier, doctype, purchase_invoice, payment_entry, from_d
                     and pi.is_return = 0
                     and ((ptac.base_tax_amount < 0 and ptac.add_deduct_tax != 'Deduct') or (ptac.base_tax_amount >= 0 and ptac.add_deduct_tax = 'Deduct'))
                     and ptac.atc IN (SELECT atc FROM `tabATC` WHERE tax_type_code IN ('WE', 'WB', 'WV') and form_type = '2307')
-                    and (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
+                    and (a.account_type in ('Tax', 'Payable', 'Expense Account', 'Chargeable', '') or a.account_type is NULL)
                     and pi.supplier = %s
                     and pi.posting_date >= %s
                     and pi.posting_date <= %s
@@ -92,7 +95,7 @@ def get_data(company, supplier, doctype, purchase_invoice, payment_entry, from_d
     
         result.extend(data_pi)
     
-    if not purchase_invoice:
+    if doctype == "Payment Entry":
         data_pe = frappe.db.sql("""
             SELECT
                 temp.payment_type,
@@ -144,7 +147,7 @@ def get_data(company, supplier, doctype, purchase_invoice, payment_entry, from_d
                     and pe.party_type = 'Supplier'
                     and ((atac.base_tax_amount < 0 and atac.add_deduct_tax != 'Deduct') or (atac.base_tax_amount >= 0 and atac.add_deduct_tax = 'Deduct'))
                     and atac.atc IN (SELECT atc FROM `tabATC` WHERE tax_type_code IN ('WE', 'WB', 'WV') and form_type = '2307')
-                    and (a.account_type in ('Tax', 'Payable', '') or a.account_type is NULL)
+                    and (a.account_type in ('Tax', 'Payable', 'Expense Account', 'Chargeable', '') or a.account_type is NULL)
                     and pe.party = %s
                     and pe.posting_date >= %s
                     and pe.posting_date <= %s
@@ -157,6 +160,73 @@ def get_data(company, supplier, doctype, purchase_invoice, payment_entry, from_d
             """.format(pe_condition), (supplier, getdate(from_date), getdate(to_date), company), as_dict=1)
     
         result.extend(data_pe)
+    
+    if doctype == "Expense Claim":
+        data_ec = frappe.db.sql("""
+            SELECT
+                temp.payment_type,
+                temp.atc,
+                temp.description,
+                SUM(temp.month_1) AS month_1,
+                SUM(temp.month_2) AS month_2,
+                SUM(temp.month_3) AS month_3,
+                SUM(temp.total) AS total,
+                SUM(temp.tax_withheld_for_the_quarter) AS tax_withheld_for_the_quarter
+            FROM
+            (
+                SELECT 
+                    (CASE 
+                        WHEN etac.atc IN (SELECT atc FROM `tabATC` WHERE LEFT(atc, 2) IN ('WI', 'WC')) 
+                            THEN 'Income Payment' 
+                        WHEN etac.atc IN (SELECT atc FROM `tabATC` WHERE LEFT(atc, 2) IN ('WB', 'WV'))  
+                            THEN 'Money Payment' 
+                    END) AS payment_type,
+                    etac.atc AS atc,
+                    atc.description AS description,
+                    ec.name AS document_no,
+                    (CASE WHEN MONTH(ecd.expense_date) IN (1, 4, 7, 10) THEN (ec.grand_total - ec.total_taxes_and_charges) ELSE 0 END) AS month_1,
+                    (CASE WHEN MONTH(ecd.expense_date) IN (2, 5, 8, 11) THEN (ec.grand_total - ec.total_taxes_and_charges) ELSE 0 END) AS month_2,
+                    (CASE WHEN MONTH(ecd.expense_date) IN (3, 6, 9, 12) THEN (ec.grand_total - ec.total_taxes_and_charges) ELSE 0 END) AS month_3,
+                    (ec.grand_total - ec.total_taxes_and_charges) AS total,
+                    ABS(etac.tax_amount) AS tax_withheld_for_the_quarter
+                FROM 
+                    `tabExpense Claim` ec
+                LEFT JOIN `tabExpense Claim Detail` ecd
+                ON
+                    ecd.parent = ec.name
+                    and ecd.idx = 1
+                LEFT JOIN
+                    `tabExpense Taxes and Charges` etac
+                ON
+                    ec.name = etac.parent
+                LEFT JOIN 
+                    `tabEmployee` as e
+                ON
+                    ec.employee = e.name
+                INNER JOIN
+                    `tabAccount` a
+                ON
+                    etac.account_head = a.name
+                INNER JOIN
+                    `tabATC` atc
+                ON
+                    etac.atc = atc.name
+                WHERE
+                    ec.docstatus = 1
+                    and (etac.tax_amount < 0)
+                    and etac.atc IN (SELECT atc FROM `tabATC` WHERE tax_type_code IN ('WE', 'WB', 'WV') and form_type = '2307')
+                    and (a.account_type in ('Tax', 'Payable', 'Expense Account', 'Chargeable', '') or a.account_type is NULL)
+                    and ec.employee = %s
+                    and ecd.expense_date >= %s
+                    and ecd.expense_date <= %s
+                    and ec.company = %s {0}
+            ) temp
+            GROUP BY
+                temp.atc,
+                temp.description
+            """.format(pe_condition), (employee, getdate(from_date), getdate(to_date), company), as_dict=1)
+    
+        result.extend(data_ec)
 
     return result
 

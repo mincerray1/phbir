@@ -19,27 +19,66 @@ frappe.query_reports["BIR 2307"] = {
             label: __("Supplier"),
             fieldtype: "Link",
             options: "Supplier",
-            reqd: 1
+            reqd: 0
+        },
+        {
+            fieldname:"employee",
+            label: __("Employee"),
+            fieldtype: "Link",
+            options: "Employee",
+            reqd: 0
         },
         {
             fieldname:"doctype",
             label: __("Document Type"),
             fieldtype: "Select",
-            options: ["Purchase Invoice", "Payment Entry"],
+            options: ["Purchase Invoice", "Payment Entry", "Expense Claim"],
             reqd: 0, 
 			on_change: function() {
                 let filter_based_on = frappe.query_report.get_filter_value('doctype');
                 frappe.query_report.toggle_filter_display('purchase_invoice', filter_based_on != 'Purchase Invoice');
                 frappe.query_report.toggle_filter_display('payment_entry', filter_based_on != 'Payment Entry');
+                frappe.query_report.toggle_filter_display('expense_claim', filter_based_on != 'Expense Claim');
+
+                frappe.query_report.toggle_filter_display('employee', filter_based_on != 'Expense Claim');
+                frappe.query_report.toggle_filter_display('supplier', filter_based_on == 'Expense Claim');
 
                 if (filter_based_on == 'Purchase Invoice') {
                     frappe.query_report.set_filter_value("payment_entry", "");
+                    frappe.query_report.set_filter_value("expense_claim", "");
+                    frappe.query_report.set_filter_value("employee", "");
                 }
 
                 if (filter_based_on == 'Payment Entry') {
                     frappe.query_report.set_filter_value("purchase_invoice", "");
+                    frappe.query_report.set_filter_value("expense_claim", "");
+                    frappe.query_report.set_filter_value("employee", "");
+                }
+
+                if (filter_based_on == 'Expense Claim') {
+                    frappe.query_report.set_filter_value("purchase_invoice", "");
+                    frappe.query_report.set_filter_value("payment_entry", "");
+                    frappe.query_report.set_filter_value("supplier", "");
                 }
 			}
+        },
+        {
+            fieldname:"purchase_invoice",
+            label: __("Purchase Invoice"),
+            fieldtype: "Link",
+            default: "",
+            options: "Purchase Invoice",
+            hidden: 1,
+			get_query: () => {
+				var supplier = frappe.query_report.get_filter_value('supplier');
+				return {
+					filters: {
+						'supplier': supplier,
+						'docstatus': 1
+					}
+				}
+			},
+            reqd: 0
         },
         {
             fieldname:"payment_entry",
@@ -62,17 +101,17 @@ frappe.query_reports["BIR 2307"] = {
             reqd: 0
         },
         {
-            fieldname:"purchase_invoice",
-            label: __("Purchase Invoice"),
+            fieldname:"expense_claim",
+            label: __("Expense Claim"),
             fieldtype: "Link",
             default: "",
-            options: "Purchase Invoice",
+            options: "Expense Claim",
             hidden: 1,
 			get_query: () => {
-				var supplier = frappe.query_report.get_filter_value('supplier');
+				var employee = frappe.query_report.get_filter_value('employee');
 				return {
 					filters: {
-						'supplier': supplier,
+						'employee': employee,
 						'docstatus': 1
 					}
 				}
@@ -100,9 +139,11 @@ frappe.query_reports["BIR 2307"] = {
             let filter_values = {
                     'company': frappe.query_report.get_filter_value('company'),
                     'supplier': frappe.query_report.get_filter_value('supplier'),
+                    'employee': frappe.query_report.get_filter_value('employee'),
                     'doctype': frappe.query_report.get_filter_value('doctype'),
                     'purchase_invoice': frappe.query_report.get_filter_value('purchase_invoice') ? frappe.query_report.get_filter_value('purchase_invoice') : "",
                     'payment_entry': frappe.query_report.get_filter_value('payment_entry') ? frappe.query_report.get_filter_value('payment_entry') : "",
+                    'expense_claim': frappe.query_report.get_filter_value('expense_claim') ? frappe.query_report.get_filter_value('expense_claim') : "",
                     'from_date': frappe.query_report.get_filter_value('from_date'),
                     'to_date': frappe.query_report.get_filter_value('to_date'),
                 };
@@ -115,5 +156,6 @@ frappe.query_reports["BIR 2307"] = {
         let filter_based_on = frappe.query_report.get_filter_value('doctype');
         frappe.query_report.toggle_filter_display('purchase_invoice', filter_based_on != 'Purchase Invoice');
         frappe.query_report.toggle_filter_display('payment_entry', filter_based_on != 'Payment Entry');
+        frappe.query_report.toggle_filter_display('expense_claim', filter_based_on != 'Expense Claim');
     },
 };

@@ -132,6 +132,13 @@ def get_data(filters):
     data.extend(data_pi)
 
     if filters.include_cash_and_bank_journal_entries:
+        select_student = ""
+        select_student_name = ""
+
+        if "education" in frappe.get_installed_apps():
+            select_student = """ WHEN ge.party_type = 'Student' THEN stud.name """
+            select_student_name = """ WHEN ge.party_type = 'Student' THEN stud.student_name """
+
         data_je = frappe.db.sql("""
             SELECT 
                 ge.posting_date,
@@ -140,14 +147,14 @@ def get_data(filters):
                 (
                     CASE WHEN ge.party_type = 'Customer' THEN c.name
                     WHEN ge.party_type = 'Supplier' THEN s.name
-                    WHEN ge.party_type = 'Student' THEN stud.name
+                    {select_student}
                     END
                 )
                 as party,
                 (
                     CASE WHEN ge.party_type = 'Customer' THEN c.customer_name
                     WHEN ge.party_type = 'Supplier' THEN s.supplier_name
-                    WHEN ge.party_type = 'Student' THEN stud.student_name
+                    {select_student_name}
                     END
                 )                
                 as party_name,
@@ -210,7 +217,11 @@ def get_data(filters):
                 and ge.posting_date >= %s
                 and ge.posting_date <= %s
                 and ge.company = %s
-        """, (getdate(filters.from_date), getdate(filters.to_date), filters.company, getdate(filters.from_date), getdate(filters.to_date), filters.company), as_dict=1)
+        """.format(
+            select_student=select_student,
+            select_student_name=select_student_name
+            ), 
+        (getdate(filters.from_date), getdate(filters.to_date), filters.company, getdate(filters.from_date), getdate(filters.to_date), filters.company), as_dict=1)
 
     data.extend(data_je)
     data = sorted(data, key=lambda row: (row.posting_date, row.voucher_type, row.voucher_no, row.row_order))

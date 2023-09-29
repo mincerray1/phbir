@@ -67,8 +67,8 @@ table.table-money-payments tr td {
 <div style="left: 5.08in; top: 2.08in; letter-spacing: 0.13in;" class="bir-form-text">{{ payee.tin[9:12] }}</div>
 
 
-<div style="left: 0.53in; top: 2.50in;" class="bir-form-text">{{ payee.supplier_name }}</div>
-<div style="left: 0.53in; top: 2.92in;" class="bir-form-text">{{ payee.address }}</div>
+<div style="left: 0.53in; top: 2.50in;" class="bir-form-text">{{ payee.supplier_name or payee.employee_name }}</div>
+<div style="left: 0.53in; top: 2.92in;" class="bir-form-text">{{ payee.address or '' }}</div>
 <div style="left: 7.58in; top: 2.92in; letter-spacing: 0.1in;" class="bir-form-text">{{ payee.zipcode[:4] }}</div>
 
 <div style="left: 5.59in; top: 1.64in; letter-spacing: 0.1in;" class="bir-form-text">{{ to_date.strftime('%m') }}</div>
@@ -151,7 +151,7 @@ table.table-money-payments tr td {
 
 <div>
     {% if is_local_dev() %}
-        <img src="https://erpnextsandbox.serviotech.com/assets/phbir/img/forms/2307-1.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;">
+        <img src="https://ficctest.serviotech.com/assets/phbir/img/forms/2307-1.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;">
     {% else %}
         <img src="/assets/phbir/img/forms/2307-1.png" height="100%" width="100%" style="position: absolute; top: 0; left: 0; z-index: -1;">
     {% endif %}
